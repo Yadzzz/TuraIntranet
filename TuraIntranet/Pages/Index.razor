@@ -1,0 +1,49 @@
+﻿@page "/"
+
+@using System.DirectoryServices.AccountManagement
+@using TuraIntranet.Authentication
+
+<PageTitle>Index</PageTitle>
+
+@attribute [Authorize(Roles = "User")]
+
+
+
+@code {
+    public void login()
+    {
+        PrincipalContext context = new PrincipalContext(ContextType.Domain, "192.168.1.110", null, "npack", "hama");
+        UserPrincipal user = new UserPrincipal(context);
+        user.SamAccountName = "npack";
+        PrincipalSearcher searcher = new PrincipalSearcher(user);
+        var userPrincipal = searcher.FindOne();
+        var userGroups = new List<string>();
+
+        if (userPrincipal != null)
+        {
+            Console.WriteLine("Logged In");
+
+            userGroups = userPrincipal.GetGroups(context).Select(x => x.Name).ToList();
+
+            foreach (var group in userGroups)
+            {
+                Console.WriteLine(group);
+            }
+
+            if (!userGroups.Contains("Tura Intranet Users"))
+            {
+                //Saknar behörighet
+            }
+            else
+            {
+                
+            }
+        }
+        else
+        {
+            Console.WriteLine("Not Logged In"); ;
+        }
+
+        this.StateHasChanged();
+    }
+}
