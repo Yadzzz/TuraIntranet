@@ -4,21 +4,22 @@
 
 <AuthorizeView Roles="User,Administrator">
     <Authorized>
-        <div class="page">
-            <div class="sidebar">
-                <NavMenu />
-            </div>
 
-            <main>
-                <div class="top-row px-4">
-                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-                </div>
+        <Navbar />
 
-                <article class="content px-4">
-                    @Body
-                </article>
-            </main>
+        <!--  BEGIN MAIN CONTAINER  -->
+        <div class="main-container " id="container">
+
+            <div class="overlay"></div>
+            <div class="search-overlay"></div>
+
+            <Sidebar />
+
+            @Body
+
         </div>
+        <!-- END MAIN CONTAINER -->
+
     </Authorized>
 
     <NotAuthorized>

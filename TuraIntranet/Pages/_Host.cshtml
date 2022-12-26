@@ -6,16 +6,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=yes">
     <base href="~/" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="TuraIntranet.styles.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="favicon.png"/>
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    <link href="../layouts/vertical-light-menu/css/light/loader.css" rel="stylesheet" type="text/css" />
+    <script src="../layouts/vertical-light-menu/loader.js"></script>
+
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+    <link href="../../src/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../layouts/vertical-light-menu/css/light/plugins.css" rel="stylesheet" type="text/css" />
+    <link href="../../layouts/vertical-light-menu/css/dark/plugins.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <link rel="stylesheet" type="text/css" href="../../src/assets/css/light/elements/alert.css">
+    <link rel="stylesheet" type="text/css" href="../../src/assets/css/dark/elements/alert.css">
+    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    
+    <style>
+        body.dark .layout-px-spacing, .layout-px-spacing {
+            min-height: calc(100vh - 155px) !important;
+        }
+    </style>
+
+    <component type="typeof(HeadOutlet)" render-mode="Static" />
 </head>
-<body>
+
+<body class="layout-boxed" page="starter-pack">
+
+    <!-- BEGIN LOADER -->
+    <div id="load_screen">
+        <div class="loader">
+            <div class="loader-content">
+                <div class="spinner-grow align-self-center"></div>
+            </div>
+        </div>
+    </div>
+
     <component type="typeof(App)" render-mode="ServerPrerendered" />
 
     <div id="blazor-error-ui">
@@ -30,5 +60,14 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+
+     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="../../src/plugins/src/global/vendors.min.js"></script>
+    <script src="../../src/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../src/plugins/src/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../layouts/vertical-light-menu/app.js"></script>
+
+    <script src="../../src/assets/js/custom.js"></script>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
 </body>
 </html>
