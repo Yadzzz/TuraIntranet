@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using TuraIntranet.Authentication;
 using TuraIntranet.Data;
+using TuraIntranet.Services;
 
 namespace TuraIntranet
 {
@@ -20,6 +21,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddSingleton<UserAccountService>();
+            builder.Services.AddScoped<PageNavigationService>();
 
             var app = builder.Build();
 

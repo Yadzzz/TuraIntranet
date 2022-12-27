@@ -10,97 +10,79 @@
 
 @*<button type="button" @onclick=onLogin>Login</button>*@
 
-<link href="../layouts/vertical-light-menu/css/light/plugins.css" rel="stylesheet" type="text/css" />
-<link href="../src/assets/css/light/authentication/auth-cover.css" rel="stylesheet" type="text/css" />
+<link href="assets/css/authentication/form-1.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
+<link rel="stylesheet" type="text/css" href="assets/css/forms/switches.css">
 
-<link href="../layouts/vertical-light-menu/css/dark/plugins.css" rel="stylesheet" type="text/css" />
-<link href="../src/assets/css/dark/authentication/auth-cover.css" rel="stylesheet" type="text/css" />
+<div class="form-container">
+    <div class="form-form">
+        <div class="form-form-wrap">
+            <div class="form-container">
+                <div class="form-content">
 
-<div class="form">
-
-    <div class="auth-container d-flex">
-
-        <div class="container mx-auto align-self-center">
-    
-            <div class="row">
-    
-                <div class="col-6 d-lg-flex d-none h-100 my-auto top-0 start-0 text-center justify-content-center flex-column">
-                    <div class="auth-cover-bg-image"></div>
-                    <div class="auth-overlay"></div>
-                        
-                    <div class="auth-cover">
-    
-                        <div class="position-relative">
-    
-                            @*<img src="../src/assets/img/auth-cover.svg" alt="auth-img">*@
-    
-                            <h2 class="mt-5 text-white font-weight-bolder px-2">Tura Intranet</h2>
-                            <p class="text-white px-2">Tura Scandinavia AB</p>
-                        </div>
-                        
-                    </div>
-
-                </div>
-
-                <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-12 d-flex flex-column align-self-center ms-lg-auto me-lg-0 mx-auto">
                     <div class="card">
                         <div class="card-body">
-    
+
                             <div class="row">
                                 <div class="col-md-12 mb-3">
-                                    
+
                                     <h2>Sign In</h2>
-                                    <p>Enter your email and password to login</p>
-                                    
+                                    <p>Enter your username and password to login</p>
+
                                 </div>
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label">Username</label>
-                                        <input type="text" class="form-control" @bind=@loginModel.Username>
+                                        <input type="text" class="form-control" @bind-value=@loginModel.Username>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-4">
                                         <label class="form-label">Password</label>
-                                        <input type="password" class="form-control" @bind=@loginModel.Password>
+                                        <input type="password" class="form-control" @bind-value=@loginModel.Password>
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-12">
                                     <div class="mb-4">
-                                        <button class="btn btn-secondary w-100" @onclick=onLogin>SIGN IN</button>
+                                        <button class="btn btn-dark w-100" @onclick=onLogin>SIGN IN</button>
                                     </div>
                                 </div>
-                                <p>@error</p>
                             </div>
-                            
+
                         </div>
                     </div>
+
                 </div>
-                
             </div>
-            
         </div>
-
     </div>
-
+    <div class="form-image">
+        <div class="l-image">
+        </div>
+    </div>
 </div>
 
 @code {
     private Models.LoginModel loginModel = new Models.LoginModel();
-    string error = "error";
 
     private async Task onLogin()
     {
+        if(string.IsNullOrEmpty(this.loginModel.Username) || string.IsNullOrEmpty(this.loginModel.Password))
+        {
+            await js.InvokeVoidAsync("alert", "Please fill the required fields");
+            return;
+        }
+
+        string error = string.Empty;
         //npack hama
-        if (userAccountService.GetByUsername(this.loginModel.Username, this.loginModel.Password, out UserAccount userAccount, out string error))
+        if (userAccountService.GetByUsername(this.loginModel.Username, this.loginModel.Password, out UserAccount userAccount, out error))
         {
             if (userAccount == null)
             {
-                await js.InvokeVoidAsync("alert", "Invalid Username or Password.");
+                await js.InvokeVoidAsync("alert", error);
                 this.loginModel.Username = string.Empty;
                 this.loginModel.Password = string.Empty;
-                this.error = error;
 
                 return;
             }
@@ -112,7 +94,19 @@
                     Role = userAccount.Role
                 });
         }
+        else
+        {
+            await js.InvokeVoidAsync("alert", error);
+        }
 
         this.StateHasChanged();
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            this.onLogin();
+        }
     }
 }

@@ -1,0 +1,22 @@
+﻿@page "/logout"
+
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> _authenticationState { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var customAuthStateProvider = (Authentication.CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+    }
+
+    private async Task SignOut()
+    {
+        var customAuthStateProvider = (Authentication.CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        //navManager.NavigateTo("/", true);
+    }
+}

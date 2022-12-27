@@ -15,34 +15,42 @@ namespace TuraIntranet.Authentication
             userAccount = null;
             error = string.Empty;
 
-            PrincipalContext context = new PrincipalContext(ContextType.Domain, "192.168.1.110", null, username, password);
-            UserPrincipal user = new UserPrincipal(context);
-            user.SamAccountName = username;
-            PrincipalSearcher searcher = new PrincipalSearcher(user);
-            var userPrincipal = searcher.FindOne();
-            var userGroups = new List<string>();
-
-            if (userPrincipal != null)
+            try
             {
-                userGroups = userPrincipal.GetGroups(context).Select(x => x.Name).ToList();
+                PrincipalContext context = new PrincipalContext(ContextType.Domain, "192.168.1.110", null, username, password);
+                UserPrincipal user = new UserPrincipal(context);
+                user.SamAccountName = username;
+                PrincipalSearcher searcher = new PrincipalSearcher(user);
+                var userPrincipal = searcher.FindOne();
+                var userGroups = new List<string>();
 
-                if (!userGroups.Contains("Tura Intranet Users"))
+                if (userPrincipal != null)
                 {
-                    error = "Permission Denied for User";
-                    return false;
+                    userGroups = userPrincipal.GetGroups(context).Select(x => x.Name).ToList();
+
+                    if (!userGroups.Contains("Tura Intranet Users"))
+                    {
+                        error = "Permission Denied for User";
+                        return false;
+                    }
+                    else
+                    {
+                        userAccount = new UserAccount()
+                        {
+                            Username = username,
+                            Role = "User"
+                        };
+
+                        return true;
+                    }
                 }
                 else
                 {
-                    userAccount = new UserAccount()
-                    {
-                        Username = username,
-                        Role = "User"
-                    };
-
-                    return true;
+                    error = "Invalid Credentials";
+                    return false;
                 }
             }
-            else
+            catch(Exception ex)
             {
                 error = "Invalid Credentials";
                 return false;
