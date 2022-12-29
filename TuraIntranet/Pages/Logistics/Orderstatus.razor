@@ -1,0 +1,96 @@
+﻿@page "/orderstatus"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Orderstatus Nässjö</h5></center>
+                    <br />
+
+                    <center>
+                        <span>Totalt antal rader: 0 st</span>
+                        <span style="margin-left: 3em;">Rader att plocka: 0 st</span>
+                    </center>
+
+                    <hr />
+
+                    <table id="zero-config" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Utskrivet</th>
+                                <th>Ordertyp</th>
+                                <th>Status</th>
+                                <th>Orderrader</th>
+                                <th>Frisläppt</th>
+                                <th>Plockat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2022-12-27 : 06:20</td>
+                                <td>SPC</td>
+                                <td>Påbörjat plock</td>
+                                <td>194</td>
+                                <td>129</td>
+                                <td>129</td>
+                            </tr>
+                            <tr>
+                                <td>2022-12-27 : 06:20</td>
+                                <td>PSV</td>
+                                <td>Registrerad</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>2022-12-27 : 06:20</td>
+                                <td>DELKSE</td>
+                                <td>Färdig plockat</td>
+                                <td>162</td>
+                                <td>162</td>
+                                <td>162</td>
+                            </tr>
+                        </tbody>
+                        @*<tfoot>
+                        <tr>
+                        <th>Utskrivet</th>
+                        <th>Ordertyp</th>
+                        <th>Status</th>
+                        <th>Orderrader</th>
+                        <th>Frisläppt</th>
+                        <th>Plockat</th>
+                        </tr>
+                        </tfoot>*@
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this.PageNavService.UpdateActiveSection("Logistik");
+        this.PageNavService.UpdateActivePage("Orderstatus");
+
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+}

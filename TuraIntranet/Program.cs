@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 using TuraIntranet.Authentication;
 using TuraIntranet.Data;
 using TuraIntranet.Services;
+using TuraIntranet.Services.Logistics;
 
 namespace TuraIntranet
 {
@@ -22,6 +23,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddSingleton<UserAccountService>();
             builder.Services.AddScoped<PageNavigationService>();
+            builder.Services.AddScoped<ShipmentService>();
 
             var app = builder.Build();
 

@@ -1,0 +1,205 @@
+﻿@page "/inleverans"
+@page "/inleverans/{deliveryId}"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+
+<PageTitle>Inleverans</PageTitle>
+
+<link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
+<link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
+<link href="plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
+<link href="plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+        <div class="row invoice layout-top-spacing layout-spacing">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+                <div class="doc-container">
+
+                    <div class="row">
+                        <div class="col-xl-9">
+
+                            <div class="invoice-content">
+
+                                <div class="invoice-detail-body">
+
+                                    <div class="invoice-detail-title">
+                                        <div class="invoice-title">
+                                            <p>@DeliveryId</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="invoice-detail-header">
+
+                                        <div class="row justify-content-between">
+                                            <div class="col-xl-5 invoice-address-company">
+
+                                                <div class="invoice-address-company-fields">
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Ändrat av</label>
+                                                        <div class="col-sm-9">
+                                                            <select name="användare" class="form-control country_code  form-control-sm">
+                                                                <option value="">Välj användare</option>
+                                                                <option value="United States" selected>United States</option>
+                                                                <option value="United Kingdom">United Kingdom</option>
+                                                                <option value="Canada">Canada</option>
+                                                                <option value="Australia">Australia</option>
+                                                                <option value="Germany">Germany</option>
+                                                                <option value="Sweden">Sweden</option>
+                                                                <option value="Denmark">Denmark</option>
+                                                                <option value="Norway">Norway</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
+                                                        <div class="col-sm-9">
+                                                            <select name="mottaget" class="form-control country_code  form-control-sm">
+                                                                <option value="">Välj mottagare av</option>
+                                                                <option value="United States" selected>United States</option>
+                                                                <option value="United Kingdom">United Kingdom</option>
+                                                                <option value="Canada">Canada</option>
+                                                                <option value="Australia">Australia</option>
+                                                                <option value="Germany">Germany</option>
+                                                                <option value="Sweden">Sweden</option>
+                                                                <option value="Denmark">Denmark</option>
+                                                                <option value="Norway">Norway</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
+                                                        <div class="col-sm-9">
+                                                            <select name="mottagare" class="form-control country_code  form-control-sm">
+                                                                <option value="">Välj mottagare</option>
+                                                                <option value="United States" selected>TURA</option>
+                                                                <option value="United Kingdom">NI</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Leverantör</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" class="form-control form-control-sm" placeholder="Leverantör" value="EPSON">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="col-xl-5 invoice-address-client">
+
+                                                <div class="invoice-address-client-fields">
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Ordernr</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" class="form-control form-control-sm" placeholder="Ordernr" value="51625, 51663, 50796, 51090, 51380, 51419, 51625, 51627, 51664, ">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Antal Pall</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" class="form-control form-control-sm" placeholder="Antal Pall" value="26">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Antal Kollin</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" class="form-control form-control-sm" placeholder="Placering" value="35-40">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Prioriterad </label>
+                                                        <div class="col-sm-9">
+                                                            <div class="custom-control custom-checkbox checkbox-info">
+                                                                <input type="checkbox" class="custom-control-input" id="sChkbox">
+                                                                <label class="custom-control-label" for="sChkbox"></label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <hr />
+
+                                    @*<div class="col-xl-12 col-md-4">
+                                    <button class="btn btn-dark btn-block mb-4 mr-2">Spara</button>
+                                    </div>*@
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3">
+
+                            <div class="invoice-actions-btn">
+                                <div class="invoice-action-btn">
+                                    <div class="row">
+                                        <div class="col-xl-12 col-md-4">
+                                            <button class="btn btn-dark btn-block mb-4 mr-2">Avsluta</button>
+                                        </div>
+                                        <div class="col-xl-12 col-md-4">
+                                            <button class="btn btn-dark btn-block mb-4 mr-2">Spara</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="invoice-actions-btn">
+                                <div class="invoice-action-btn">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <center><h5>Lägg till kommentar</h5></center>
+                                            <textarea class="form-control" placeholder="Kommentar" />
+                                            <br />
+                                            <button class="btn btn-dark btn-block mb-4 mr-2">Lägg till kommentar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <Footer />
+</div>
+
+@code {
+    [Parameter]
+    public string? DeliveryId { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this.PageNavService.UpdateActiveSection("Logistik");
+        this.PageNavService.UpdateActivePage("Inleveranser");
+    }
+}

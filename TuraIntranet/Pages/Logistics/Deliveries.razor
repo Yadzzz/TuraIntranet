@@ -1,0 +1,115 @@
+﻿@page "/inleveranser"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
+
+<PageTitle>Intranet - Inleveranser</PageTitle>
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/custom_dt_html5.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Ankomst</th>
+                                <th>Mottagare</th>
+                                <th>Leverantör</th>
+                                <th>Ordernr</th>
+                                <th>Pall/Kollin</th>
+                                <th>Placering</th>
+                                <th>Status</th>
+                                <th>Uppdaterad</th>
+                                <th class="dt-no-sorting"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @*<tr>
+                                <td>2022-12-27 11:35:41</td>
+                                <td>TURA</td>
+                                <td>EPSON</td>
+                                <td><div style="max-width:200px; white-space:pre-line;">51625, 51663, 50796, 51090, 51380, 51419, 51625, 51627, 51664</div></td>
+                                <td>26 / 0</td>
+                                <td>35-40</td>
+                                <td>Aktivitet Pågår</td>
+                                <td>2022-12-27 12:33:26</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery("id-here"))>Visa</button>
+                                    </div>
+                                </td>
+                            </tr>*@
+
+                            @if (this._shipments != null && this._shipments.Count > 0)
+                            {
+                                foreach (var shipment in this._shipments)
+                                {
+                                    <tr>
+                                        <td>@shipment.Shipment.ReceivedAt</td>
+                                        <td>@shipment.Shipment.ReceivedBy</td>
+                                        <td><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
+                                        <td><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
+                                        <td>@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
+                                        <td>@shipment.Shipment.Placement</td>
+                                        <td>@shipment.ShipmentUpdate.StatusId</td>
+                                        <td>@shipment.ShipmentUpdate.UpdatedAt</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<TuraIntranet.Data.Logistics.Shipments.ShipmentModel>? _shipments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //await this.GetShipments();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this.PageNavService.UpdateActiveSection("Logistik");
+        this.PageNavService.UpdateActivePage("Inleveranser");
+
+        if (firstRender)
+        {
+            await this.GetShipments();
+            this.StateHasChanged();
+
+            await JS.InvokeVoidAsync("loadDataTableHtml5Component");
+            await JS.InvokeVoidAsync("OnScrollEvent");
+        }
+    }
+
+    private void ShowDelivery(string delivery)
+    {
+        this.NavManager.NavigateTo("/inleverans/" + delivery);
+    }
+
+    private async Task GetShipments()
+    {
+       this._shipments = await this.ShipmentService.GetShipments();
+    }
+}

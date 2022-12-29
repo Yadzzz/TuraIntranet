@@ -8,9 +8,8 @@
 
 <PageTitle>Index</PageTitle>
 
-@attribute [Authorize(Roles = "User")]
+@*@attribute [Authorize(Roles = "User")]*@
 
-<!--  BEGIN CONTENT PART  -->
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
 
@@ -26,18 +25,16 @@
                 </div>
             </div>
 
-
-
         </div>
 
     </div>
     <Footer />
 </div>
-<!--  END CONTENT PART  -->
 
 @code {
     protected override void OnInitialized()
     {
+        this.PageNavService.UpdateActiveSection("");
         this.PageNavService.UpdateActivePage("Index");
     }
 

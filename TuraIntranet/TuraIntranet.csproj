@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Logistics\" />
+    <ProjectReference Include="..\TuraIntranet.Data\TuraIntranet.Data.csproj" />
   </ItemGroup>
 
 </Project>
