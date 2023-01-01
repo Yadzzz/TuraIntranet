@@ -4,6 +4,7 @@
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
+@inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
 
 <PageTitle>Inleverans</PageTitle>
 
@@ -27,107 +28,71 @@
 
                                 <div class="invoice-detail-body">
 
-                                    <div class="invoice-detail-title">
-                                        <div class="invoice-title">
-                                            <p>@DeliveryId</p>
-                                        </div>
+                                    @*<div class="invoice-detail-title">
+                                    <div class="invoice-title">
+                                    <p>@DeliveryId</p>
                                     </div>
+                                    </div>*@
 
-                                    <div class="invoice-detail-header">
+                                    @if (this._shipment != null)
+                                    {
+                                        <div class="invoice-detail-header">
 
-                                        <div class="row justify-content-between">
-                                            <div class="col-xl-5 invoice-address-company">
+                                            <div class="row justify-content-between">
+                                                <div class="col-xl-5 invoice-address-company">
 
-                                                <div class="invoice-address-company-fields">
+                                                    <div class="invoice-address-company-fields">
 
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Ändrat av</label>
-                                                        <div class="col-sm-9">
-                                                            <select name="användare" class="form-control country_code  form-control-sm">
-                                                                <option value="">Välj användare</option>
-                                                                <option value="United States" selected>United States</option>
-                                                                <option value="United Kingdom">United Kingdom</option>
-                                                                <option value="Canada">Canada</option>
-                                                                <option value="Australia">Australia</option>
-                                                                <option value="Germany">Germany</option>
-                                                                <option value="Sweden">Sweden</option>
-                                                                <option value="Denmark">Denmark</option>
-                                                                <option value="Norway">Norway</option>
-                                                            </select>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ändrat av</label>
+                                                            <div class="col-sm-9">
+
+                                                                <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
+                                                                    <option value="">Välj användare</option>
+
+                                                                    @foreach (var employee in this.shipmentEmployees)
+                                                                    {
+                                                                        <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
+                                                                    }
+                                                                </select>
+
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
-                                                        <div class="col-sm-9">
-                                                            <select name="mottaget" class="form-control country_code  form-control-sm">
-                                                                <option value="">Välj mottagare av</option>
-                                                                <option value="United States" selected>United States</option>
-                                                                <option value="United Kingdom">United Kingdom</option>
-                                                                <option value="Canada">Canada</option>
-                                                                <option value="Australia">Australia</option>
-                                                                <option value="Germany">Germany</option>
-                                                                <option value="Sweden">Sweden</option>
-                                                                <option value="Denmark">Denmark</option>
-                                                                <option value="Norway">Norway</option>
-                                                            </select>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
+                                                            <div class="col-sm-9">
+                                                                <select name="mottaget" class="form-control country_code  form-control-sm" @onchange=@OnChangeReceivedById>
+                                                                    @foreach (var employee in this.shipmentEmployees)
+                                                                    {
+                                                                        if (this._shipment.Shipment.ReceivedBy.Value == employee.Id)
+                                                                        {
+                                                                            <option value="@employee.Id" selected>@(employee.FirstName + " " + employee.LastName)</option>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
+                                                                        }
+                                                                    }
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
-                                                        <div class="col-sm-9">
-                                                            <select name="mottagare" class="form-control country_code  form-control-sm">
-                                                                <option value="">Välj mottagare</option>
-                                                                <option value="United States" selected>TURA</option>
-                                                                <option value="United Kingdom">NI</option>
-                                                            </select>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm" @onchange=@OnChangeReceiverId>Mottaget av</label>
+                                                            <div class="col-sm-9">
+                                                                <select name="mottagare" class="form-control country_code  form-control-sm">
+                                                                    <option value="">Välj mottagare</option>
+                                                                    <option value="1" selected>TURA</option>
+                                                                    <option value="2">NI</option>
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Leverantör</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control form-control-sm" placeholder="Leverantör" value="EPSON">
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-
-
-                                            <div class="col-xl-5 invoice-address-client">
-
-                                                <div class="invoice-address-client-fields">
-
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Ordernr</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control form-control-sm" placeholder="Ordernr" value="51625, 51663, 50796, 51090, 51380, 51419, 51625, 51627, 51664, ">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Antal Pall</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control form-control-sm" placeholder="Antal Pall" value="26">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Antal Kollin</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control form-control-sm" placeholder="Placering" value="35-40">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label col-form-label-sm">Prioriterad </label>
-                                                        <div class="col-sm-9">
-                                                            <div class="custom-control custom-checkbox checkbox-info">
-                                                                <input type="checkbox" class="custom-control-input" id="sChkbox">
-                                                                <label class="custom-control-label" for="sChkbox"></label>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Leverantör</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Leverantör" @bind-value="@this._shipment.Shipment.Supplier">
                                                             </div>
                                                         </div>
 
@@ -135,17 +100,69 @@
 
                                                 </div>
 
+
+                                                <div class="col-xl-5 invoice-address-client">
+
+                                                    <div class="invoice-address-client-fields">
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ordernr</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Ordernr" @bind-value="@this._shipment.Shipment.OrderNumbers">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Antal Pall</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Antal Pall" @bind-value="@this._shipment.Shipment.NumberOfPallets">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Antal Kollin</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Antal Kollin" @bind-value="@this._shipment.Shipment.NumberOfPackages">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Placering</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Placering" @bind-value="@this._shipment.Shipment.Placement">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Prioriterad </label>
+                                                            <div class="col-sm-9">
+                                                                <div class="custom-control custom-checkbox checkbox-info">
+                                                                    <input type="checkbox" class="custom-control-input" id="sChkbox" checked="@this._shipment.Shipment.Prioritized" @onclick=@OnClickPrioritized>
+                                                                    <label class="custom-control-label" for="sChkbox"></label>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
                                             </div>
 
                                         </div>
 
-                                    </div>
+                                        <hr />
 
-                                    <hr />
-
-                                    @*<div class="col-xl-12 col-md-4">
+                                        @*<div class="col-xl-12 col-md-4">
                                     <button class="btn btn-dark btn-block mb-4 mr-2">Spara</button>
                                     </div>*@
+
+                                    }
+                                    else
+                                    {
+                                        <p>N/A</p>
+                                    }
 
                                 </div>
 
@@ -159,10 +176,10 @@
                                 <div class="invoice-action-btn">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-4">
-                                            <button class="btn btn-dark btn-block mb-4 mr-2">Avsluta</button>
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@FinishShipment>Avsluta</button>
                                         </div>
                                         <div class="col-xl-12 col-md-4">
-                                            <button class="btn btn-dark btn-block mb-4 mr-2">Spara</button>
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@SaveShipment>Spara</button>
                                         </div>
                                     </div>
                                 </div>
@@ -196,10 +213,60 @@
 @code {
     [Parameter]
     public string? DeliveryId { get; set; }
+    private TuraIntranet.Data.Logistics.Shipments.ShipmentModel? _shipment { get; set; }
+    private List<TuraIntranet.Data.Logistics.Shipments.ShipmentEmployee> shipmentEmployees { get; set; }
+    private int _updatedBy;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         this.PageNavService.UpdateActiveSection("Logistik");
         this.PageNavService.UpdateActivePage("Inleveranser");
+
+        if (int.TryParse(this.DeliveryId, out int id))
+        {
+            this._shipment = this.ShipmentService.GetShipment(id);
+            this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
+            this.StateHasChanged();
+        }
+    }
+
+    private void FinishShipment()
+    {
+
+    }
+
+    private void SaveShipment()
+    {
+        Console.WriteLine(this._shipment.Shipment.Prioritized);
+    }
+
+    private void OnChangeUpdatedById(ChangeEventArgs e)
+    {
+        string inputValue = e.Value.ToString();
+        this._updatedBy = int.Parse(inputValue);
+    }
+
+    private void OnChangeReceivedById(ChangeEventArgs e)
+    {
+        string inputValue = e.Value.ToString();
+        this._shipment.Shipment.ReceivedBy = int.Parse(inputValue);
+    }
+
+    private void OnChangeReceiverId(ChangeEventArgs e)
+    {
+        string inputValue = e.Value.ToString();
+        this._shipment.Shipment.ReceivingCompany = int.Parse(inputValue);
+    }
+
+    private void OnClickPrioritized()
+    {
+        if(this._shipment.Shipment.Prioritized.Value)
+        {
+            this._shipment.Shipment.Prioritized = false;
+        }
+        else
+        {
+            this._shipment.Shipment.Prioritized = true;
+        }
     }
 }

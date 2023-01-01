@@ -34,40 +34,61 @@
                         </thead>
                         <tbody>
                             @*<tr>
-                                <td>2022-12-27 11:35:41</td>
-                                <td>TURA</td>
-                                <td>EPSON</td>
-                                <td><div style="max-width:200px; white-space:pre-line;">51625, 51663, 50796, 51090, 51380, 51419, 51625, 51627, 51664</div></td>
-                                <td>26 / 0</td>
-                                <td>35-40</td>
-                                <td>Aktivitet Pågår</td>
-                                <td>2022-12-27 12:33:26</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery("id-here"))>Visa</button>
-                                    </div>
-                                </td>
+                            <td>2022-12-27 11:35:41</td>
+                            <td>TURA</td>
+                            <td>EPSON</td>
+                            <td><div style="max-width:200px; white-space:pre-line;">51625, 51663, 50796, 51090, 51380, 51419, 51625, 51627, 51664</div></td>
+                            <td>26 / 0</td>
+                            <td>35-40</td>
+                            <td>Aktivitet Pågår</td>
+                            <td>2022-12-27 12:33:26</td>
+                            <td>
+                            <div class="btn-group">
+                            <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery("id-here"))>Visa</button>
+                            </div>
+                            </td>
                             </tr>*@
 
                             @if (this._shipments != null && this._shipments.Count > 0)
                             {
                                 foreach (var shipment in this._shipments)
                                 {
-                                    <tr>
-                                        <td>@shipment.Shipment.ReceivedAt</td>
-                                        <td>@shipment.Shipment.ReceivedBy</td>
-                                        <td><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
-                                        <td><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
-                                        <td>@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
-                                        <td>@shipment.Shipment.Placement</td>
-                                        <td>@shipment.ShipmentUpdate.StatusId</td>
-                                        <td>@shipment.ShipmentUpdate.UpdatedAt</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    if (shipment.Shipment.Prioritized.Value == true)
+                                    {
+                                        <tr style="background-color:slategrey;">
+                                            <td style="color:black">@shipment.Shipment.ReceivedAt</td>
+                                            <td style="color:black">@this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value)</td>
+                                            <td style="color:black"><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
+                                            <td style="color:black"><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
+                                            <td style="color:black">@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
+                                            <td style="color:black">@shipment.Shipment.Placement</td>
+                                            <td style="color:black">@this.ShipmentService.GetShipmentStatus(shipment.ShipmentUpdate.StatusId)</td>
+                                            <td style="color:black">@shipment.ShipmentUpdate.UpdatedAt</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>@shipment.Shipment.ReceivedAt</td>
+                                            <td>@this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value)</td>
+                                            <td><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
+                                            <td><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
+                                            <td>@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
+                                            <td>@shipment.Shipment.Placement</td>
+                                            <td>@this.ShipmentService.GetShipmentStatus(shipment.ShipmentUpdate.StatusId)</td>
+                                            <td>@shipment.ShipmentUpdate.UpdatedAt</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
                             }
                         </tbody>
@@ -110,6 +131,6 @@
 
     private async Task GetShipments()
     {
-       this._shipments = await this.ShipmentService.GetShipments();
+        this._shipments = await this.ShipmentService.GetShipments();
     }
 }
