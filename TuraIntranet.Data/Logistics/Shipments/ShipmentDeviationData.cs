@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TuraIntranet.Data.Logistics.Shipments
 {
-    public class ShipmentDeviation
+    public class ShipmentDeviationData
     {
         public int ShipmentId { get; set; }
         public bool? DamagedGoods { get; set; }

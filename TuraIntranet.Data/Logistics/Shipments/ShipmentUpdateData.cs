@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TuraIntranet.Data.Logistics.Shipments
 {
-    public class ShipmentUpdate
+    public class ShipmentUpdateData
     {
         public DateTime UpdatedAt { get; set; }
         public int Id { get; set; }

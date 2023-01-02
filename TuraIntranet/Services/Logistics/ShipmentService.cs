@@ -21,6 +21,16 @@ namespace TuraIntranet.Services.Logistics
             return this._shipmentsManager.GetShipment(id);
         }
 
+        public void UpdateShipment(ShipmentModel shipment)
+        {
+            Task.Run(() => this._shipmentsManager.UpdateShipment(shipment));
+        }
+
+        public void AddUpdate(ShipmentUpdateData shipmentUpdateData)
+        {
+            Task.Run(() => this._shipmentsManager.AddUpdate(shipmentUpdateData));
+        }
+
         public async Task<List<ShipmentEmployee>?> GetShipmentEmployees()
         {
             return await this._shipmentsManager.GetShipmentEmployees();

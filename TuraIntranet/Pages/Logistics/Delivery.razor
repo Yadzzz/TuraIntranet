@@ -5,6 +5,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
+@inject IJSRuntime JS
 
 <PageTitle>Inleverans</PageTitle>
 
@@ -13,6 +14,10 @@
 <link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
 <link href="plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
 <link href="plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
+
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
 
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
@@ -168,6 +173,50 @@
 
                             </div>
 
+
+                            <div class="row layout-top-spacing" id="cancel-row">
+
+                                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                                    <div class="widget-content widget-content-area br-6">
+
+                                        <br />
+                                        <center><h5>Aktivitet</h5></center>
+
+                                        <hr />
+
+                                        <table id="zero-config" class="table table-striped" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Uppdaterad</th>
+                                                    <th>Uppdaterad av</th>
+                                                    <th>Status</th>
+                                                    <th>Note</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (this._shipment != null && this._shipment.ShipmentUpdates != null)
+                                                {
+                                                    foreach (var update in this._shipment.ShipmentUpdates.OrderByDescending(x => x.UpdatedAt))
+                                                    {
+                                                        <tr>
+                                                            <td>@update.UpdatedAt</td>
+                                                            <td>@update.UpdatedBy</td>
+                                                            <td>@this.ShipmentService.GetShipmentStatus(update.StatusId)</td>
+                                                            <td>@update.Note</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
 
                         <div class="col-xl-3">
@@ -189,10 +238,23 @@
                                 <div class="invoice-action-btn">
                                     <div class="row">
                                         <div class="col-12">
-                                            <center><h5>Lägg till kommentar</h5></center>
-                                            <textarea class="form-control" placeholder="Kommentar" />
+                                            <center><h5>Lägg till notering</h5></center>
+                                            <hr />
+
+                                            <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
+                                                <option value="">Välj användare</option>
+                                                @if (this.shipmentEmployees != null)
+                                                {
+                                                    foreach (var employee in this.shipmentEmployees)
+                                                    {
+                                                        <option value="@employee.Id"> @(employee.FirstName + " " + employee.LastName)</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            <textarea class="form-control" placeholder="Kommentar" @bind=@this.comment />
                                             <br />
-                                            <button class="btn btn-dark btn-block mb-4 mr-2">Lägg till kommentar</button>
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@AddComment>Lägg till kommentar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -216,17 +278,26 @@
     private TuraIntranet.Data.Logistics.Shipments.ShipmentModel? _shipment { get; set; }
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentEmployee> shipmentEmployees { get; set; }
     private int _updatedBy;
+    private string comment = string.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        this.PageNavService.UpdateActiveSection("Logistik");
-        this.PageNavService.UpdateActivePage("Inleveranser");
-
-        if (int.TryParse(this.DeliveryId, out int id))
+        if (firstRender)
         {
-            this._shipment = this.ShipmentService.GetShipment(id);
-            this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
-            this.StateHasChanged();
+            this.PageNavService.UpdateActiveSection("Logistik");
+            this.PageNavService.UpdateActivePage("Inleveranser");
+
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
+
+            if (this.DeliveryId != null)
+            {
+                if (int.TryParse(this.DeliveryId, out int id))
+                {
+                    this._shipment = this.ShipmentService.GetShipment(id);
+                    this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
+                    this.StateHasChanged();
+                }
+            }
         }
     }
 
@@ -237,7 +308,50 @@
 
     private void SaveShipment()
     {
-        Console.WriteLine(this._shipment.Shipment.Prioritized);
+        if (this._updatedBy == 0)
+        {
+            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
+            return;
+        }
+
+        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+            {
+                ShipmentId = this._shipment.Shipment.Id,
+                UpdatedBy = this._updatedBy,
+                UpdatedAt = DateTime.Now,
+                StatusId = this._shipment.ShipmentUpdate.StatusId,
+                Note = string.Empty
+            };
+
+        //this._shipment.ShipmentUpdate = shipmentUpdate;
+
+        this.ShipmentService.UpdateShipment(this._shipment);
+        this.ShipmentService.AddUpdate(shipmentUpdate);
+
+        this._shipment.ShipmentUpdates.Add(shipmentUpdate);
+        this.StateHasChanged();
+    }
+
+    private void AddComment()
+    {
+        if (this._updatedBy == 0)
+        {
+            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
+            return;
+        }
+
+        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+            {
+                ShipmentId = this._shipment.Shipment.Id,
+                UpdatedBy = this._updatedBy,
+                UpdatedAt = DateTime.Now,
+                StatusId = this._shipment.ShipmentUpdate.StatusId,
+                Note = this.comment
+            };
+
+        this.ShipmentService.AddUpdate(shipmentUpdate);
+        this._shipment.ShipmentUpdates.Add(shipmentUpdate);
+        this.StateHasChanged();
     }
 
     private void OnChangeUpdatedById(ChangeEventArgs e)
@@ -260,7 +374,7 @@
 
     private void OnClickPrioritized()
     {
-        if(this._shipment.Shipment.Prioritized.Value)
+        if (this._shipment.Shipment.Prioritized.Value)
         {
             this._shipment.Shipment.Prioritized = false;
         }

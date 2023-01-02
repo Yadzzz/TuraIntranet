@@ -100,6 +100,19 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
         }
 
+        public async Task UpdateShipment(ShipmentModel shipmentModel)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/Shipments/");
+            bool success = await api.SendPutRequest(shipmentModel);
+        }
+
+
+        public async Task AddUpdate(ShipmentUpdateData shipmentUpdateData)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentUpdate/");
+            bool success = await api.SendPostRequest(shipmentUpdateData);
+        }
+
         public string GetShipmentEmployee(int id)
         {
             if (this._shipmentEmployees != null)
