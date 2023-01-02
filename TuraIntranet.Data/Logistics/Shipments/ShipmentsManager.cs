@@ -215,5 +215,13 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 return string.Empty;
             }
         }
+
+        public void RemoveShipment(ShipmentModel shipmentModel)
+        {
+            if(this._shipments.Contains(shipmentModel))
+            {
+                this._shipments.Remove(shipmentModel);
+            }
+        }
     }
 }

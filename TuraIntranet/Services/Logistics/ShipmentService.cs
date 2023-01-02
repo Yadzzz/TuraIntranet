@@ -60,5 +60,10 @@ namespace TuraIntranet.Services.Logistics
         {
             return this._shipmentsManager.GetShipmentStatus(id);
         }
+
+        public void RemoveShipment(ShipmentModel shipmentModel)
+        {
+            this._shipmentsManager.RemoveShipment(shipmentModel);
+        }
     }
 }

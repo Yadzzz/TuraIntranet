@@ -254,7 +254,7 @@
 
                                             <textarea class="form-control" placeholder="Kommentar" @bind=@this.comment />
                                             <br />
-                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@AddComment>Lägg till kommentar</button>
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@OnAddComment>Lägg till kommentar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -303,7 +303,25 @@
 
     private void FinishShipment()
     {
+        if (this._updatedBy == 0)
+        {
+            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
+            return;
+        }
 
+        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+            {
+                ShipmentId = this._shipment.Shipment.Id,
+                UpdatedBy = this._updatedBy,
+                UpdatedAt = DateTime.Now,
+                StatusId = 4,
+                Note = this.comment
+            };
+
+        this.ShipmentService.AddUpdate(shipmentUpdate);
+        this._shipment.ShipmentUpdates.Add(shipmentUpdate);
+        this.ShipmentService.RemoveShipment(this._shipment);
+        this.StateHasChanged();
     }
 
     private void SaveShipment()
@@ -332,7 +350,7 @@
         this.StateHasChanged();
     }
 
-    private void AddComment()
+    private void OnAddComment()
     {
         if (this._updatedBy == 0)
         {
