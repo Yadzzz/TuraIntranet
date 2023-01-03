@@ -84,12 +84,19 @@
                                                         </div>
 
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm" @onchange=@OnChangeReceiverId>Mottaget av</label>
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
                                                             <div class="col-sm-9">
-                                                                <select name="mottagare" class="form-control country_code  form-control-sm">
-                                                                    <option value="">Välj mottagare</option>
-                                                                    <option value="1" selected>TURA</option>
-                                                                    <option value="2">NI</option>
+                                                                <select name="mottagare" class="form-control country_code  form-control-sm" @onchange=@OnChangeReceiverId>
+                                                                    @if(this._shipment.Shipment.ReceivingCompany.HasValue && this._shipment.Shipment.ReceivingCompany.Value == 1)
+                                                                    {
+                                                                        <option value="1" selected>TURA</option>
+                                                                        <option value="2">NI</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="1">TURA</option>
+                                                                        <option value="2" selected>NI</option>
+                                                                    }
                                                                 </select>
                                                             </div>
                                                         </div>

@@ -60,7 +60,7 @@
                             {
                                 foreach (var shipment in this._shipments)
                                 {
-                                    if (shipment.Shipment.Prioritized.Value == true)
+                                    if (shipment.Shipment.Prioritized.HasValue && shipment.Shipment.Prioritized.Value == true)
                                     {
                                         <tr style="background-color:slategrey;">
                                             <td style="color:black"><div style="max-width:80px; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
