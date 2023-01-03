@@ -33,9 +33,9 @@ namespace TuraIntranet.Data.Logistics.Shipments
             });
         }
 
-        public async Task<List<ShipmentModel>?> GetShipments()
+        public async Task<List<ShipmentModel>?> GetShipments(bool forceFlush = false)
         {
-            if (this._shipments != null)
+            if (this._shipments != null && !forceFlush)
             {
                 return this._shipments;
             }
@@ -66,6 +66,14 @@ namespace TuraIntranet.Data.Logistics.Shipments
 
         public ShipmentModel? GetShipment(int id)
         {
+            if (this._shipments != null)
+            {
+                Task.Run(async () =>
+                {
+                    await this.GetShipments();
+                });
+            }
+
             return this._shipments.Where(x => x.Shipment.Id == id).FirstOrDefault();
         }
 
@@ -106,11 +114,16 @@ namespace TuraIntranet.Data.Logistics.Shipments
             bool success = await api.SendPutRequest(shipmentModel);
         }
 
-
         public async Task AddUpdate(ShipmentUpdateData shipmentUpdateData)
         {
             APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentUpdate/");
             bool success = await api.SendPostRequest(shipmentUpdateData);
+        }
+
+        public async Task AddShipment(ShipmentModel shipmentModel)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/Shipments/");
+            bool success = await api.SendPostRequest(shipmentModel);
         }
 
         public string GetShipmentEmployee(int id)
@@ -218,10 +231,15 @@ namespace TuraIntranet.Data.Logistics.Shipments
 
         public void RemoveShipment(ShipmentModel shipmentModel)
         {
-            if(this._shipments.Contains(shipmentModel))
+            if (this._shipments.Contains(shipmentModel))
             {
                 this._shipments.Remove(shipmentModel);
             }
+        }
+        
+        public void FlushShipments()
+        {
+            this._shipments = null;
         }
     }
 }

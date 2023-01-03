@@ -31,6 +31,11 @@ namespace TuraIntranet.Services.Logistics
             Task.Run(() => this._shipmentsManager.AddUpdate(shipmentUpdateData));
         }
 
+        public void AddShipment(ShipmentModel shipment)
+        {
+            Task.Run(() => this._shipmentsManager.AddShipment(shipment));
+        }
+
         public async Task<List<ShipmentEmployee>?> GetShipmentEmployees()
         {
             return await this._shipmentsManager.GetShipmentEmployees();
@@ -64,6 +69,11 @@ namespace TuraIntranet.Services.Logistics
         public void RemoveShipment(ShipmentModel shipmentModel)
         {
             this._shipmentsManager.RemoveShipment(shipmentModel);
+        }
+
+        public void FlushShipments()
+        {
+            this._shipmentsManager.FlushShipments();
         }
     }
 }

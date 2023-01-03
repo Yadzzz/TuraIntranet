@@ -1,5 +1,4 @@
-﻿@page "/inleverans"
-@page "/inleverans/{deliveryId}"
+﻿@page "/lagginleverans"
 
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
@@ -14,7 +13,6 @@
 <link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
 <link href="plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
 <link href="plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
-
 
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
@@ -32,12 +30,6 @@
                             <div class="invoice-content">
 
                                 <div class="invoice-detail-body">
-
-                                    @*<div class="invoice-detail-title">
-                                    <div class="invoice-title">
-                                    <p>@DeliveryId</p>
-                                    </div>
-                                    </div>*@
 
                                     @if (this._shipment != null)
                                     {
@@ -68,16 +60,11 @@
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
                                                             <div class="col-sm-9">
                                                                 <select name="mottaget" class="form-control country_code  form-control-sm" @onchange=@OnChangeReceivedById>
+                                                                    <option value="">Välj användare</option>
+
                                                                     @foreach (var employee in this.shipmentEmployees)
                                                                     {
-                                                                        if (this._shipment.Shipment.ReceivedBy.HasValue && this._shipment.Shipment.ReceivedBy.Value == employee.Id)
-                                                                        {
-                                                                            <option value="@employee.Id" selected>@(employee.FirstName + " " + employee.LastName)</option>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
-                                                                        }
+                                                                        <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
                                                                     }
                                                                 </select>
                                                             </div>
@@ -87,8 +74,8 @@
                                                             <label class="col-sm-3 col-form-label col-form-label-sm" @onchange=@OnChangeReceiverId>Mottaget av</label>
                                                             <div class="col-sm-9">
                                                                 <select name="mottagare" class="form-control country_code  form-control-sm">
-                                                                    <option value="">Välj mottagare</option>
-                                                                    <option value="1" selected>TURA</option>
+                                                                    <option value="" selected>Välj mottagare</option>
+                                                                    <option value="1">TURA</option>
                                                                     <option value="2">NI</option>
                                                                 </select>
                                                             </div>
@@ -170,53 +157,7 @@
                                     }
 
                                 </div>
-
                             </div>
-
-
-                            <div class="row layout-top-spacing" id="cancel-row">
-
-                                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                                    <div class="widget-content widget-content-area br-6">
-
-                                        <br />
-                                        <center><h5>Aktivitet</h5></center>
-
-                                        <hr />
-
-                                        <table id="zero-config" class="table table-striped" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>Uppdaterad</th>
-                                                    <th>Uppdaterad av</th>
-                                                    <th>Status</th>
-                                                    <th>Note</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (this._shipment != null && this._shipment.ShipmentUpdates != null)
-                                                {
-                                                    foreach (var update in this._shipment.ShipmentUpdates.OrderByDescending(x => x.UpdatedAt))
-                                                    {
-                                                        <tr>
-                                                            <td>@update.UpdatedAt</td>
-                                                            <td>@this.ShipmentService.GetShipmentEmployee(update.UpdatedBy.Value)</td>
-                                                            <td>@this.ShipmentService.GetShipmentStatus(update.StatusId)</td>
-                                                            <td>@update.Note</td>
-                                                        </tr>
-                                                    }
-                                                }
-                                                else
-                                                {
-
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            </div>
-
                         </div>
 
                         <div class="col-xl-3">
@@ -225,36 +166,7 @@
                                 <div class="invoice-action-btn">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-4">
-                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@FinishShipment>Avsluta</button>
-                                        </div>
-                                        <div class="col-xl-12 col-md-4">
                                             <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@SaveShipment>Spara</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="invoice-actions-btn">
-                                <div class="invoice-action-btn">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <center><h5>Lägg till notering</h5></center>
-                                            <hr />
-
-                                            <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
-                                                <option value="">Välj användare</option>
-                                                @if (this.shipmentEmployees != null)
-                                                {
-                                                    foreach (var employee in this.shipmentEmployees)
-                                                    {
-                                                        <option value="@employee.Id"> @(employee.FirstName + " " + employee.LastName)</option>
-                                                    }
-                                                }
-                                            </select>
-
-                                            <textarea class="form-control" placeholder="Kommentar" @bind=@this.comment />
-                                            <br />
-                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@OnAddComment>Lägg till kommentar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -262,10 +174,7 @@
 
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
     </div>
@@ -273,12 +182,9 @@
 </div>
 
 @code {
-    [Parameter]
-    public string? DeliveryId { get; set; }
     private TuraIntranet.Data.Logistics.Shipments.ShipmentModel? _shipment { get; set; }
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentEmployee> shipmentEmployees { get; set; }
     private int _updatedBy;
-    private string comment = string.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -287,103 +193,40 @@
             this.PageNavService.UpdateActiveSection("Logistik");
             this.PageNavService.UpdateActivePage("Inleveranser");
 
-            if (this.DeliveryId != null)
-            {
-                if (int.TryParse(this.DeliveryId, out int id))
-                {
-                    this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
-                    this._shipment = this.ShipmentService.GetShipment(id);
-                    this.StateHasChanged();
-                }
-            }
-
-            await JS.InvokeVoidAsync("loadDataTableComponent");
+            this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
+            this._shipment = new Data.Logistics.Shipments.ShipmentModel();
+            this._shipment.Shipment = new Data.Logistics.Shipments.ShipmentData();
+            this._shipment.ShipmentUpdates = new List<Data.Logistics.Shipments.ShipmentUpdateData>();
+            this.StateHasChanged();
         }
-    }
-
-    private void NewShipment()
-    {
-        this._shipment = new Data.Logistics.Shipments.ShipmentModel();
-        this._shipment.Shipment = new Data.Logistics.Shipments.ShipmentData();
-        this._shipment.ShipmentUpdates = new List<Data.Logistics.Shipments.ShipmentUpdateData>();
-    }
-
-    private void FinishShipment()
-    {
-        if (this._updatedBy == 0)
-        {
-            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
-            return;
-        }
-
-        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
-            {
-                ShipmentId = this._shipment.Shipment.Id,
-                UpdatedBy = this._updatedBy,
-                UpdatedAt = DateTime.Now,
-                StatusId = 4,
-                Note = this.comment
-            };
-
-        this.ShipmentService.AddUpdate(shipmentUpdate);
-        this._shipment.ShipmentUpdates.Add(shipmentUpdate);
-        this.ShipmentService.RemoveShipment(this._shipment);
-        this.StateHasChanged();
     }
 
     private void SaveShipment()
     {
-        if (this._updatedBy == 0)
+        if (this._updatedBy == 0 || !this._shipment.Shipment.ReceivedBy.HasValue || this._shipment.Shipment.ReceivedBy.Value == 0)
         {
-            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
+            JS.InvokeVoidAsync("alert", "Välj användare");
             return;
         }
 
-        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+        this._shipment.ShipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
             {
-                ShipmentId = this._shipment.Shipment.Id,
                 UpdatedBy = this._updatedBy,
                 UpdatedAt = DateTime.Now,
-                StatusId = this._shipment.ShipmentUpdate.StatusId,
+                StatusId = 1,
                 Note = string.Empty
             };
 
-        //this._shipment.ShipmentUpdate = shipmentUpdate;
-
-        this.ShipmentService.UpdateShipment(this._shipment);
-        this.ShipmentService.AddUpdate(shipmentUpdate);
-
-        this._shipment.ShipmentUpdates.Add(shipmentUpdate);
+        this.ShipmentService.AddShipment(this._shipment);
         this.ShipmentService.FlushShipments();
-        this.StateHasChanged();
-    }
-
-    private void OnAddComment()
-    {
-        if (this._updatedBy == 0)
-        {
-            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
-            return;
-        }
-
-        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
-            {
-                ShipmentId = this._shipment.Shipment.Id,
-                UpdatedBy = this._updatedBy,
-                UpdatedAt = DateTime.Now,
-                StatusId = this._shipment.ShipmentUpdate.StatusId,
-                Note = this.comment
-            };
-
-        this.ShipmentService.AddUpdate(shipmentUpdate);
-        this._shipment.ShipmentUpdates.Add(shipmentUpdate);
-        this.StateHasChanged();
+        this.NavManager.NavigateTo("/inleveranser");
     }
 
     private void OnChangeUpdatedById(ChangeEventArgs e)
     {
         string inputValue = e.Value.ToString();
         this._updatedBy = int.Parse(inputValue);
+        this._shipment.Shipment.InitatedBy = int.Parse(inputValue);
     }
 
     private void OnChangeReceivedById(ChangeEventArgs e)
@@ -400,6 +243,11 @@
 
     private void OnClickPrioritized()
     {
+        if (!this._shipment.Shipment.Prioritized.HasValue)
+        {
+            this._shipment.Shipment.Prioritized = true;
+        }
+
         if (this._shipment.Shipment.Prioritized.Value)
         {
             this._shipment.Shipment.Prioritized = false;

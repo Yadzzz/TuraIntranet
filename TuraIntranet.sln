@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuraIntranet", "TuraIntranet\TuraIntranet.csproj", "{29653749-70B1-4FCD-A31D-6490A0E33D3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuraIntranet.Data", "TuraIntranet.Data\TuraIntranet.Data.csproj", "{FECB6B78-9540-4F83-9AA9-0777D5FB5883}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuraIntranet.Data", "TuraIntranet.Data\TuraIntranet.Data.csproj", "{FECB6B78-9540-4F83-9AA9-0777D5FB5883}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

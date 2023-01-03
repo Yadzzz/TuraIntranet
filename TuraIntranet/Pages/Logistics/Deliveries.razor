@@ -18,6 +18,13 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
+
+                    <br />
+
+                    <div class="col-xl-2 col-md-4">
+                        <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@(() => this.NavManager.NavigateTo("/lagginleverans"))>Lägg till</button>
+                    </div>
+
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
                         <thead>
                             <tr>
@@ -56,18 +63,18 @@
                                     if (shipment.Shipment.Prioritized.Value == true)
                                     {
                                         <tr style="background-color:slategrey;">
-                                            <td style="color:black">@shipment.Shipment.ReceivedAt</td>
+                                            <td style="color:black"><div style="max-width:80px; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
                                             <td style="color:black">@this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value)</td>
                                             <td style="color:black"><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
                                             <td style="color:black"><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
                                             <td style="color:black">@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
                                             <td style="color:black">@shipment.Shipment.Placement</td>
                                             <td style="color:black">@this.ShipmentService.GetShipmentStatus(shipment.ShipmentUpdate.StatusId)</td>
-                                            <td style="color:black">@shipment.ShipmentUpdate.UpdatedAt</td>
+                                            <td style="color:black"><div style="max-width:80px; white-space:pre-line;">@shipment.ShipmentUpdate.UpdatedAt</div></td>
                                             <td>
                                                 @*<div class="btn-group">
-                                                    <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
-                                                </div>*@
+                                    <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
+                                    </div>*@
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
                                                     <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
@@ -87,18 +94,18 @@
                                     else
                                     {
                                         <tr>
-                                            <td>@shipment.Shipment.ReceivedAt</td>
+                                            <td><div style="max-width:80px; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
                                             <td>@this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value)</td>
                                             <td><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
                                             <td><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
                                             <td>@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
                                             <td>@shipment.Shipment.Placement</td>
                                             <td>@this.ShipmentService.GetShipmentStatus(shipment.ShipmentUpdate.StatusId)</td>
-                                            <td>@shipment.ShipmentUpdate.UpdatedAt</td>
+                                            <td><div style="max-width:80px; white-space:pre-line;">@shipment.ShipmentUpdate.UpdatedAt</div></td>
                                             <td>
                                                 @*<div class="btn-group">
-                                                    <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
-                                                </div>*@
+                                    <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
+                                    </div>*@
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
                                                     <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
@@ -132,7 +139,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //await this.GetShipments();
+        
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -144,6 +151,7 @@
 
             await this.GetShipments();
             this.StateHasChanged();
+            Console.WriteLine("2323");
 
             await JS.InvokeVoidAsync("loadDataTableHtml5Component");
             await JS.InvokeVoidAsync("OnScrollEvent");
