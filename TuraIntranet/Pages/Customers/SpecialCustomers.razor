@@ -3,7 +3,7 @@
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
-
+@inject TuraIntranet.Services.Customers.CustomersService CustomerService
 
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
@@ -17,15 +17,8 @@
                 <div class="widget-content widget-content-area br-6">
 
                     <br />
-                    <center><h5>Orderstatus Nässjö</h5></center>
+                    <center><h5>Specialkunder</h5></center>
                     <br />
-
-                    <center>
-                        <span>Totalt antal rader: 0 st</span>
-                        <span style="margin-left: 3em;">Rader att plocka: 0 st</span>
-                    </center>
-
-                    <hr />
 
                     <table id="zero-config" class="table table-striped" style="width:100%">
                         <thead>
@@ -37,22 +30,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>12332</td>
-                                <td>SPC</td>
-                                <td>2023-01-01 00:00:00</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-dark btn-sm">Ändra</button>
-                                        <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                            <a class="dropdown-item">Radera</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                            @if (this.specialCustomers != null && this.customers != null && this.specialCustomers.Count > 0)
+                            {
+                                foreach (var cust in this.specialCustomers)
+                                {
+                                    var customerData = this.customers[cust.CustomerNumber];
+
+                                    <tr>
+                                        <td>@cust.CustomerNumber</td>
+                                        <td>@customerData.Name</td>
+                                        <td>NULL</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm">Ändra</button>
+                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                    <a class="dropdown-item">Radera</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                         <tfoot>
                             <tr>
@@ -72,6 +73,9 @@
 </div>
 
 @code {
+    private List<TuraIntranet.Data.Customers.SpecialCustomerModel> specialCustomers;
+    private Dictionary<string, TuraIntranet.Data.Customers.CustomerModel> customers;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -79,7 +83,36 @@
             this.PageNavService.UpdateActiveSection("Kunder");
             this.PageNavService.UpdateActivePage("Specialkunder");
 
+            this.specialCustomers = new();
+            this.customers = new();
+
+            await this.LoadCustomerData();
+            this.StateHasChanged();
             await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    private async Task LoadCustomerData()
+    {
+        this.specialCustomers = await this.CustomerService.GetSpecialCustomersAsync();
+
+        if (specialCustomers == null)
+        {
+            Console.WriteLine("Could not get data");
+            return;
+        }
+
+        foreach (var specialCust in this.specialCustomers)
+        {
+            var customerData = await this.CustomerService.GetCustomerAsync(specialCust.CustomerNumber);
+
+            if (customerData == null)
+            {
+                this.specialCustomers.Remove(specialCust);
+                continue;
+            }
+
+            this.customers.Add(specialCust.CustomerNumber, customerData);
         }
     }
 }

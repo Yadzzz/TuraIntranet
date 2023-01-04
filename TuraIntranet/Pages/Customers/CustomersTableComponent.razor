@@ -1,0 +1,57 @@
+﻿@inject IJSRuntime JS
+
+<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+    <div class="widget-content widget-content-area br-6">
+
+        <table id="zero-config" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Namn</th>
+                    <th>Adress</th>
+                    <th>Postnummer</th>
+                    <th>Postort</th>
+                    <th>Telefon</th>
+                    <th>Kontaktperson</th>
+                    <th>Butikskedja</th>
+                    <th>Epost</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (this.Customers != null && this.Customers.Count > 0)
+                {
+                    foreach (var customer in this.Customers)
+                    {
+                        <tr>
+                            <td>@customer.Name</td>
+                            <td>@customer.Address</td>
+                            <td>@customer.PostCode</td>
+                            <td>@customer.TerritoryCode</td>
+                            <td>@customer.PhoneNo</td>
+                            <td>@customer.Contact</td>
+                            <td>@customer.ChainName</td>
+                            <td>@customer.EMail</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<TuraIntranet.Data.Customers.CustomerModel> Customers { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    public void OnStateChange()
+    {
+        this.StateHasChanged();
+    }
+}

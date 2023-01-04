@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 using TuraIntranet.Authentication;
 using TuraIntranet.Data;
 using TuraIntranet.Services;
+using TuraIntranet.Services.Customers;
 using TuraIntranet.Services.Logistics;
 
 namespace TuraIntranet
@@ -18,12 +19,12 @@ namespace TuraIntranet
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddSingleton<UserAccountService>();
             builder.Services.AddScoped<PageNavigationService>();
             builder.Services.AddScoped<ShipmentService>();
+            builder.Services.AddScoped<CustomersService>();
 
             var app = builder.Build();
 
