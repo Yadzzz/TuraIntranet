@@ -1,4 +1,4 @@
-﻿@page "/orderstatus"
+﻿@page "/customers"
 
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
@@ -63,16 +63,17 @@
                                 <td>162</td>
                             </tr>
                         </tbody>
-                        @*<tfoot>
-                        <tr>
-                        <th>Utskrivet</th>
-                        <th>Ordertyp</th>
-                        <th>Status</th>
-                        <th>Orderrader</th>
-                        <th>Frisläppt</th>
-                        <th>Plockat</th>
-                        </tr>
-                        </tfoot>*@
+                        <tfoot>
+                            <tr>
+                                <th>Utskrivet</th>
+                                <th>Ordertyp</th>
+                                <th>Ordertyp</th>
+                                <th>Status</th>
+                                <th>Orderrader</th>
+                                <th>Frisläppt</th>
+                                <th>Plockat</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -85,11 +86,11 @@
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        this.PageNavService.UpdateActiveSection("Kunder");
+        this.PageNavService.UpdateActivePage("Kunduppgifter");
+
         if (firstRender)
         {
-            this.PageNavService.UpdateActiveSection("Logistik");
-            this.PageNavService.UpdateActivePage("Orderstatus");
-
             await JS.InvokeVoidAsync("loadDataTableComponent");
         }
     }
