@@ -1,5 +1,5 @@
 ﻿@page "/inleverans"
-@page "/inleverans/{deliveryId}"
+@page "/inleverans/{DeliveryId}"
 
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
@@ -298,7 +298,7 @@
                 if (int.TryParse(this.DeliveryId, out int id))
                 {
                     this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
-                    this._shipment = this.ShipmentService.GetShipment(id);
+                    this._shipment = await this.ShipmentService.GetShipment(id);
                     this.StateHasChanged();
                 }
             }

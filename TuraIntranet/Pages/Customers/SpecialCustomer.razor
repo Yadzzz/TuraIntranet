@@ -105,7 +105,10 @@
                                 <div class="invoice-action-btn">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-4">
-                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Save>Spara</button>
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@this.Save>Spara</button>
+                                        </div>
+                                        <div class="col-xl-12 col-md-4">
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@this.OnDelete>Radera</button>
                                         </div>
                                     </div>
                                 </div>
@@ -167,6 +170,13 @@
         await this.CustService.UpdateSpecialCustomer(this.specialCustomer.Id, this.specialCustomer);
         this.CustService.FlushSpecialCustomers();
         await this.AlertUser("Specialkund uppdaterad.");
+    }
+
+    public async Task OnDelete()
+    {
+        specialCustomer.IsDeleted = true;
+        await this.Save();
+        this.StateHasChanged();
     }
 
     private async Task AlertUser(string text)

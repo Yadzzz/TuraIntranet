@@ -64,14 +64,11 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
         }
 
-        public ShipmentModel? GetShipment(int id)
+        public async Task<ShipmentModel?> GetShipment(int id)
         {
-            if (this._shipments != null)
+            if (this._shipments == null)
             {
-                Task.Run(async () =>
-                {
-                    await this.GetShipments();
-                });
+                await this.GetShipments();
             }
 
             return this._shipments.Where(x => x.Shipment.Id == id).FirstOrDefault();

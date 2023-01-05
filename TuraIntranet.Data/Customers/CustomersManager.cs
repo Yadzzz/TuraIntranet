@@ -13,6 +13,7 @@ namespace TuraIntranet.Data.Customers
     public class CustomersManager
     {
         private List<SpecialCustomerModel>? _specialCustomers;
+        private Dictionary<string, CustomerModel>? _specialCustomersData;
 
         public async Task<List<SpecialCustomerModel>?> GetSpecialCustomersAsync(bool forceFlush = false)
         {
@@ -81,6 +82,33 @@ namespace TuraIntranet.Data.Customers
             }
         }
 
+        public async Task<Dictionary<string, CustomerModel>?> GetSpecialCustomersDataAsync()
+        {
+            if(this._specialCustomersData != null && this._specialCustomersData.Count > 0)
+            {
+                return this._specialCustomersData;
+            }
+
+            if(this._specialCustomers == null)
+            {
+                return null;
+            }
+
+            this._specialCustomersData = new();
+
+            foreach(var specialCustomer in this._specialCustomers)
+            {
+                CustomerModel? customer = await this.GetCustomerAsync(specialCustomer.CustomerNumber);
+
+                if(customer != null && !this._specialCustomersData.ContainsKey(specialCustomer.CustomerNumber))
+                {
+                    this._specialCustomersData.Add(specialCustomer.CustomerNumber, customer);
+                }
+            }
+
+            return this._specialCustomersData;
+        }
+
         public async Task<CustomerModel?> GetCustomerAsync(string id)
         {
             APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/" + id);
@@ -117,11 +145,22 @@ namespace TuraIntranet.Data.Customers
         {
             APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/SpecialCustomers/" + id);
             bool success = await api.SendPutRequest(specialCustomer);
+
+            //if (this._specialCustomers != null)
+            //{
+            //    var cust = this._specialCustomers.Where(x => x.Id == id).FirstOrDefault();
+
+            //    if (cust != null)
+            //    {
+            //        this._specialCustomers.Remove(cust);
+            //    }
+            //}
         }
 
         public void FlushSpecialCustomers()
         {
             this._specialCustomers = null;
+            this._specialCustomersData = null;
         }
     }
 }

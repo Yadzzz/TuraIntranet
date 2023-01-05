@@ -15,4 +15,8 @@
     <ProjectReference Include="..\TuraIntranet.Data\TuraIntranet.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

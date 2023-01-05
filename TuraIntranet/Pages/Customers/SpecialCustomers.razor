@@ -44,6 +44,9 @@
                                         <td>NULL</td>
                                         <td>
                                             <div class="btn-group">
+                                                <button class="btn btn-dark btn-sm" @onclick=@(() => this.ShowSpecialCustomer(cust.CustomerNumber))>Visa</button>
+                                            </div>
+                                           @* <div class="btn-group">
                                                 <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => this.ShowSpecialCustomer(cust.CustomerNumber))>Ändra</button>
                                                 <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -51,7 +54,7 @@
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
                                                     <a class="dropdown-item" @onclick=@(() => this.OnDelete(cust))>Radera</a>
                                                 </div>
-                                            </div>
+                                            </div>*@
                                         </td>
                                     </tr>
                                 }
@@ -75,8 +78,8 @@
 </div>
 
 @code {
-    private List<TuraIntranet.Data.Customers.SpecialCustomerModel> specialCustomers;
-    private Dictionary<string, TuraIntranet.Data.Customers.CustomerModel> customers;
+    private List<TuraIntranet.Data.Customers.SpecialCustomerModel>? specialCustomers;
+    private Dictionary<string, TuraIntranet.Data.Customers.CustomerModel>? customers;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -104,23 +107,31 @@
             return;
         }
 
-        foreach (var specialCust in this.specialCustomers)
+        this.customers = await this.CustomerService.GetSpecialCustomersData();
+
+        if(this.customers == null)
         {
-            var customerData = await this.CustomerService.GetCustomerAsync(specialCust.CustomerNumber);
-
-            if (customerData == null)
-            {
-                this.specialCustomers.Remove(specialCust);
-                continue;
-            }
-
-            if(this.customers.ContainsKey(specialCust.CustomerNumber))
-            {
-                continue;
-            }
-
-            this.customers.Add(specialCust.CustomerNumber, customerData);
+            Console.WriteLine("[ERROR] Could not get data");
+            return;
         }
+
+        //foreach (var specialCust in this.specialCustomers)
+        //{
+        //    var customerData = await this.CustomerService.GetCustomerAsync(specialCust.CustomerNumber);
+
+        //    if (customerData == null)
+        //    {
+        //        this.specialCustomers.Remove(specialCust);
+        //        continue;
+        //    }
+
+        //    if(this.customers.ContainsKey(specialCust.CustomerNumber))
+        //    {
+        //        continue;
+        //    }
+
+        //    this.customers.Add(specialCust.CustomerNumber, customerData);
+        //}
     }
 
     private void ShowSpecialCustomer(string customerNumber)
@@ -135,6 +146,7 @@
         this.specialCustomers.Remove(specialCustomer);
         this.CustomerService.FlushSpecialCustomers();
         await this.AlertUser("Specialkund Inaktiverad.");
+        this.StateHasChanged();
     }
 
     private async Task AlertUser(string text)
