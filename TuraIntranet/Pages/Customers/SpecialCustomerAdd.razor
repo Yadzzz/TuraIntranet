@@ -1,12 +1,11 @@
-﻿@page "/specialcustomer"
-@page "/specialcustomer/{CustomerId}"
+﻿@page "/addspecialcustomer"
 
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Customers.CustomersService CustService
 
-<PageTitle>Specialkunder - Visa</PageTitle>
+<PageTitle>Specialkunder - Lägg Till</PageTitle>
 
 <link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
@@ -39,7 +38,7 @@
 
                                                 <div class="col-xl-12 invoice-address-client">
 
-                                                    <div class="invoice-address-client-fields">
+                                                    <div class="invoice-address-client-fields" novalidate>
 
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Kundnummer</label>
@@ -122,9 +121,9 @@
 
 
 @code {
-    [Parameter]
-    public string? CustomerId { get; set; }
-    private TuraIntranet.Data.Customers.SpecialCustomerModel? specialCustomer;
+    private List<TuraIntranet.Data.Customers.SpecialCustomerModel> specialCustomers;
+    private TuraIntranet.Data.Customers.SpecialCustomerModel specialCustomer;
+    private bool specialCustomerExists = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -133,15 +132,33 @@
             this.PageNavService.UpdateActiveSection("Kunder");
             this.PageNavService.UpdateActivePage("Specialkunder");
 
-            if (this.CustomerId != null)
-            {
+            this.specialCustomers = await this.CustService.GetSpecialCustomersAsync();
 
-                this.specialCustomer = await this.CustService.GetSpecialCustomerAsync(this.CustomerId);
-                this.StateHasChanged();
-            }
+            this.specialCustomer = new Data.Customers.SpecialCustomerModel()
+                {
+                    CustomerNumber = string.Empty,
+                    Instructions = string.Empty,
+                    ResponsibleSalesPerson = string.Empty,
+                    SalesPersonPhone = string.Empty,
+                    IsDeleted = false
+                };
 
-            //await JS.InvokeVoidAsync("loadDataTableComponent");
+            this.StateHasChanged();
         }
+    }
+
+    private void OnCustomerNumberChange()
+    {
+        if (this.specialCustomers.Where(x => x.CustomerNumber == this.specialCustomer.CustomerNumber).Count() > 0)
+        {
+            this.specialCustomerExists = true;
+        }
+        else
+        {
+            this.specialCustomerExists = false;
+        }
+
+        this.StateHasChanged();
     }
 
     private void OnClickDeleted()
@@ -164,9 +181,9 @@
 
     private async Task Save()
     {
-        await this.CustService.UpdateSpecialCustomer(this.specialCustomer.Id, this.specialCustomer);
+        await this.CustService.AddSpecialCustomer(this.specialCustomer);
         this.CustService.FlushSpecialCustomers();
-        await this.AlertUser("Specialkund uppdaterad.");
+        await this.AlertUser("Specialkund Uppdaterad.");
     }
 
     private async Task AlertUser(string text)

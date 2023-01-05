@@ -44,12 +44,12 @@
                                         <td>NULL</td>
                                         <td>
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm">Ändra</button>
+                                                <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => this.ShowSpecialCustomer(cust.CustomerNumber))>Ändra</button>
                                                 <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item">Radera</a>
+                                                    <a class="dropdown-item" @onclick=@(() => this.OnDelete(cust))>Radera</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -100,7 +100,7 @@
 
         if (specialCustomers == null)
         {
-            Console.WriteLine("Could not get data");
+            Console.WriteLine("[ERROR] Could not get data");
             return;
         }
 
@@ -114,7 +114,38 @@
                 continue;
             }
 
+            if(this.customers.ContainsKey(specialCust.CustomerNumber))
+            {
+                continue;
+            }
+
             this.customers.Add(specialCust.CustomerNumber, customerData);
+        }
+    }
+
+    private void ShowSpecialCustomer(string customerNumber)
+    {
+        this.NavManager.NavigateTo("/specialcustomer/" + customerNumber);
+    }
+
+    public async Task OnDelete(TuraIntranet.Data.Customers.SpecialCustomerModel specialCustomer)
+    {
+        specialCustomer.IsDeleted = true;
+        await this.CustomerService.UpdateSpecialCustomer(specialCustomer.Id, specialCustomer);
+        this.specialCustomers.Remove(specialCustomer);
+        this.CustomerService.FlushSpecialCustomers();
+        await this.AlertUser("Specialkund Inaktiverad.");
+    }
+
+    private async Task AlertUser(string text)
+    {
+        try
+        {
+            await this.JS.InvokeVoidAsync("alert", text);
+        }
+        catch (Exception e)
+        {
+
         }
     }
 }

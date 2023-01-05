@@ -88,5 +88,26 @@ namespace TuraIntranet.Data.API
 
             return true;
         }
+
+        public async Task<bool> SendDeleteRequest()
+        {
+            try
+            {
+                using (var client = new RestClient(this._apiUrl))
+                {
+                    var request = new RestRequest();
+                    request.Method = Method.Delete;
+                    request.AddHeader("ApiKey", "ba932ec7-3d66-487c-bcd0-4e17c8a2dfb3");
+                    RestResponse response = await client.DeleteAsync(request);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+
+            return true;
+        }
     }
 }

@@ -4,9 +4,8 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
-@inject IJSRuntime JS
 
-<PageTitle>Lägg till inleverans</PageTitle>
+<PageTitle>Inleverans - Lägg till</PageTitle>
 
 <link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
@@ -195,7 +194,10 @@
 
             this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
             this._shipment = new Data.Logistics.Shipments.ShipmentModel();
-            this._shipment.Shipment = new Data.Logistics.Shipments.ShipmentData();
+            this._shipment.Shipment = new Data.Logistics.Shipments.ShipmentData()
+            {
+                //Set default data
+            };
             this._shipment.ShipmentUpdates = new List<Data.Logistics.Shipments.ShipmentUpdateData>();
             this.StateHasChanged();
         }
@@ -209,7 +211,7 @@
             return;
         }
 
-        if(!this._shipment.Shipment.Prioritized.HasValue)
+        if (!this._shipment.Shipment.Prioritized.HasValue)
         {
             this._shipment.Shipment.Prioritized = true;
         }

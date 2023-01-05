@@ -6,6 +6,7 @@ using TuraIntranet.Authentication;
 using TuraIntranet.Data;
 using TuraIntranet.Services;
 using TuraIntranet.Services.Customers;
+using TuraIntranet.Services.Info;
 using TuraIntranet.Services.Logistics;
 
 namespace TuraIntranet
@@ -25,6 +26,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<PageNavigationService>();
             builder.Services.AddScoped<ShipmentService>();
             builder.Services.AddScoped<CustomersService>();
+            builder.Services.AddScoped<InfoService>();
 
             var app = builder.Build();
 

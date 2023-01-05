@@ -5,9 +5,8 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
-@inject IJSRuntime JS
 
-<PageTitle>Inleverans</PageTitle>
+<PageTitle>Inleverans - Visa</PageTitle>
 
 <link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
@@ -304,7 +303,7 @@
                 }
             }
 
-            await JS.InvokeVoidAsync("loadDataTableComponent");
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
         }
     }
 

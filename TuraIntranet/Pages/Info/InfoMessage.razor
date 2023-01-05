@@ -1,10 +1,9 @@
-﻿@page "/specialcustomer"
-@page "/specialcustomer/{CustomerId}"
+﻿@page "/info/{id}"
 
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
-@inject TuraIntranet.Services.Customers.CustomersService CustService
+@inject TuraIntranet.Services.Info.InfoService InfoService
 
 <PageTitle>Specialkunder - Visa</PageTitle>
 
@@ -31,7 +30,7 @@
 
                                 <div class="invoice-detail-body">
 
-                                    @if (this.specialCustomer != null)
+                                    @if (this.infoMessageModel != null)
                                     {
                                         <div class="invoice-detail-header">
 
@@ -42,44 +41,28 @@
                                                     <div class="invoice-address-client-fields">
 
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Kundnummer</label>
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Rubrik</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value="@this.specialCustomer.CustomerNumber">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Rubrik" @bind-value="@this.infoMessageModel.Header">
                                                             </div>
                                                         </div>
 
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Instruktioner</label>
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Meddelande</label>
                                                             <div class="col-sm-9">
-                                                                <textarea class="form-control" placeholder="Instruktioner" @bind=@this.specialCustomer.Instructions rows="10" />
-                                                                @*<input type="text" class="form-control form-control-sm" placeholder="Instruktioner" @bind-value="@this.specialCustomer.Instructions">*@
+                                                                <textarea class="form-control" placeholder="Meddelande" @bind=@this.infoMessageModel.Message rows="5" />
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ansvarig säljare</label>
-                                                            <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Ansvarig säljare" @bind-value="@this.specialCustomer.ResponsibleSalesPerson">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Telefon till säljare</label>
-                                                            <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Telefon till säljare" @bind-value="@this.specialCustomer.SalesPersonPhone">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Inaktiverad</label>
+                                                        @*<div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Aktiverad</label>
                                                             <div class="col-sm-9">
                                                                 <div class="custom-control custom-checkbox checkbox-info">
                                                                     <input type="checkbox" class="custom-control-input" id="sChkbox" checked="@this.specialCustomer.IsDeleted" @onclick=@OnClickDeleted>
                                                                     <label class="custom-control-label" for="sChkbox"></label>
                                                                 </div>
                                                             </div>
-
-                                                        </div>
+                                                        </div>*@
 
                                                     </div>
 
@@ -92,7 +75,7 @@
                                     }
                                     else
                                     {
-                                        <p>N/A</p>
+                                        <p>Could not retrieve data</p>
                                     }
 
                                 </div>
@@ -120,53 +103,34 @@
     <Footer />
 </div>
 
-
 @code {
     [Parameter]
-    public string? CustomerId { get; set; }
-    private TuraIntranet.Data.Customers.SpecialCustomerModel? specialCustomer;
+    public string? Id { get; set; }
+    private TuraIntranet.Data.Info.InfoMessageModel? infoMessageModel;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            this.PageNavService.UpdateActiveSection("Kunder");
-            this.PageNavService.UpdateActivePage("Specialkunder");
+            this.PageNavService.UpdateActiveSection("");
+            this.PageNavService.UpdateActivePage("Info Ch.");
 
-            if (this.CustomerId != null)
+            if (this.Id != null)
             {
-
-                this.specialCustomer = await this.CustService.GetSpecialCustomerAsync(this.CustomerId);
-                this.StateHasChanged();
+                if(int.TryParse(this.Id, out int id))
+                {
+                    this.infoMessageModel = await this.InfoService.GetInfoMessageAsync(id);
+                    this.StateHasChanged();
+                }
             }
-
-            //await JS.InvokeVoidAsync("loadDataTableComponent");
-        }
-    }
-
-    private void OnClickDeleted()
-    {
-        //if(this.specialCustomer.IsDeleted == null)
-        //{
-        //    this.specialCustomer.IsDeleted = true;
-        //    return;
-        //}
-
-        if (this.specialCustomer.IsDeleted)
-        {
-            this.specialCustomer.IsDeleted = false;
-        }
-        else
-        {
-            this.specialCustomer.IsDeleted = true;
         }
     }
 
     private async Task Save()
     {
-        await this.CustService.UpdateSpecialCustomer(this.specialCustomer.Id, this.specialCustomer);
-        this.CustService.FlushSpecialCustomers();
-        await this.AlertUser("Specialkund uppdaterad.");
+        await this.InfoService.UpdateInfoMessageAsync(this.infoMessageModel.Id, this.infoMessageModel);
+        this.InfoService.Flush();
+        await this.AlertUser("Info Uppdaterad");
     }
 
     private async Task AlertUser(string text)
