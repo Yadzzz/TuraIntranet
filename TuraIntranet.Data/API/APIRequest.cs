@@ -18,6 +18,11 @@ namespace TuraIntranet.Data.API
             this._apiUrl = apiUrl;
         }
 
+        public void SetUrl(string apiUrl)
+        {
+            this._apiUrl = apiUrl;
+        }
+
         public async Task<RestResponse?> GetResponse()
         {
             try

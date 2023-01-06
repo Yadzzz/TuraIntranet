@@ -5,7 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Info.InfoService InfoService
 
-<PageTitle>Info</PageTitle>
+<PageTitle>Meddelanden</PageTitle>
 
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
@@ -19,7 +19,7 @@
                 <div class="widget-content widget-content-area br-6">
 
                     <br />
-                    <center><h5>Administrera Meddelanden</h5></center>
+                    <center><h5>Meddelanden</h5></center>
                     <br />
 
                     <table id="zero-config" class="table table-striped" style="width:100%">
@@ -70,12 +70,12 @@
     {
         if (firstRender)
         {
-            this.PageNavService.UpdateActiveSection("");
-            this.PageNavService.UpdateActivePage("Info Ch.");
+            this.PageNavService.UpdateActiveSection("Info");
+            this.PageNavService.UpdateActivePage("Info");
 
             this.infoMessages = await this.InfoService.GetInfoMessagesAsync();
             this.StateHasChanged();
-            await JS.InvokeVoidAsync("loadDataTableComponent");
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
         }
     }
 

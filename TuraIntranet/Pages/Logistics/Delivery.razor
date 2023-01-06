@@ -52,7 +52,7 @@
                                                             <div class="col-sm-9">
 
                                                                 <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
-                                                                    <option value="">Välj användare</option>
+                                                                    <option value="0">Välj användare</option>
 
                                                                     @foreach (var employee in this.shipmentEmployees)
                                                                     {
@@ -248,7 +248,7 @@
                                             <hr />
 
                                             <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
-                                                <option value="">Välj användare</option>
+                                                <option value="0">Välj användare</option>
                                                 @if (this.shipmentEmployees != null)
                                                 {
                                                     foreach (var employee in this.shipmentEmployees)

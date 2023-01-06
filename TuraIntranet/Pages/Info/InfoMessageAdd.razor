@@ -1,11 +1,11 @@
-﻿@page "/info/{id}"
+﻿@page "/addinfo"
 
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Info.InfoService InfoService
 
-<PageTitle>Meddelanden - Visa</PageTitle>
+<PageTitle>Meddelanden - Lägg till</PageTitle>
 
 <link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
@@ -75,7 +75,7 @@
                                     }
                                     else
                                     {
-                                        <p>Could not retrieve data</p>
+                                        <p>Could not add data. Object not initialized.</p>
                                     }
 
                                 </div>
@@ -89,9 +89,6 @@
                                     <div class="row">
                                         <div class="col-xl-12 col-md-4">
                                             <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Save>Spara</button>
-                                        </div>
-                                        <div class="col-xl-12 col-md-4">
-                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Delete>Radera</button>
                                         </div>
                                     </div>
                                 </div>
@@ -107,40 +104,29 @@
 </div>
 
 @code {
-    [Parameter]
-    public string? Id { get; set; }
-    private TuraIntranet.Data.Info.InfoMessageModel? infoMessageModel;
+    private TuraIntranet.Data.Info.InfoMessageModel infoMessageModel;
+
+    public InfoMessageAdd()
+    {
+        this.infoMessageModel = new Data.Info.InfoMessageModel();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             this.PageNavService.UpdateActiveSection("Info");
-            this.PageNavService.UpdateActivePage("Info");
+            this.PageNavService.UpdateActivePage("AddInfo");
 
-            if (this.Id != null)
-            {
-                if(int.TryParse(this.Id, out int id))
-                {
-                    this.infoMessageModel = await this.InfoService.GetInfoMessageAsync(id);
-                    this.StateHasChanged();
-                }
-            }
+            this.infoMessageModel = new Data.Info.InfoMessageModel();
         }
     }
 
     private async Task Save()
     {
-        await this.InfoService.UpdateInfoMessageAsync(this.infoMessageModel.Id, this.infoMessageModel);
+        await this.InfoService.AddInfoMessageAsync(this.infoMessageModel);
         this.InfoService.Flush();
         await this.AlertUser("Info Uppdaterad");
-    }
-
-    private async Task Delete()
-    {
-        await this.InfoService.DeleteInfoMessageAsync(this.infoMessageModel.Id);
-        this.InfoService.Flush();
-        await this.AlertUser("Info Raderad");
     }
 
     private async Task AlertUser(string text)

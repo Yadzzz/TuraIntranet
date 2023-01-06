@@ -86,6 +86,12 @@ namespace TuraIntranet.Data.Info
             bool success = await api.SendPutRequest(infoMessage);
         }
 
+        public async Task AddInfoMessage(InfoMessageModel infoMessage)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/InfoMessages/");
+            bool success = await api.SendPostRequest(infoMessage);
+        }
+
         public async Task DeleteInfoMessage(int id)
         {
             APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/InfoMessages/" + id);

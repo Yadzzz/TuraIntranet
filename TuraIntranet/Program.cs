@@ -8,6 +8,7 @@ using TuraIntranet.Services;
 using TuraIntranet.Services.Customers;
 using TuraIntranet.Services.Info;
 using TuraIntranet.Services.Logistics;
+using TuraIntranet.Services.Network;
 
 namespace TuraIntranet
 {
@@ -27,6 +28,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<ShipmentService>();
             builder.Services.AddScoped<CustomersService>();
             builder.Services.AddScoped<InfoService>();
+            builder.Services.AddScoped<NetworkService>();
 
             var app = builder.Build();
 

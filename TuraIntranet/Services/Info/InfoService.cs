@@ -26,6 +26,11 @@ namespace TuraIntranet.Services.Info
             await this._infoMessageManager.UpdateInfoMessage(id, infoMessage);
         }
 
+        public async Task AddInfoMessageAsync(InfoMessageModel infoMessage)
+        {
+            await this._infoMessageManager.AddInfoMessage(infoMessage);
+        }
+
         public async Task DeleteInfoMessageAsync(int id)
         {
             await this._infoMessageManager.DeleteInfoMessage(id);

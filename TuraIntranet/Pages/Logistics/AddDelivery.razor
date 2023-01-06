@@ -44,7 +44,7 @@
                                                             <div class="col-sm-9">
 
                                                                 <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
-                                                                    <option value="">Välj användare</option>
+                                                                    <option value="0">Välj användare</option>
 
                                                                     @foreach (var employee in this.shipmentEmployees)
                                                                     {
@@ -59,7 +59,7 @@
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
                                                             <div class="col-sm-9">
                                                                 <select name="mottaget" class="form-control country_code  form-control-sm" @onchange=@OnChangeReceivedById>
-                                                                    <option value="">Välj användare</option>
+                                                                    <option value="0">Välj användare</option>
 
                                                                     @foreach (var employee in this.shipmentEmployees)
                                                                     {
@@ -73,7 +73,7 @@
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
                                                             <div class="col-sm-9">
                                                                 <select name="mottagare" class="form-control country_code  form-control-sm" @onchange=@OnChangeReceiverId>
-                                                                    <option value="" selected>Välj mottagare</option>
+                                                                    <option value="0" selected>Välj mottagare</option>
                                                                     <option value="1">TURA</option>
                                                                     <option value="2">NI</option>
                                                                 </select>
@@ -190,7 +190,7 @@
         if (firstRender)
         {
             this.PageNavService.UpdateActiveSection("Logistik");
-            this.PageNavService.UpdateActivePage("Inleveranser");
+            this.PageNavService.UpdateActivePage("AddInleverans");
 
             this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
             this._shipment = new Data.Logistics.Shipments.ShipmentModel();
@@ -205,16 +205,32 @@
 
     private void SaveShipment()
     {
+        if(this._shipment == null || this._shipment.Shipment == null)
+        {
+            JS.InvokeVoidAsync("alert", "ERROR #F301");
+            return;
+        }
+
         if (this._updatedBy == 0 || !this._shipment.Shipment.ReceivedBy.HasValue || this._shipment.Shipment.ReceivedBy.Value == 0)
         {
-            JS.InvokeVoidAsync("alert", "Välj användare");
+            JS.InvokeVoidAsync("alert", "Välj Användare");
+            return;
+        }
+
+        if (!this._shipment.Shipment.ReceivingCompany.HasValue || this._shipment.Shipment.ReceivingCompany.Value == 0)
+        {
+            JS.InvokeVoidAsync("alert", "Välj Mottagare");
             return;
         }
 
         if (!this._shipment.Shipment.Prioritized.HasValue)
         {
-            this._shipment.Shipment.Prioritized = true;
+            this._shipment.Shipment.Prioritized = false;
         }
+
+        this._shipment.Shipment.ReceivedAt = DateTime.Now;
+
+        this.NullCheckingModel();
 
         this._shipment.ShipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
             {
@@ -228,6 +244,49 @@
         this.ShipmentService.FlushShipments();
         //this.NavManager.NavigateTo("/inleveranser");
         JS.InvokeVoidAsync("alert", "Inleverans tillagd");
+    }
+
+    private void NullCheckingModel()
+    {
+        if (this._shipment.Shipment.OrderNumbers == null)
+        {
+            this._shipment.Shipment.OrderNumbers = string.Empty;
+        }
+
+        if (this._shipment.Shipment.NumberOfPackages == null)
+        {
+            this._shipment.Shipment.NumberOfPackages = 0;
+        }
+
+        if (this._shipment.Shipment.NumberOfPallets == null)
+        {
+            this._shipment.Shipment.NumberOfPallets = 0;
+        }
+
+        if (this._shipment.Shipment.Placement == null)
+        {
+            this._shipment.Shipment.Placement = string.Empty;
+        }
+
+        if (this._shipment.Shipment.Supplier == null)
+        {
+            this._shipment.Shipment.Supplier = string.Empty;
+        }
+
+        if (this._shipment.Shipment.InitatedBy == null)
+        {
+            this._shipment.Shipment.InitatedBy = 0;
+        }
+
+        if (this._shipment.Shipment.ReceivingCompany == null)
+        {
+            this._shipment.Shipment.InitatedBy = 0;
+        }
+
+        if (this._shipment.Shipment.ReceivedBy == null)
+        {
+            this._shipment.Shipment.InitatedBy = 0;
+        }
     }
 
     private void OnChangeUpdatedById(ChangeEventArgs e)
