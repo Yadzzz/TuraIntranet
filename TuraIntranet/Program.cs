@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 using TuraIntranet.Authentication;
 using TuraIntranet.Data;
 using TuraIntranet.Services;
+using TuraIntranet.Services.Backoffice;
 using TuraIntranet.Services.Customers;
 using TuraIntranet.Services.Info;
 using TuraIntranet.Services.Logistics;
@@ -29,6 +30,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<CustomersService>();
             builder.Services.AddScoped<InfoService>();
             builder.Services.AddScoped<NetworkService>();
+            builder.Services.AddScoped<PdfCollectorService>();
 
             var app = builder.Build();
 
