@@ -5,16 +5,417 @@
 
 @inject IJSRuntime JS
 @inject TuraIntranet.Services.Backoffice.PdfCollectorService pdfCollectorService
+@inject PageNavigationService PageNavService
+@inject NavigationManager NavManager
 
-<p>Test</p>
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>PDF Arkiv</h5></center>
+                    <br />
+
+                    <div class="form-group row" style="padding-left:25px;">
+                        <div class="col-sm-2">
+                            <select name="Dokumentstyp" class="form-control country_code  form-control-sm" @onchange=@OnChangeDocumentsType>
+                                <option value="0" selected>Välj typ</option>
+                                <option value="1">Faktura</option>
+                                <option value="2">Räntefaktura</option>
+                                <option value="3">Leveransbekräftelse</option>
+                                <option value="4">Orderbekräftelse</option>
+                                <option value="5">Returorder</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Fakturanummer" @bind-value=@this.invoiceNumber>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@this.customerNumber>
+                        </div>
+
+                        <div class="col-xl-2 col-md-4">
+                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" style="padding-left:25px;">
+                        <div class="col-sm-2">
+                            <label class="visually-hidden">Från</label>
+                            <InputDate @bind-Value=@dateStart />
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label class="visually-hidden">Till</label>
+                            <InputDate @bind-Value=@dateEnd />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <table id="zero-config" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Kundnummer</th>
+                                <th>Ordernummer</th>
+                                <th>Orderdatum</th>
+                                <th>Skapad</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (this.invoices != null && this.invoices.Count > 0)
+                            {
+                                foreach (var invoice in this.invoices)
+                                {
+                                    <tr>
+                                        <td>@invoice.CustomerNumber</td>
+                                        <td>@invoice.InvoiceNumber</td>
+                                        <td>@invoice.InvoiceDate</td>
+                                        <td>@invoice.BlobInfoCreationDateTime</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.InvoiceNumber, invoice.DocumentData))>Visa</a>
+                                                    @*<a class="dropdown-item">Radera</a>*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            @if (this.interestInvoices != null && this.interestInvoices.Count > 0)
+                            {
+                                foreach (var invoice in this.interestInvoices)
+                                {
+                                    <tr>
+                                        <td>@invoice.CustomerNumber</td>
+                                        <td>@invoice.InvoiceNumber</td>
+                                        <td>@invoice.InvoiceDate</td>
+                                        <td>@invoice.BlobInfoCreationDateTime</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.InvoiceNumber, invoice.DocumentData))>Visa</a>
+                                                    @*<a class="dropdown-item">Radera</a>*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            @if (this.deliveryConfirmations != null && this.deliveryConfirmations.Count > 0)
+                            {
+                                foreach (var invoice in this.deliveryConfirmations)
+                                {
+                                    <tr>
+                                        <td>@invoice.CustomerNumber</td>
+                                        <td>@invoice.OrderNumber</td>
+                                        <td>@invoice.OrderDate</td>
+                                        <td>@invoice.BlobInfoCreationDateTime</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
+                                                    @*<a class="dropdown-item">Radera</a>*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            @if (this.orderConfirmations != null && this.orderConfirmations.Count > 0)
+                            {
+                                foreach (var invoice in this.orderConfirmations)
+                                {
+                                    <tr>
+                                        <td>@invoice.CustomerNumber</td>
+                                        <td>@invoice.OrderNumber</td>
+                                        <td>@invoice.OrderDate</td>
+                                        <td>@invoice.BlobInfoCreationDateTime</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
+                                                    @*<a class="dropdown-item">Radera</a>*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            @if (this.returnConfirmations != null && this.returnConfirmations.Count > 0)
+                            {
+                                foreach (var invoice in this.returnConfirmations)
+                                {
+                                    <tr>
+                                        <td>@invoice.CustomerNumber</td>
+                                        <td>@invoice.OrderNumber</td>
+                                        <td>@invoice.OrderDate</td>
+                                        <td>@invoice.BlobInfoCreationDateTime</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
+                                                    @*<a class="dropdown-item">Radera</a>*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 
 @code {
+    private string invoiceNumber = string.Empty;
+    private string customerNumber = string.Empty;
+    private DateTime dateStart = DateTime.Now.AddDays(-30);
+    private DateTime dateEnd = DateTime.Now;
+    private int documentsTypeId = 0;
+    private List<TuraIntranet.Data.Backoffice.PdfCollector.MetaInvoice> invoices;
+    private List<TuraIntranet.Data.Backoffice.PdfCollector.MetaFinanceChrg> interestInvoices;
+    private List<TuraIntranet.Data.Backoffice.PdfCollector.MetaLeveransbek> deliveryConfirmations;
+    private List<TuraIntranet.Data.Backoffice.PdfCollector.MetaOrderbek> orderConfirmations;
+    private List<TuraIntranet.Data.Backoffice.PdfCollector.MetaReturorder> returnConfirmations;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender)
+        if (firstRender)
         {
-            byte[]? bytes = await this.pdfCollectorService.GetBytes("4616099", "invoice");
-            await this.JS.InvokeVoidAsync("SavePdfFile", "Document.pdf", Convert.ToBase64String(bytes));
+            this.PageNavService.UpdateActiveSection("Backoffice");
+            this.PageNavService.UpdateActivePage("pdfcollector");
+
+            this.invoices = new();
+            this.interestInvoices = new();
+            this.deliveryConfirmations = new();
+            this.orderConfirmations = new();
+            this.returnConfirmations = new();
+
+            //byte[]? bytes = await this.pdfCollectorService.GetBytes("497238", "invoice");
+            //DATA = Decompressor.Decompress(data.Data);
+            //await this.JS.InvokeVoidAsync("SavePdfFile", "Document.pdf", Convert.ToBase64String(bytes));
+        }
+    }
+
+    private async Task Search()
+    {
+        this.invoices.Clear();
+        this.interestInvoices.Clear();
+        this.deliveryConfirmations.Clear();
+        this.orderConfirmations.Clear();
+        this.returnConfirmations.Clear();
+
+        if (this.documentsTypeId == 1)
+        {
+            if (!string.IsNullOrEmpty(invoiceNumber))
+            {
+                var invoice = await this.pdfCollectorService.GetInvoice(this.invoiceNumber, this.dateStart, this.dateEnd);
+
+                if (invoice != null)
+                {
+                    this.invoices = invoice;
+                }
+            }
+            else if (!string.IsNullOrEmpty(customerNumber))
+            {
+                var invoicesData = await this.pdfCollectorService.GetInvoices(this.customerNumber, this.dateStart, this.dateEnd);
+
+                if (invoicesData != null && invoicesData.Count > 0)
+                {
+                    this.invoices = invoicesData;
+                }
+            }
+            else
+            {
+                await this.AlertUser("Fyll i en av kollumnerna.");
+            }
+        }
+        else if (this.documentsTypeId == 2)
+        {
+            if (!string.IsNullOrEmpty(invoiceNumber))
+            {
+                var invoice = await this.pdfCollectorService.GetInterestInvoice(this.invoiceNumber, this.dateStart, this.dateEnd);
+
+                if (invoice != null)
+                {
+                    this.interestInvoices = invoice;
+                }
+            }
+            else if (!string.IsNullOrEmpty(customerNumber))
+            {
+                var invoicesData = await this.pdfCollectorService.GetInterestInvoices(this.customerNumber, this.dateStart, this.dateEnd);
+
+                if (invoicesData != null && invoicesData.Count > 0)
+                {
+                    this.interestInvoices = invoicesData;
+                }
+            }
+            else
+            {
+                await this.AlertUser("Fyll i en av kollumnerna.");
+            }
+        }
+        else if (this.documentsTypeId == 3)
+        {
+            if (!string.IsNullOrEmpty(invoiceNumber))
+            {
+                var data = await this.pdfCollectorService.GetDeliveryConfirmation(this.invoiceNumber, this.dateStart, this.dateEnd);
+
+                if (data != null)
+                {
+                    this.deliveryConfirmations = data;
+                }
+            }
+            else if (!string.IsNullOrEmpty(customerNumber))
+            {
+                var data = await this.pdfCollectorService.GetDeliveryConfirmations(this.customerNumber, this.dateStart, this.dateEnd);
+
+                if (data != null && data.Count > 0)
+                {
+                    this.deliveryConfirmations = data;
+                }
+            }
+            else
+            {
+                await this.AlertUser("Fyll i en av kollumnerna.");
+            }
+        }
+        else if (this.documentsTypeId == 4)
+        {
+            if (!string.IsNullOrEmpty(invoiceNumber))
+            {
+                var data = await this.pdfCollectorService.GetOrderConfirmation(this.invoiceNumber, this.dateStart, this.dateEnd);
+
+                if (data != null)
+                {
+                    this.orderConfirmations = data;
+                }
+            }
+            else if (!string.IsNullOrEmpty(customerNumber))
+            {
+                var data = await this.pdfCollectorService.GetOrderConfirmations(this.customerNumber, this.dateStart, this.dateEnd);
+
+                if (data != null && data.Count > 0)
+                {
+                    this.orderConfirmations = data;
+                }
+            }
+            else
+            {
+                await this.AlertUser("Fyll i en av kollumnerna.");
+            }
+        }
+        else if (this.documentsTypeId == 5)
+        {
+            if (!string.IsNullOrEmpty(invoiceNumber))
+            {
+                var data = await this.pdfCollectorService.GetReturnOrder(this.invoiceNumber, this.dateStart, this.dateEnd);
+
+                if (data != null)
+                {
+                    this.returnConfirmations = data;
+                }
+            }
+            else if (!string.IsNullOrEmpty(customerNumber))
+            {
+                var data = await this.pdfCollectorService.GetReturnOrders(this.customerNumber, this.dateStart, this.dateEnd);
+
+                if (data != null && data.Count > 0)
+                {
+                    this.returnConfirmations = data;
+                }
+            }
+            else
+            {
+                await this.AlertUser("Fyll i en av kollumnerna.");
+            }
+        }
+        else
+        {
+            await this.AlertUser("Invalid Type");
+        }
+
+        this.ResetVariables();
+        this.StateHasChanged();
+    }
+
+    private void ResetVariables()
+    {
+        this.invoiceNumber = string.Empty;
+        this.customerNumber = string.Empty;
+    }
+
+    private async Task Show(string id, byte[] bytes)
+    {
+        try
+        {
+            if (id != null && bytes != null)
+            {
+                byte[]? decompressed = TuraIntranet.Data.Backoffice.PdfCollector.Decompressor.Decompress(bytes);
+                await this.JS.InvokeVoidAsync("SavePdfFile", (id + ".pdf"), Convert.ToBase64String(decompressed));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
+    private void OnChangeDocumentsType(ChangeEventArgs e)
+    {
+        string inputValue = e.Value.ToString();
+        this.documentsTypeId = int.Parse(inputValue);
+    }
+
+    private async Task AlertUser(string text)
+    {
+        try
+        {
+            await this.JS.InvokeVoidAsync("alert", text);
+        }
+        catch (Exception e)
+        {
+
         }
     }
 }

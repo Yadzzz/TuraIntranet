@@ -1,0 +1,149 @@
+﻿@page "/orders"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@inject TuraIntranet.Services.Orders.OrdersService OrdersService
+
+<PageTitle>Kunder</PageTitle>
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Orderstatus Nässjö</h5></center>
+                    <br />
+
+                    <center>
+                        <span>Totalt antal rader: @(this.GetTotalRows()) st</span>
+                        <span style="margin-left: 3em;">Rader att plocka: @(this.GetRowsToPick()) st</span>
+                    </center>
+
+                    <hr />
+
+                    <table id="zero-config" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Utskrivet</th>
+                                <th>Ordertyp</th>
+                                <th>Status</th>
+                                <th>Orderrader</th>
+                                <th>Frisläppt</th>
+                                <th>Plockat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (this.orders != null && this.orders.Count > 0)
+                            {
+                                foreach (var order in this.orders)
+                                {
+                                    <tr>
+                                        <td>@order.regdate</td>
+                                        <td>@order.routeno</td>
+                                        <td>@(this.GetStatus(order.tripstat))</td>
+                                        <td>@order.noordl</td>
+                                        <td>@order.norordl</td>
+                                        <td>@order.nopordl</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<TuraIntranet.Data.Orders.Order> orders;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.PageNavService.UpdateActiveSection("Logistik");
+            this.PageNavService.UpdateActivePage("Orderstatus");
+
+            this.orders = await this.OrdersService.GetOrdersAsync();
+            this.StateHasChanged();
+
+            await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    private string GetStatus(short statusid)
+    {
+        string status = "";
+
+        switch (statusid)
+        {
+            case 1:
+                status = "Registrerad";
+                break;
+
+            case 2:
+                status = "Påbörjat plock";
+                break;
+
+            case 5:
+                status = "Färdig plockat";
+                break;
+
+            case 6:
+                status = "Färdig packat";
+                break;
+
+            case 25:
+                status = "Skickat";
+                break;
+
+            case 26:
+                status = "Skickat";
+                break;
+
+            default:
+                status = "";
+                break;
+        }
+        return status;
+    }
+
+    private int GetTotalRows()
+    {
+        if (this.orders != null && this.orders.Count > 0)
+        {
+            return this.orders.Sum(x => x.noordl);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    private int GetRowsToPick()
+    {
+        if (this.orders != null && this.orders.Count > 0)
+        {
+            var rows = this.orders.Sum(x => x.noordl);
+            var released = this.orders.Sum(x => x.norordl);
+            var picked = this.orders.Sum(x => x.nopordl);
+
+            return (released - picked);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}

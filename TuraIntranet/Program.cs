@@ -6,10 +6,12 @@ using TuraIntranet.Authentication;
 using TuraIntranet.Data;
 using TuraIntranet.Services;
 using TuraIntranet.Services.Backoffice;
+using TuraIntranet.Services.Claims;
 using TuraIntranet.Services.Customers;
 using TuraIntranet.Services.Info;
 using TuraIntranet.Services.Logistics;
 using TuraIntranet.Services.Network;
+using TuraIntranet.Services.Orders;
 
 namespace TuraIntranet
 {
@@ -31,6 +33,8 @@ namespace TuraIntranet
             builder.Services.AddScoped<InfoService>();
             builder.Services.AddScoped<NetworkService>();
             builder.Services.AddScoped<PdfCollectorService>();
+            builder.Services.AddScoped<ClaimsService>();
+            builder.Services.AddScoped<OrdersService>();
 
             var app = builder.Build();
 

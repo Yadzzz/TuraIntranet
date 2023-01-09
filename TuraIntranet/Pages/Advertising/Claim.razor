@@ -1,0 +1,156 @@
+﻿@page "/claims"
+
+@inject IJSRuntime JS
+@inject TuraIntranet.Services.Claims.ClaimsService ClaimsService
+@inject PageNavigationService PageNavService
+@inject NavigationManager NavManager
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/custom_dt_html5.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Claims</h5></center>
+                    <br />
+
+                    <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Kund</th>
+                                <th>Transaktioner</th>
+                                <th>Referens</th>
+                                <th>Belopp</th>
+                                <th>Kund</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (this.claims != null && this.claims.Count > 0)
+                            {
+                                foreach (var claim in this.claims)
+                                {
+                                    <tr>
+                                        <td><b>@claim.Date<br />@claim.TuraContactPerson</b></td>
+                                        <td><div style="max-width:100%; white-space:pre-line;"><b>Projekt: @claim.Supplier - @claim.Customer</b></div><br /><div style="max-width:100%; white-space:pre-line;">@claim.Subject</div></td>
+                                        <td>
+                                            <b>Transaktioner</b>
+                                            <br />
+                                            <div class="custom-control custom-checkbox checkbox-info">
+                                                <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.InvoiceFromCustomer disabled>
+                                                <label class="custom-control-label" for="sChkbox">Faktura från kund</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox checkbox-info">
+                                                <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.CreditToCustomer disabled>
+                                                <label class="custom-control-label" for="sChkbox">Kredit till kund</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox checkbox-info">
+                                                <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.InvoiceToSupplier disabled>
+                                                <label class="custom-control-label" for="sChkbox">Faktura till leverantör</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox checkbox-info">
+                                                <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.CreditFromSupplier disabled>
+                                                <label class="custom-control-label" for="sChkbox">Kredit från leverantör</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <b>Referenser</b><br />
+                                            <div>
+                                                <label>
+                                                    @(claim.InvoiceFromCustomerReference ?? "")
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label>
+                                                    @(claim.CreditToCustomerReference ?? "")
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label>
+                                                    @(claim.InvoiceToSupplierReference ?? "")
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label>
+                                                    @(claim.CreditFromSupplierReference ?? "")
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td><b>Belopp</b><br />In: @claim.AmountIn @(this.GetCurrency(claim.CurrencyIn))<br />Ut: @claim.AmountOut @(this.GetCurrency(claim.CurrencyIn))</td>
+                                        <td><b>Kund</b><br />@claim.Customer<br />@claim.CustomerContactPerson</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-dark btn-sm">Ändra</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<TuraIntranet.Data.Claims.Claim> claims;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.PageNavService.UpdateActiveSection("Reklam");
+            this.PageNavService.UpdateActivePage("Claim");
+
+            this.claims = await this.ClaimsService.GetClaims();
+            Console.WriteLine(this.claims.Count);
+            this.StateHasChanged();
+
+            await JS.InvokeVoidAsync("loadDataTableHtml5Component");
+        }
+    }
+
+    private string GetCurrency(int? currencyCode)
+    {
+        if (!currencyCode.HasValue)
+        {
+            return "N/A";
+        }
+
+        if (currencyCode == 1)
+        {
+            return "SEK";
+        }
+        else if (currencyCode == 2)
+        {
+            return "EUR";
+        }
+        else if (currencyCode == 3)
+        {
+            return "DKK";
+        }
+        else if (currencyCode == 4)
+        {
+            return "NOK";
+        }
+        else if (currencyCode == 5)
+        {
+            return "USD";
+        }
+        else
+        {
+            return "N/A";
+        }
+    }
+}
