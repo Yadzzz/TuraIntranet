@@ -1,4 +1,4 @@
-﻿using TuraIntranet.Data.Orders;
+﻿using TuraIntranet.Data.Logistics.Orders;
 
 namespace TuraIntranet.Services.Orders
 {
@@ -11,9 +11,14 @@ namespace TuraIntranet.Services.Orders
             this._ordersManager = new OrdersManager();
         }
 
-        public Task<List<Order>> GetOrdersAsync()
+        public Task<List<R08T1>> GetOrdersAsync()
         {
             return this._ordersManager.GetOrdersAsync();
+        }
+
+        public Task<List<O08T1>> GetNavOrderAsync(string id, string type)
+        {
+            return this._ordersManager.GetNavOrderAsync(id, type);
         }
     }
 }

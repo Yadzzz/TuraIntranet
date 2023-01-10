@@ -1,0 +1,194 @@
+﻿@page "/ordersnav"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@inject TuraIntranet.Services.Orders.OrdersService OrdersService
+
+<PageTitle>Order Nav</PageTitle>
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Orderstatus NAV</h5></center>
+                    <br />
+
+                    <div class="form-group row" style="padding-left:25px;">
+
+                        <div class="col-sm-2">
+                            <select name="type" class="form-control country_code  form-control-sm" @onchange=@OnSelectSearchType>
+                                <option value="0">Välj Ordertyp</option>
+                                <option value="1">NAV</option>
+                                <option value="2">Ordernummer</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Id" @bind-value=@searchText>
+                        </div>
+
+                        <div class="col-xl-2 col-md-4">
+                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (this.orders != null && this.orders.Count > 0)
+            {
+                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                    <div class="widget-content widget-content-area br-6">
+
+                        <table id="zero-config" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Plocklista</th>
+                                    <th>Utskriftsdatum</th>
+                                    <th>Status</th>
+                                    <th>Uppdaterad</th>
+                                    <th>Art. Nr</th>
+                                    <th>Benämning</th>
+                                    <th>Beställt</th>
+                                    <th>Levererat</th>
+                                    <th>Ert Ordernr</th>
+                                    <th>NAV Ordernr</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in this.orders)
+                                {
+                                    <tr>
+                                        <td>@order.ordno</td>
+                                        <td>@order.regdate</td>
+                                        <td>@(this.GetStatus(order.linestat))</td>
+                                        <td>@order.statdate</td>
+                                        <td>@order.partno</td>
+                                        <td><div style="max-width:100%; white-space:pre-line;">@order.partdsc1</div></td>
+                                        <td>@order.reqquant</td>
+                                        <td>@order.delquant</td>
+                                        <td>@order.eorderid</td>
+                                        <td>@order.ordline2</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+    <Footer />
+</div>
+
+@code {
+    private string searchText = string.Empty;
+    private string orderType = string.Empty;
+    private List<TuraIntranet.Data.Logistics.Orders.O08T1>? orders;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.PageNavService.UpdateActiveSection("Logistik");
+            this.PageNavService.UpdateActivePage("OrderstatusNav");
+
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    private string GetStatus(short statusid)
+    {
+        string status = "";
+
+        switch (statusid)
+        {
+            case 1:
+                status = "Registrerad";
+                break;
+
+            case 2:
+                status = "Påbörjat plock";
+                break;
+
+            case 5:
+                status = "Färdig plockat";
+                break;
+
+            case 6:
+                status = "Färdig packat";
+                break;
+
+            case 25:
+                status = "Skickat";
+                break;
+
+            case 26:
+                status = "Skickat";
+                break;
+
+            default:
+                status = "";
+                break;
+        }
+        return status;
+    }
+
+    private async Task Search()
+    {
+        this.orders = null;
+
+        if (string.IsNullOrEmpty(this.orderType) || string.IsNullOrWhiteSpace(this.orderType) || string.IsNullOrEmpty(this.searchText) || string.IsNullOrWhiteSpace(this.searchText))
+        {
+            await this.AlertUser("Invalid Data Input");
+            return;
+        }
+
+        if (this.orderType == "1")
+        {
+            this.orders = await this.OrdersService.GetNavOrderAsync(this.searchText, "nav");
+        }
+        else if (this.orderType == "2")
+        {
+            this.orders = await this.OrdersService.GetNavOrderAsync(this.searchText, "order");
+        }
+        else
+        {
+            await this.AlertUser("Invalid Data Input");
+            return;
+        }
+
+        this.searchText = string.Empty;
+        this.StateHasChanged();
+    }
+
+
+    private void OnSelectSearchType(ChangeEventArgs e)
+    {
+        if (e != null && e.Value != null && e.Value.ToString() != null)
+        {
+            this.orderType = e.Value.ToString();
+        }
+    }
+
+    private async Task AlertUser(string text)
+    {
+        try
+        {
+            await this.JS.InvokeVoidAsync("alert", text);
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+}

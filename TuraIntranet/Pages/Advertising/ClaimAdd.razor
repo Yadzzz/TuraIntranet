@@ -1,4 +1,4 @@
-﻿@page "/claim/{claimId}"
+﻿@page "/claimadd"
 
 @inject IJSRuntime JS
 @inject TuraIntranet.Services.Claims.ClaimsService ClaimsService
@@ -293,8 +293,6 @@
 
 
 @code {
-    [Parameter]
-    public string? claimId { get; set; }
     public TuraIntranet.Data.Claims.Claim claim;
     private Dictionary<int, string> currencies;
 
@@ -303,7 +301,7 @@
         if (firstRender)
         {
             this.PageNavService.UpdateActiveSection("Reklam");
-            this.PageNavService.UpdateActivePage("Claim");
+            this.PageNavService.UpdateActivePage("ClaimAdd");
 
             this.currencies = new();
             this.currencies.Add(1, "SEK");
@@ -312,11 +310,21 @@
             this.currencies.Add(4, "NOK");
             this.currencies.Add(5, "USD");
 
-            if (int.TryParse(this.claimId, out int id))
+            this.claim = new()
             {
-                this.claim = await this.ClaimsService.GetClaim(id);
-                this.StateHasChanged();
-            }
+                //InvoiceFromCustomer = false,
+                //InvoiceFromCustomerReference = string.Empty,
+                //CreditToCustomer = false,
+                //CreditToCustomerReference = string.Empty,
+                //InvoiceToSupplier = false,
+                //InvoiceToSupplierReference = string.Empty,
+
+                Date = DateTime.Now,
+                CurrencyIn = 1,
+                CurrencyOut =1
+            };
+
+            this.StateHasChanged();
         }
     }
 
@@ -394,19 +402,8 @@
 
     private async Task Save()
     {
-        if (this.claim.InvoiceFromCustomer && this.claim.CreditToCustomer && this.claim.InvoiceToSupplier && this.claim.CreditFromSupplier)
-        {
-            this.claim.Completed = true;
-        }
-
-        if(this.claim.Completed)
-        {
-
-        }
-
-        await this.ClaimsService.Updateclaim(this.claim);
-        await this.ClaimsService.Flush();
-        await this.AlertUser("Claim Uppdaterad");
+        await this.ClaimsService.AddClaim(this.claim);
+        await this.AlertUser("Claim Uppdaterad"); 
     }
 
     private async Task AlertUser(string text)

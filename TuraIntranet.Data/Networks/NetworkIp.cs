@@ -24,6 +24,6 @@ namespace TuraIntranet.Data.Networks
 
         public int NetworkId { get; set; }
 
-        public virtual Network Network { get; set; } = null!;
+        //public virtual Network Network { get; set; } = null!;
     }
 }

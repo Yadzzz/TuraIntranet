@@ -90,7 +90,7 @@ namespace TuraIntranet.Data.Networks
                 }
             }
 
-            if(this._networks.TryGetValue(id, out Network? network))
+            if(this._networks.TryGetValue(id, out Network network))
             {
                 return network;
             }
@@ -123,6 +123,12 @@ namespace TuraIntranet.Data.Networks
             }
 
             return null;
+        }
+
+        public async Task UpdateNetworkIpAsync(NetworkIp networkIp)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/networks/NetworkIps/" + networkIp.Id);
+            var success = await api.SendPutRequest(networkIp);
         }
 
         public void Flush()

@@ -24,7 +24,7 @@
                     <br />
 
                     @*<div class="col-xl-2 col-md-4">
-                        <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@(() => this.NavManager.NavigateTo("/lagginleverans"))>Lägg till</button>
+                    <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@(() => this.NavManager.NavigateTo("/lagginleverans"))>Lägg till</button>
                     </div>*@
 
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
@@ -65,14 +65,14 @@
                                     if (shipment.Shipment.Prioritized.HasValue && shipment.Shipment.Prioritized.Value == true)
                                     {
                                         <tr style="background-color:slategrey;">
-                                            <td style="color:black"><div style="max-width:80px; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
+                                            <td style="color:black"><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
                                             <td style="color:black">@this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value)</td>
-                                            <td style="color:black"><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
-                                            <td style="color:black"><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
+                                            <td style="color:black"><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
+                                            <td style="color:black"><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
                                             <td style="color:black">@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
                                             <td style="color:black">@shipment.Shipment.Placement</td>
                                             <td style="color:black">@this.ShipmentService.GetShipmentStatus(shipment.ShipmentUpdate.StatusId)</td>
-                                            <td style="color:black"><div style="max-width:80px; white-space:pre-line;">@shipment.ShipmentUpdate.UpdatedAt</div></td>
+                                            <td style="color:black"><div style="max-width:100%; white-space:pre-line;">@shipment.ShipmentUpdate.UpdatedAt</div></td>
                                             <td>
                                                 @*<div class="btn-group">
                                     <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
@@ -82,12 +82,36 @@
                                                     <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                                     </button>
+                                                    @*<div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                        <a class="dropdown-item" href="#">Väntar Info</a>
+                                        <a class="dropdown-item" href="#">Återställ</a>
+                                        <a class="dropdown-item" href="#">Lägg till avvikelse</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Avsluta</a>
+                                        </div>*@
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                        <a class="dropdown-item" href="#">Väntar Info</a>
-                                                        <a class="dropdown-item" href="#">Återställ</a>
-                                                        <a class="dropdown-item" href="#">Lägg till avvikelse</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Avsluta</a>
+                                                        @if (shipment.Shipment.Prioritized.HasValue && shipment.Shipment.Prioritized.Value)
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => OnClickPrioritized(shipment))>Ta bort prioritering</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => OnClickPrioritized(shipment))>Prioritera</a>
+                                                        }
+
+                                                        @if (shipment.ShipmentUpdate.StatusId == 2)
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Avsluta</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 2))>Påbörja</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                        }
                                                     </div>
                                                 </div>
                                             </td>
@@ -96,14 +120,14 @@
                                     else
                                     {
                                         <tr>
-                                            <td><div style="max-width:80px; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
+                                            <td><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
                                             <td>@this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value)</td>
-                                            <td><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
-                                            <td><div style="max-width:200px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
+                                            <td><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
+                                            <td><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>
                                             <td>@((shipment.Shipment.NumberOfPallets ?? 0) + " / " + (shipment.Shipment.NumberOfPackages ?? 0))</td>
                                             <td>@shipment.Shipment.Placement</td>
                                             <td>@this.ShipmentService.GetShipmentStatus(shipment.ShipmentUpdate.StatusId)</td>
-                                            <td><div style="max-width:80px; white-space:pre-line;">@shipment.ShipmentUpdate.UpdatedAt</div></td>
+                                            <td><div style="max-width:100%; white-space:pre-line;">@shipment.ShipmentUpdate.UpdatedAt</div></td>
                                             <td>
                                                 @*<div class="btn-group">
                                     <button class="btn btn-dark btn-sm" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Visa</button>
@@ -114,11 +138,28 @@
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                        <a class="dropdown-item" href="#">Väntar Info</a>
-                                                        <a class="dropdown-item" href="#">Återställ</a>
-                                                        <a class="dropdown-item" href="#">Lägg till avvikelse</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Avsluta</a>
+                                                        @if (shipment.Shipment.Prioritized.HasValue && shipment.Shipment.Prioritized.Value)
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => OnClickPrioritized(shipment))>Ta bort prioritering</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => OnClickPrioritized(shipment))>Prioritera</a>
+                                                        }
+
+                                                        @if (shipment.ShipmentUpdate.StatusId == 2)
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Avsluta</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 2))>Påbörja</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                        }
                                                     </div>
                                                 </div>
                                             </td>
@@ -134,15 +175,11 @@
         </div>
 
     </div>
+    <Footer />
 </div>
 
 @code {
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentModel>? _shipments;
-
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -154,8 +191,8 @@
             await this.GetShipments();
             this.StateHasChanged();
 
-            await JS.InvokeVoidAsync("loadDataTableHtml5Component");
-            await JS.InvokeVoidAsync("OnScrollEvent");
+            //await JS.InvokeVoidAsync("loadDataTableHtml5Component");
+            //await JS.InvokeVoidAsync("OnScrollEvent");
         }
     }
 
@@ -167,5 +204,56 @@
     private async Task GetShipments()
     {
         this._shipments = await this.ShipmentService.GetShipments();
+    }
+
+    private void SaveShipment(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment, int statusId)
+    {
+        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+            {
+                ShipmentId = shipment.Shipment.Id,
+                UpdatedBy = 3,
+                UpdatedAt = DateTime.Now,
+                StatusId = statusId,
+                Note = string.Empty
+            };
+
+        this.ShipmentService.UpdateShipment(shipment);
+        this.ShipmentService.AddUpdate(shipmentUpdate);
+
+        shipment.ShipmentUpdates.Add(shipmentUpdate);
+        //this.ShipmentService.FlushShipments();
+        this.StateHasChanged();
+    }
+
+    private void OnClickPrioritized(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment)
+    {
+        if (shipment.Shipment.Prioritized.Value)
+        {
+            shipment.Shipment.Prioritized = false;
+        }
+        else
+        {
+            shipment.Shipment.Prioritized = true;
+        }
+
+        this.SaveShipment(shipment, shipment.ShipmentUpdate.StatusId);
+        this.StateHasChanged();
+    }
+
+    private void OnClickUpdateStatusId(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment, int statusId)
+    {
+        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+            {
+                ShipmentId = shipment.Shipment.Id,
+                UpdatedBy = 3,
+                UpdatedAt = DateTime.Now,
+                StatusId = statusId,
+                Note = string.Empty
+            };
+
+        this.ShipmentService.AddUpdate(shipmentUpdate);
+        shipment.ShipmentUpdates.Add(shipmentUpdate);
+        shipment.ShipmentUpdate = shipmentUpdate;
+        this.StateHasChanged();
     }
 }

@@ -20,5 +20,20 @@ namespace TuraIntranet.Services.Claims
         {
             return this._claimsManager.GetClaimsAsync();
         }
+
+        public Task Updateclaim(Claim claim)
+        {
+            return this._claimsManager.UpdateClaim(claim);
+        }
+
+        public Task AddClaim(Claim claim)
+        {
+            return this._claimsManager.AddClaim(claim);
+        }
+
+        public Task Flush()
+        {
+            return this._claimsManager.Flush();
+        }
     }
 }

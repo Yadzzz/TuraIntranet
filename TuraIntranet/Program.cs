@@ -2,12 +2,16 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.FileProviders;
+using Serilog;
+using System.Net;
 using TuraIntranet.Authentication;
 using TuraIntranet.Data;
 using TuraIntranet.Services;
 using TuraIntranet.Services.Backoffice;
 using TuraIntranet.Services.Claims;
 using TuraIntranet.Services.Customers;
+using TuraIntranet.Services.Files;
 using TuraIntranet.Services.Info;
 using TuraIntranet.Services.Logistics;
 using TuraIntranet.Services.Network;
@@ -35,6 +39,15 @@ namespace TuraIntranet
             builder.Services.AddScoped<PdfCollectorService>();
             builder.Services.AddScoped<ClaimsService>();
             builder.Services.AddScoped<OrdersService>();
+            builder.Services.AddScoped<FileService>();
+
+            Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .WriteTo.File(@"logs/log.txt", shared: true)
+            .CreateLogger();
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog();
 
             var app = builder.Build();
 
@@ -49,6 +62,19 @@ namespace TuraIntranet
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+
+            string networkPath = @"\\dbu-kba-01.tura.local\Intranetshare\Totalfilen";
+            NetworkCredential credentials = new NetworkCredential(@"intranetuser", "rocco12!");
+
+            ConnectToSharedFolder ConnectToSharedFolder = new ConnectToSharedFolder(networkPath, credentials);
+
+            app.UseFileServer(new FileServerOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine("\\\\dbu-kba-01.tura.local\\Intranetshare\\Totalfilen")),
+                RequestPath = new PathString("/totalfilen"),
+                EnableDirectoryBrowsing = true
+            });
 
             app.UseRouting();
 

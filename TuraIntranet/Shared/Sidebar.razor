@@ -72,13 +72,26 @@
                         @if (this.PageNavService.IsPageActive("Orderstatus"))
                         {
                             <li class="active">
-                                <a href="/orders"> Orderstatus </a>
+                                <a href="/ordersnassjo"> Orderstatus Nässjö</a>
                             </li>
                         }
                         else
                         {
                             <li>
-                                <a href="/orders"> Orderstatus </a>
+                                <a href="/ordersnassjo"> Orderstatus Nässjö</a>
+                            </li>
+                        }
+
+                        @if (this.PageNavService.IsPageActive("OrderstatusNav"))
+                        {
+                            <li class="active">
+                                <a href="/ordersnav"> Orderstatus Nav</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="/ordersnav"> Orderstatus Nav</a>
                             </li>
                         }
 
@@ -127,7 +140,13 @@
                             @*<NavLink class="nav-link" href="orderstatus">
                         Orderstatus
                         </NavLink>*@
-                            <a href="/orders"> Orderstatus </a>
+                            <a href="/ordersnassjo"> Orderstatus Nässjö</a>
+                        </li>
+                        <li>
+                            @*<NavLink class="nav-link" href="orderstatus">
+                        Orderstatus
+                        </NavLink>*@
+                            <a href="/ordersnav"> Orderstatus Nav</a>
                         </li>
                         <li>
                             <a href="http://www.consignorportal.com/"> Consignor Kollisök </a>
@@ -249,6 +268,19 @@
                             </li>
                         }
 
+                        @if (this.PageNavService.IsPageActive("ClaimAdd"))
+                        {
+                            <li class="active">
+                                <a href="/claimadd"> Lägg till Claim </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="/claimadd"> Lägg till Claim </a>
+                            </li>
+                        }
+
                     </ul>
                 </li>
             }
@@ -270,6 +302,9 @@
                         </li>
                         <li>
                             <a href="/claims"> Claim </a>
+                        </li>
+                        <li>
+                            <a href="/claimadd"> Lägg till Claim </a>
                         </li>
                     </ul>
                 </li>
@@ -341,10 +376,10 @@
                 </li>
             }
 
-            @if (this.PageNavService.IsPageActive("Filer"))
+            @if (this.PageNavService.IsPageActive("Files"))
             {
                 <li class="menu">
-                    <a href="/" data-active="true" aria-expanded="true" class="dropdown-toggle">
+                    <a href="/files" data-active="true" aria-expanded="true" class="dropdown-toggle">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>                            <span> Filer </span>
                         </div>
@@ -354,7 +389,7 @@
             else
             {
                 <li class="menu">
-                    <a href="/" data-active="false" aria-expanded="false" class="dropdown-toggle">
+                    <a href="/files" data-active="false" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>                            <span> Filer </span>
                         </div>

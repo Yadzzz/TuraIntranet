@@ -61,6 +61,8 @@ namespace TuraIntranet.Data.API
                     request.AddHeader("ApiKey", "ba932ec7-3d66-487c-bcd0-4e17c8a2dfb3");
                     request.AddJsonBody(JsonConvert.SerializeObject(model));
                     RestResponse response = await client.ExecutePutAsync<object>(request);
+
+                    Console.WriteLine(response.Content);
                 }
             }
             catch (Exception ex)

@@ -5,7 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Network.NetworkService NetworkService
 
-<PageTitle>Kunder</PageTitle>
+<PageTitle>Nätverk</PageTitle>
 
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
@@ -90,6 +90,7 @@
         </div>
 
     </div>
+    <Footer />
 </div>
 
 @code {
@@ -111,7 +112,7 @@
 
     public void ShowNetworkIp(string networkIpId)
     {
-        
+        this.NavManager.NavigateTo("/network/" + networkIpId);
     }
 
     private async Task AlertUser(string text)

@@ -1,11 +1,11 @@
-﻿@page "/orders"
+﻿@page "/ordersnassjo"
 
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Orders.OrdersService OrdersService
 
-<PageTitle>Kunder</PageTitle>
+<PageTitle>Orderstatus Nässjö</PageTitle>
 
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
@@ -63,10 +63,11 @@
         </div>
 
     </div>
+    <Footer />
 </div>
 
 @code {
-    private List<TuraIntranet.Data.Orders.Order> orders;
+    private List<TuraIntranet.Data.Logistics.Orders.R08T1> orders;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -139,7 +140,7 @@
             var released = this.orders.Sum(x => x.norordl);
             var picked = this.orders.Sum(x => x.nopordl);
 
-            return (released - picked);
+            return (rows - picked);
         }
         else
         {

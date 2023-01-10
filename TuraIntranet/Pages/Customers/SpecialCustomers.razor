@@ -27,7 +27,7 @@
                             <tr>
                                 <th>Kundnummer</th>
                                 <th>Företag</th>
-                                <th>Uppdaterad</th>
+                                @*<th>Uppdaterad</th>*@
                                 <th></th>
                             </tr>
                         </thead>
@@ -41,7 +41,7 @@
                                     <tr>
                                         <td>@cust.CustomerNumber</td>
                                         <td>@customerData.Name</td>
-                                        <td>NULL</td>
+                                        @*<td>NULL</td>*@
                                         <td>
                                             <div class="btn-group">
                                                 <button class="btn btn-dark btn-sm" @onclick=@(() => this.ShowSpecialCustomer(cust.CustomerNumber))>Visa</button>
@@ -64,8 +64,8 @@
                             <tr>
                                 <th>Kundnummer</th>
                                 <th>Företag</th>
-                                <th>Uppdaterad</th>
-                                <th>Action</th>
+                                @*<th>Uppdaterad</th>*@
+                                <th></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -75,6 +75,7 @@
         </div>
 
     </div>
+    <Footer />
 </div>
 
 @code {

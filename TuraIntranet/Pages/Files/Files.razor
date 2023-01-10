@@ -1,0 +1,97 @@
+﻿@page "/files"
+
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@inject Services.Files.FileService FileService
+
+<PageTitle>Files</PageTitle>
+
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Filer</h5></center>
+                    <br />
+
+                    <table id="zero-config" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Namn</th>
+                                <th>Storlek</th>
+                                <th>Typ</th>
+                                <th>Skapad</th>
+                                <th>Ändrad</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (this.files != null && this.files.Count > 0)
+                            {
+                                foreach (var file in this.files)
+                                {
+                                    <tr>
+                                        <td>@file.Name</td>
+                                        <td>@file.Size kb</td>
+                                        <td>@file.Type</td>
+                                        <td>@file.Created</td>
+                                        <td>@file.Changed</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => this.Download(file))>Visa</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <Footer />
+</div>
+
+@code {
+    private List<Data.Files.DocumentFile> files;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.PageNavService.UpdateActiveSection("");
+            this.PageNavService.UpdateActivePage("Files");
+
+            this.files = this.FileService.GetDocumentFiles();
+            this.StateHasChanged();
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    private async Task Download(Data.Files.DocumentFile file)
+    {
+        byte[] fileBytes = System.IO.File.ReadAllBytes(file.path);
+        var ext = Path.GetExtension(file.Name);
+
+        try
+        {
+            await this.JS.InvokeVoidAsync("SavePdfFile", (file.Name), Convert.ToBase64String(fileBytes));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+}

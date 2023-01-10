@@ -31,7 +31,7 @@ namespace TuraIntranet.Data.Claims
                 }
             }
 
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims/" + id);
 
             var response = await api.GetResponse();
 
@@ -40,6 +40,9 @@ namespace TuraIntranet.Data.Claims
                 if (response != null && response.Content != null)
                 {
                     Claim claim = JsonConvert.DeserializeObject<Claim>(response.Content);
+
+                    Console.WriteLine(claim.AmountIn);
+                    Console.WriteLine(claim.AmountOut);
 
                     return claim;
                 }
@@ -84,6 +87,24 @@ namespace TuraIntranet.Data.Claims
                 Console.WriteLine(ex.ToString());
                 return null;
             }
+        }
+
+        public async Task UpdateClaim(Claim claim)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims/" + claim.Id);
+            bool success = await api.SendPutRequest(claim);
+        }
+
+        public async Task AddClaim(Claim claim)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims");
+            bool success = await api.SendPostRequest(claim);
+        }
+
+        public async Task Flush()
+        {
+            this._claims = null;
+            await this.GetClaimsAsync();
         }
     }
 }

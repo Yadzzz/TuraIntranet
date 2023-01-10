@@ -203,7 +203,7 @@
         }
     }
 
-    private void SaveShipment()
+    private async Task SaveShipment()
     {
         if(this._shipment == null || this._shipment.Shipment == null)
         {
@@ -243,7 +243,7 @@
         this.ShipmentService.AddShipment(this._shipment);
         this.ShipmentService.FlushShipments();
         //this.NavManager.NavigateTo("/inleveranser");
-        JS.InvokeVoidAsync("alert", "Inleverans tillagd");
+        await JS.InvokeVoidAsync("alert", "Inleverans tillagd");
     }
 
     private void NullCheckingModel()

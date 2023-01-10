@@ -86,7 +86,7 @@
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
                                                             <div class="col-sm-9">
                                                                 <select name="mottagare" class="form-control country_code  form-control-sm" @onchange=@OnChangeReceiverId>
-                                                                    @if(this._shipment.Shipment.ReceivingCompany.HasValue && this._shipment.Shipment.ReceivingCompany.Value == 1)
+                                                                    @if (this._shipment.Shipment.ReceivingCompany.HasValue && this._shipment.Shipment.ReceivingCompany.Value == 1)
                                                                     {
                                                                         <option value="1" selected>TURA</option>
                                                                         <option value="2">NI</option>
@@ -258,6 +258,8 @@
                                                 }
                                             </select>
 
+                                            <br />
+
                                             <textarea class="form-control" placeholder="Kommentar" @bind=@this.comment />
                                             <br />
                                             <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@OnAddComment>Lägg till kommentar</button>
@@ -414,5 +416,23 @@
         {
             this._shipment.Shipment.Prioritized = true;
         }
+    }
+
+    private void OnClickUpdateStatusId(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment, int statusId)
+    {
+        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+            {
+                ShipmentId = shipment.Shipment.Id,
+                UpdatedBy = 3,
+                UpdatedAt = DateTime.Now,
+                StatusId = statusId,
+                Note = string.Empty
+            };
+
+        this.ShipmentService.AddUpdate(shipmentUpdate);
+        shipment.ShipmentUpdates.Add(shipmentUpdate);
+        shipment.ShipmentUpdate = shipmentUpdate;
+        this.ShipmentService.FlushShipments();
+        this.StateHasChanged();
     }
 }

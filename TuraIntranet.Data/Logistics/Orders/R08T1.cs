@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TuraIntranet.Data.Orders
+namespace TuraIntranet.Data.Logistics.Orders
 {
-    public class Order
+    public class R08T1
     {
         public string routeno { get; set; }
         public DateTime regdate { get; set; }

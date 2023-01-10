@@ -13,5 +13,20 @@
         {
             return this._networkManager.GetNetworksAsync();
         }
+
+        public Task<Data.Networks.Network?> GetNetwork(int id)
+        {
+            return this._networkManager.GetNetworkAsync(id);
+        }
+
+        public Task<Data.Networks.NetworkIp?> GetNetworkIp(int id)
+        {
+            return this._networkManager.GetNetworkIpAsync(id);
+        }
+
+        public Task UpdateNetworkIp(Data.Networks.NetworkIp networkIp)
+        {
+            return this._networkManager.UpdateNetworkIpAsync(networkIp);
+        }
     }
 }

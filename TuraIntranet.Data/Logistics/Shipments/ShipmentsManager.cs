@@ -234,7 +234,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
         }
         
-        public void FlushShipments()
+        public async Task FlushShipments()
         {
             this._shipments = null;
         }
