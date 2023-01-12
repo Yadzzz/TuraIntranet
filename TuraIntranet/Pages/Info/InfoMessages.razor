@@ -18,6 +18,8 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
 
+                    @*<PopupModalDialogComponent @ref="popupRef" />*@
+
                     <br />
                     <center><h5>Meddelanden</h5></center>
                     <br />
@@ -65,6 +67,7 @@
 </div>
 
 @code {
+
     private List<TuraIntranet.Data.Info.InfoMessageModel>? infoMessages;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -91,5 +94,11 @@
         this.infoMessages.Remove(info);
         this.InfoService.Flush();
         this.StateHasChanged();
+    }
+    
+    private void ConfirmEditor()
+    {
+        // Shows the popup at the center of the screen
+        popupRef.Show("Popup body text", "test");
     }
 }

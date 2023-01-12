@@ -108,6 +108,7 @@
 
 @code {
     private List<TuraIntranet.Data.Claims.Claim> claims;
+    private List<TuraIntranet.Data.Claims.ClaimCurrency> currencies;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -117,43 +118,54 @@
             this.PageNavService.UpdateActivePage("Claim");
 
             this.claims = await this.ClaimsService.GetClaims();
+            this.currencies = await this.ClaimsService.GetClaimCurrencies();
             this.StateHasChanged();
 
             await JS.InvokeVoidAsync("loadDataTableHtml5Component");
         }
     }
 
-    private string GetCurrency(int? currencyCode)
+    private string GetCurrency(int? currencyId)
     {
-        if (!currencyCode.HasValue)
+        if (!currencyId.HasValue)
         {
             return "N/A";
         }
 
-        if (currencyCode == 1)
+        var claimCurrency = this.currencies.Where(x => x.Id == currencyId).FirstOrDefault();
+
+        if(claimCurrency != null)
         {
-            return "SEK";
+            return claimCurrency.Code;
         }
-        else if (currencyCode == 2)
-        {
-            return "EUR";
-        }
-        else if (currencyCode == 3)
-        {
-            return "DKK";
-        }
-        else if (currencyCode == 4)
-        {
-            return "NOK";
-        }
-        else if (currencyCode == 5)
-        {
-            return "USD";
-        }
-        else
-        {
-            return "N/A";
-        }
+
+
+        return "N/A";
+
+        //if (currencyCode == 1)
+        //{
+        //    return "SEK";
+        //}
+        //else if (currencyCode == 2)
+        //{
+        //    return "EUR";
+        //}
+        //else if (currencyCode == 3)
+        //{
+        //    return "DKK";
+        //}
+        //else if (currencyCode == 4)
+        //{
+        //    return "NOK";
+        //}
+        //else if (currencyCode == 5)
+        //{
+        //    return "USD";
+        //}
+        //else
+        //{
+        //    return "N/A";
+        //}
     }
 
     private void Show(string claimId)

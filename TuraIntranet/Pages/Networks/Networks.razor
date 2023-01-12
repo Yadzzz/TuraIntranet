@@ -15,7 +15,7 @@
 
         <div class="row layout-top-spacing" id="cancel-row">
 
-            @*<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
 
                     <br />
@@ -24,22 +24,25 @@
 
                     <div class="form-group row" style="padding-left:25px;">
                         <div class="col-sm-2">
-                            <select name="nät" class="form-control country_code  form-control-sm">
-                                <option value="0">Välj Nät</option>
+                            <select name="nät" class="form-control country_code  form-control-sm" @onchange=@OnChangeNetwork>
+                                <option value="0">Visa alla nät</option>
+                                <option value="1">Nässjö</option>
+                                <option value="2">KBA-SERVER</option>
+                                <option value="3">KBA-CLIENT</option>
+                                <option value="4">KBA DMZ</option>
+                                <option value="5">Elastic</option>
+                                <option value="6">NÄSSJÖ-CLIENT</option>
+                                <option value="7">KBA-MGMT</option>
 
-                                 @foreach (var employee in this.shipmentEmployees)
-                                {
-                                <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
-                                }
                             </select>
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Tilldelning">
+                            <input type="text" class="form-control form-control-sm" placeholder="Tilldelning" @bind-value=@assignedInput>
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="IP">
+                            <input type="text" class="form-control form-control-sm" placeholder="IP" @bind-value=@ipInput>
                         </div>
 
                         <div class="col-xl-2 col-md-4">
@@ -47,9 +50,9 @@
                         </div>
                     </div>
                 </div>
-            </div>*@
+            </div>
 
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+           @* <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
 
                     <table id="zero-config" class="table table-striped" style="width:100%">
@@ -63,9 +66,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (this.networks != null && this.networks.Count > 0)
+                            @if (this.filteredNetworks != null && this.filteredNetworks.Count > 0)
                             {
-                                foreach (var network in this.networks)
+                                foreach (var network in this.filteredNetworks)
                                 {
                                     foreach (var networkIp in network.NetworkIps)
                                     {
@@ -86,7 +89,12 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>*@
+
+            @if (this.filteredNetworks != null && this.filteredNetworks.Count > 0)
+            {
+                <NetworksDataTableComponent FilteredNetworks="this.filteredNetworks" @ref=@tableRef />
+            }
         </div>
 
     </div>
@@ -94,7 +102,13 @@
 </div>
 
 @code {
+    private bool showOnlyAvailable = false;
+    private int networkIdInput = 0;
+    private string assignedInput = string.Empty;
+    private string ipInput = string.Empty;
     private List<TuraIntranet.Data.Networks.Network>? networks;
+    private List<TuraIntranet.Data.Networks.Network>? filteredNetworks;
+    private NetworksDataTableComponent? tableRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -104,15 +118,119 @@
             this.PageNavService.UpdateActivePage("IT-Admin");
 
             this.networks = await this.NetworkService.GetNetworks();
+            //this.filteredNetworks = this.networks.ToList();
+            //this.filteredNetworks = this.networks.ConvertAll(s => new Data.Networks.Network
+            //    {
+            //        Id = s.Id,
+            //        Address = s.Address,
+            //        NetworkName = s.NetworkName,
+            //        SubnetAddress= s.SubnetAddress,
+            //        VlanId = s.VlanId,
+            //        NetworkIps = s.NetworkIps
+            //    });
+
             this.StateHasChanged();
 
-            await JS.InvokeVoidAsync("loadDataTableComponent");
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
         }
     }
 
     public void ShowNetworkIp(string networkIpId)
     {
         this.NavManager.NavigateTo("/network/" + networkIpId);
+    }
+
+    private void OnChangeNetwork(ChangeEventArgs e)
+    {
+        string inputValue = e.Value.ToString();
+        this.networkIdInput = int.Parse(inputValue);
+    }
+
+    public async Task Search()
+    {
+        List<TuraIntranet.Data.Networks.Network>? filtered = new();
+
+        if(this.networks == null || this.networks.Count == 0)
+        {
+            return;
+        }
+
+        if(this.networkIdInput == 0)
+        {
+            //filtered = this.networks.ToList();
+            filtered = this.networks.ConvertAll(s => new Data.Networks.Network
+                {
+                    Id = s.Id,
+                    Address = s.Address,
+                    NetworkName = s.NetworkName,
+                    SubnetAddress = s.SubnetAddress,
+                    VlanId = s.VlanId,
+                    NetworkIps = s.NetworkIps
+                });
+        }
+        else
+        {
+            //filtered.AddRange(this.networks.Where(x => x.Id == this.networkIdInput).ToList());
+            filtered = this.networks.Where(x => x.Id == this.networkIdInput).ToList().ConvertAll(s => new Data.Networks.Network
+                {
+                    Id = s.Id,
+                    Address = s.Address,
+                    NetworkName = s.NetworkName,
+                    SubnetAddress = s.SubnetAddress,
+                    VlanId = s.VlanId,
+                    NetworkIps = s.NetworkIps
+                });
+        }
+
+        if(!string.IsNullOrEmpty(this.assignedInput) && !string.IsNullOrWhiteSpace(this.assignedInput))
+        {
+            foreach(var network in filtered)
+            {
+                var ips = network.NetworkIps.Where(x => x.AssignedTo != null && x.AssignedTo.Contains(this.assignedInput)).ToList();
+                network.NetworkIps = ips;
+            }
+        }
+
+        if(!string.IsNullOrEmpty(this.ipInput) && !string.IsNullOrWhiteSpace(this.ipInput))
+        {
+            string[] ipsInput = this.ipInput.Split('.');
+
+            if(ipsInput.Length != 4)
+            {
+                Console.WriteLine("Invalid IP input value");
+                return;
+            }
+
+            int[] ipsInputInteger = new int[4];
+
+            for(int i = 0; i < 4; i++)
+            {
+                if(int.TryParse(ipsInput[i], out ipsInputInteger[i]))
+                {
+
+                }
+                else
+                {
+                    Console.WriteLine("IP input not integer"); ;
+                    return;
+                }
+            }
+
+            foreach(var network in filtered)
+            {
+                var ips = network.NetworkIps.Where(x => x.Ip1 == ipsInputInteger[0] && x.Ip2 == ipsInputInteger[1] && 
+                                                        x.Ip3 == ipsInputInteger[2] && x.Ip4 == ipsInputInteger[3]).ToList();
+                network.NetworkIps = ips;
+            }
+        }
+
+        this.filteredNetworks = filtered;
+        //this.StateHasChanged();
+
+        if(this.tableRef != null)
+        {
+            this.tableRef.OnStateChange();
+        }
     }
 
     private async Task AlertUser(string text)

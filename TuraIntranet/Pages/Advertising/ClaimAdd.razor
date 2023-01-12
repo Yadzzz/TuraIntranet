@@ -146,15 +146,18 @@
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Valuta</label>
                                                             <div class="col-sm-8">
                                                                 <select name="type" class="form-control country_code  form-control-sm" @onchange=@OnSelectAmountOut>
-                                                                    @foreach (var currency in this.currencies)
+                                                                    @if (this.currencies != null)
                                                                     {
-                                                                        if (this.claim.CurrencyOut == currency.Key)
+                                                                        foreach (var currency in this.currencies)
                                                                         {
-                                                                            <option value="@currency.Key" selected>@currency.Value</option>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <option value="@currency.Key">@currency.Value</option>
+                                                                            if (this.claim.CurrencyOut == currency.Id)
+                                                                            {
+                                                                                <option value="@currency.Id" selected>@currency.Code</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@currency.Id">@currency.Code</option>
+                                                                            }
                                                                         }
                                                                     }
                                                                 </select>
@@ -172,15 +175,18 @@
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Valuta</label>
                                                             <div class="col-sm-8">
                                                                 <select name="type" class="form-control country_code  form-control-sm" @onchange=@OnSelectAmountIn>
-                                                                    @foreach (var currency in this.currencies)
+                                                                    @if (this.currencies != null)
                                                                     {
-                                                                        if (this.claim.CurrencyIn == currency.Key)
+                                                                        foreach (var currency in this.currencies)
                                                                         {
-                                                                            <option value="@currency.Key" selected>@currency.Value</option>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <option value="@currency.Key">@currency.Value</option>
+                                                                            if (this.claim.CurrencyIn == currency.Id)
+                                                                            {
+                                                                                <option value="@currency.Id" selected>@currency.Code</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@currency.Id">@currency.Code</option>
+                                                                            }
                                                                         }
                                                                     }
                                                                 </select>
@@ -294,7 +300,7 @@
 
 @code {
     public TuraIntranet.Data.Claims.Claim claim;
-    private Dictionary<int, string> currencies;
+    private List<Data.Claims.ClaimCurrency> currencies;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -303,26 +309,26 @@
             this.PageNavService.UpdateActiveSection("Reklam");
             this.PageNavService.UpdateActivePage("ClaimAdd");
 
-            this.currencies = new();
-            this.currencies.Add(1, "SEK");
-            this.currencies.Add(2, "EUR");
-            this.currencies.Add(3, "DKK");
-            this.currencies.Add(4, "NOK");
-            this.currencies.Add(5, "USD");
+            this.currencies = await this.ClaimsService.GetClaimCurrencies();
 
             this.claim = new()
-            {
-                //InvoiceFromCustomer = false,
-                //InvoiceFromCustomerReference = string.Empty,
-                //CreditToCustomer = false,
-                //CreditToCustomerReference = string.Empty,
-                //InvoiceToSupplier = false,
-                //InvoiceToSupplierReference = string.Empty,
+                {
+                    //InvoiceFromCustomer = false,
+                    //InvoiceFromCustomerReference = string.Empty,
+                    //CreditToCustomer = false,
+                    //CreditToCustomerReference = string.Empty,
+                    //InvoiceToSupplier = false,
+                    //InvoiceToSupplierReference = string.Empty,
 
-                Date = DateTime.Now,
-                CurrencyIn = 1,
-                CurrencyOut =1
-            };
+                    TuraContactPerson = string.Empty,
+                    CustomerContactPerson = string.Empty,
+                    Customer = string.Empty,
+                    Supplier = string.Empty,
+                    Subject = string.Empty,
+                    Date = DateTime.Now,
+                    CurrencyIn = 1,
+                    CurrencyOut = 1
+                };
 
             this.StateHasChanged();
         }
@@ -403,7 +409,8 @@
     private async Task Save()
     {
         await this.ClaimsService.AddClaim(this.claim);
-        await this.AlertUser("Claim Uppdaterad"); 
+        await this.AlertUser("Claim Uppdaterad");
+        await this.ClaimsService.Flush();
     }
 
     private async Task AlertUser(string text)

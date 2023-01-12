@@ -41,6 +41,13 @@ namespace TuraIntranet
             builder.Services.AddScoped<OrdersService>();
             builder.Services.AddScoped<FileService>();
 
+            //builder.Services.AddHsts(options =>
+            //{
+            //    options.Preload = true;
+            //    options.IncludeSubDomains = true;
+            //    options.MaxAge = TimeSpan.FromDays(365);
+            //});
+
             Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.File(@"logs/log.txt", shared: true)

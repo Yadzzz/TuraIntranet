@@ -28,5 +28,10 @@
         {
             return this._networkManager.UpdateNetworkIpAsync(networkIp);
         }
+
+        public void Flush()
+        {
+            this._networkManager.Flush();
+        }
     }
 }

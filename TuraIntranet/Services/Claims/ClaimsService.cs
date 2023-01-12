@@ -31,6 +31,16 @@ namespace TuraIntranet.Services.Claims
             return this._claimsManager.AddClaim(claim);
         }
 
+        public Task<List<ClaimCurrency>> GetClaimCurrencies()
+        {
+            return this._claimsManager.GetCurrenciesAsync();
+        }
+
+        public Task<ClaimCurrency> GetClaimCurrency(int id)
+        {
+            return this._claimsManager.GetCurrencyAsync(id);
+        }
+
         public Task Flush()
         {
             return this._claimsManager.Flush();

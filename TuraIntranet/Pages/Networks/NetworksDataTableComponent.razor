@@ -1,0 +1,64 @@
+﻿@inject IJSRuntime JS
+@inject NavigationManager NavManager
+
+<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+    <div class="widget-content widget-content-area br-6">
+
+        <table id="zero-config" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>IP-Adress</th>
+                    <th>Tilldelning</th>
+                    <th>Info</th>
+                    <th>Nätverk</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (this.FilteredNetworks != null && this.FilteredNetworks.Count > 0)
+                {
+                    foreach (var network in this.FilteredNetworks)
+                    {
+                        foreach (var networkIp in network.NetworkIps)
+                        {
+                            <tr>
+                                <td>@(networkIp.Ip1 + "." + networkIp.Ip2 + "." + networkIp.Ip3 + "." + networkIp.Ip4)</td>
+                                <td>@networkIp.AssignedTo</td>
+                                <td>@networkIp.Info</td>
+                                <td>@network.NetworkName</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-dark btn-sm" @onclick=@(() => this.ShowNetworkIp(networkIp.Id.ToString()))>Visa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<TuraIntranet.Data.Networks.Network>? FilteredNetworks { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    public void ShowNetworkIp(string networkIpId)
+    {
+        this.NavManager.NavigateTo("/network/" + networkIpId);
+    }
+
+    public void OnStateChange()
+    {
+        this.StateHasChanged();
+    }
+}

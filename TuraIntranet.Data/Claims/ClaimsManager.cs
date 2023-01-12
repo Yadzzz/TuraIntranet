@@ -12,10 +12,12 @@ namespace TuraIntranet.Data.Claims
     public class ClaimsManager
     {
         private List<Claim> _claims;
+        private List<ClaimCurrency> _currencies;
 
         public ClaimsManager()
         {
             this._claims = new();
+            this._currencies = new();
         }
 
 
@@ -25,7 +27,7 @@ namespace TuraIntranet.Data.Claims
             {
                 Claim claim = this._claims.Where(x => x.Id == id).FirstOrDefault();
 
-                if(claim != null)
+                if (claim != null)
                 {
                     return claim;
                 }
@@ -76,6 +78,73 @@ namespace TuraIntranet.Data.Claims
                     this._claims = JsonConvert.DeserializeObject<List<Claim>>(response.Content);
 
                     return this._claims;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+
+        public async Task<List<ClaimCurrency>> GetCurrenciesAsync()
+        {
+            if (this._currencies != null && this._currencies.Count > 0)
+            {
+                return this._currencies;
+            }
+
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/ClaimCurrencies");
+
+            var response = await api.GetResponse();
+
+            try
+            {
+                if (response != null && response.Content != null)
+                {
+                    this._currencies = JsonConvert.DeserializeObject<List<ClaimCurrency>>(response.Content);
+
+                    return this._currencies;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+
+        public async Task<ClaimCurrency> GetCurrencyAsync(int id)
+        {
+            if (this._currencies != null && this._currencies.Count > 0)
+            {
+                var currency = this._currencies.Where(x => x.Id == id).FirstOrDefault();
+
+                if(currency != null)
+                {
+                    return currency;
+                }
+            }
+
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/ClaimCurrencies/" + id);
+
+            var response = await api.GetResponse();
+
+            try
+            {
+                if (response != null && response.Content != null)
+                {
+                    ClaimCurrency currency = JsonConvert.DeserializeObject<ClaimCurrency>(response.Content);
+
+                    return currency;
                 }
                 else
                 {
