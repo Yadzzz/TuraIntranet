@@ -394,19 +394,72 @@
 
     private async Task Save()
     {
-        if (this.claim.InvoiceFromCustomer && this.claim.CreditToCustomer && this.claim.InvoiceToSupplier && this.claim.CreditFromSupplier)
+        if (this.IsCompleted())
         {
             this.claim.Completed = true;
-        }
-
-        if(this.claim.Completed)
-        {
-
         }
 
         await this.ClaimsService.Updateclaim(this.claim);
         await this.ClaimsService.Flush();
         await this.AlertUser("Claim Uppdaterad");
+    }
+
+    private bool IsCompleted()
+    {
+        bool invoiceFromCustomerCompleted = false;
+        bool creditToCustomerCompleted = false;
+        bool invoiceToSupplier = false;
+        bool creditFromSupplier = false;
+
+        if (this.claim.InvoiceFromCustomer)
+        {
+            if(!string.IsNullOrEmpty(this.claim.InvoiceFromCustomerReference))
+            {
+                invoiceFromCustomerCompleted = true;
+            }
+        }
+        else
+        {
+            invoiceFromCustomerCompleted = true;
+        }
+
+        if (this.claim.CreditToCustomer)
+        {
+            if (!string.IsNullOrEmpty(this.claim.CreditToCustomerReference))
+            {
+                creditToCustomerCompleted = true;
+            }
+        }
+        else
+        {
+            creditToCustomerCompleted = true;
+        }
+
+        if (this.claim.InvoiceToSupplier)
+        {
+            if (!string.IsNullOrEmpty(this.claim.InvoiceToSupplierReference))
+            {
+                invoiceToSupplier = true;
+            }
+        }
+        else
+        {
+            invoiceToSupplier = true;
+        }
+
+        if (this.claim.CreditFromSupplier)
+        {
+            if (!string.IsNullOrEmpty(this.claim.CreditFromSupplierReference))
+            {
+                creditFromSupplier = true;
+            }
+        }
+        else
+        {
+            creditFromSupplier = true;
+        }
+
+        return (invoiceFromCustomerCompleted && creditToCustomerCompleted && invoiceToSupplier && creditFromSupplier);
     }
 
     private async Task AlertUser(string text)

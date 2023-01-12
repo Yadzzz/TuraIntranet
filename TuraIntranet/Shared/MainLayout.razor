@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @inject IJSRuntime jsRuntime
+@inject TuraIntranet.Services.PageNavigationService NavService
 
 <PageTitle>TuraIntranet</PageTitle>
 
@@ -18,7 +19,7 @@
                     <li>
                         <div class="page-header">
                             <div class="page-title">
-                                <h3> PAGE TITLE</h3>
+                                <h3> Page Title</h3>
                             </div>
                         </div>
                     </li>
@@ -54,5 +55,10 @@
         //var module = await jsRuntime.InvokeAsync<IJSObjectReference>("import", "/layouts/vertical-light-menu/loader.js");
         //await module.InvokeVoidAsync("load");
         //this.StateHasChanged();
+    }
+
+    public async Task Test()
+    {
+        await this.jsRuntime.InvokeVoidAsync("sidebarCollapse");
     }
 }

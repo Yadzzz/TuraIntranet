@@ -24,5 +24,21 @@
         {
             return this.activeSection == page;
         }
+
+        public string ActiveSection
+        {
+            get
+            {
+                return this.activeSection;
+            }
+        }
+
+        public string ActivePage
+        {
+            get
+            {
+                return this.activePage;
+            }
+        }
     }
 }
