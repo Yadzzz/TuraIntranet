@@ -144,6 +144,7 @@
     {
         string inputValue = e.Value.ToString();
         this.networkIdInput = int.Parse(inputValue);
+        this.Search();
     }
 
     public async Task Search()
@@ -186,7 +187,7 @@
         {
             foreach(var network in filtered)
             {
-                var ips = network.NetworkIps.Where(x => x.AssignedTo != null && x.AssignedTo.Contains(this.assignedInput)).ToList();
+                var ips = network.NetworkIps.Where(x => x.AssignedTo != null && x.AssignedTo.ToLower().Contains(this.assignedInput.ToLower())).ToList();
                 network.NetworkIps = ips;
             }
         }

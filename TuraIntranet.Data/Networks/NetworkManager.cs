@@ -27,7 +27,7 @@ namespace TuraIntranet.Data.Networks
 
             this._networks = new();
 
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/networks/Networks");
+            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/networks/Networks");
             var response = await api.GetResponse();
 
             try
@@ -40,7 +40,7 @@ namespace TuraIntranet.Data.Networks
                     {
                         foreach (var network in networks)
                         {
-                            api.SetUrl("https://localhost:7245/api/v1/intranet/networks/NetworkIps/" + network.Id);
+                            api.SetUrl("https://apitest.turascandinavia.com/api/v1/intranet/networks/NetworkIps/" + network.Id);
                             var networkIpResponse = await api.GetResponse();
 
                             if (networkIpResponse != null && networkIpResponse.Content != null)
@@ -127,7 +127,7 @@ namespace TuraIntranet.Data.Networks
 
         public async Task UpdateNetworkIpAsync(NetworkIp networkIp)
         {
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/networks/NetworkIps/" + networkIp.Id);
+            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/networks/NetworkIps/" + networkIp.Id);
             var success = await api.SendPutRequest(networkIp);
         }
 

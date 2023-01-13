@@ -20,7 +20,7 @@ namespace TuraIntranet.Data.Info
                 return this._infoMessages;
             }
 
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/InfoMessages");
+            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/InfoMessages");
 
             var response = await api.GetResponse();
 
@@ -56,7 +56,7 @@ namespace TuraIntranet.Data.Info
                 }
             }
 
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/InfoMessages/" + id);
+            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/InfoMessages/" + id);
 
             var response = await api.GetResponse();
 
@@ -82,19 +82,19 @@ namespace TuraIntranet.Data.Info
 
         public async Task UpdateInfoMessage(int id, InfoMessageModel infoMessage)
         {
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/InfoMessages/" + id);
+            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/InfoMessages/" + id);
             bool success = await api.SendPutRequest(infoMessage);
         }
 
         public async Task AddInfoMessage(InfoMessageModel infoMessage)
         {
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/InfoMessages/");
+            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/InfoMessages/");
             bool success = await api.SendPostRequest(infoMessage);
         }
 
         public async Task DeleteInfoMessage(int id)
         {
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/InfoMessages/" + id);
+            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/InfoMessages/" + id);
             bool success = await api.SendDeleteRequest();
         }
 
