@@ -16,6 +16,37 @@
 
         <div class="row layout-top-spacing">
 
+            @*<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Kunduppgifter</h5></center>
+                    <br />
+
+                    <div class="form-group row" style="padding-left:25px;">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Ändrat av</label>
+                            <div class="col-sm-9">
+
+                                <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
+                                    <option value="0">Välj användare</option>
+
+                                    @foreach (var employee in this.ShipmentService.GetShipmentEmployees())
+                                    {
+                                        <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-2 col-md-4">
+                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@SearchCustomer>Sök</button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
 
@@ -103,14 +134,14 @@
                                                         {
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
-                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                             <div class="dropdown-divider"></div>
                                                             <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Avsluta</a>
                                                         }
                                                         else
                                                         {
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 2))>Påbörja</a>
-                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                         }
                                                     </div>
                                                 </div>
@@ -151,14 +182,14 @@
                                                         {
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
-                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                             <div class="dropdown-divider"></div>
                                                             <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Avsluta</a>
                                                         }
                                                         else
                                                         {
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 2))>Påbörja</a>
-                                                            <a class="dropdown-item" @onclick=@(() => ShowDelivery(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
+                                                            <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                         }
                                                     </div>
                                                 </div>
@@ -201,9 +232,21 @@
         this.NavManager.NavigateTo("/inleverans/" + delivery);
     }
 
+    private void ShowDeviation(string delivery)
+    {
+        this.NavManager.NavigateTo("inleveransdeviation/" + delivery);
+    }
+
     private async Task GetShipments()
     {
         this._shipments = await this.ShipmentService.GetShipments();
+    }
+
+    private void OnChangeUpdatedById(ChangeEventArgs e)
+    {
+        //string inputValue = e.Value.ToString();
+        //this._updatedBy = int.Parse(inputValue);
+        //this._shipment.Shipment.InitatedBy = int.Parse(inputValue);
     }
 
     private void SaveShipment(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment, int statusId)
@@ -221,6 +264,7 @@
         this.ShipmentService.AddUpdate(shipmentUpdate);
 
         shipment.ShipmentUpdates.Add(shipmentUpdate);
+        shipment.ShipmentUpdate = shipmentUpdate;
         //this.ShipmentService.FlushShipments();
         this.StateHasChanged();
     }
@@ -254,6 +298,8 @@
         this.ShipmentService.AddUpdate(shipmentUpdate);
         shipment.ShipmentUpdates.Add(shipmentUpdate);
         shipment.ShipmentUpdate = shipmentUpdate;
+
+        //this.SaveShipment(shipment, statusId);
         this.StateHasChanged();
     }
 }

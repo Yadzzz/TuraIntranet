@@ -4,9 +4,9 @@
 @inject TuraIntranet.Services.Claims.ClaimsService ClaimsService
 @inject PageNavigationService PageNavService
 @inject NavigationManager NavManager
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Claim</PageTitle>
-
 
 <link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
@@ -409,19 +409,7 @@
     private async Task Save()
     {
         await this.ClaimsService.AddClaim(this.claim);
-        await this.AlertUser("Claim Uppdaterad");
+        await this.NotificationService.AlertSuccess("Claim Tillagd");
         await this.ClaimsService.Flush();
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
     }
 }

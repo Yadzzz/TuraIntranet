@@ -70,8 +70,42 @@ namespace TuraIntranet.Data.Logistics.Shipments
             {
                 await this.GetShipments();
             }
+            else if(this._shipments.Count == 0)
+            {
+                await this.GetShipments();
+            }
 
-            return this._shipments.Where(x => x.Shipment.Id == id).FirstOrDefault();
+            var shipment = this._shipments.Where(x => x.Shipment.Id == id).FirstOrDefault();
+
+            if(shipment == null)
+            {
+                APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/Shipments/" + id);
+
+                var response = await api.GetResponse();
+
+                try
+                {
+                    if (response != null && response.Content != null)
+                    {
+                        var shipmentModel = JsonConvert.DeserializeObject<ShipmentModel>(response.Content);
+
+                        return shipmentModel;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    return null;
+                }
+            }
+            else
+            {
+                return shipment;
+            }
         }
 
         public async Task<List<ShipmentEmployee>?> GetShipmentEmployees()
@@ -237,6 +271,18 @@ namespace TuraIntranet.Data.Logistics.Shipments
         public async Task FlushShipments()
         {
             this._shipments = null;
+        }
+
+        public async Task AddDeviation(ShipmentDeviationData deviation)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentDeviations");
+            bool success = await api.SendPostRequest(deviation);
+        }
+
+        public async Task UpdateDeviation(ShipmentDeviationData deviation)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentDeviations/" + deviation.ShipmentId);
+            bool success = await api.SendPutRequest(deviation);
         }
     }
 }

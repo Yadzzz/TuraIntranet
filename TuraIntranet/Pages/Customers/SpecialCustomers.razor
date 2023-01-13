@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Customers.CustomersService CustomerService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Specialkunder</PageTitle>
 
@@ -104,7 +105,7 @@
 
         if (specialCustomers == null)
         {
-            Console.WriteLine("[ERROR] Could not get data");
+            await this.NotificationService.AlertError("[ERROR] Could not get data");
             return;
         }
 
@@ -112,7 +113,7 @@
 
         if(this.customers == null)
         {
-            Console.WriteLine("[ERROR] Could not get data");
+            await this.NotificationService.AlertError("[ERROR] Could not get data");
             return;
         }
 
@@ -146,19 +147,8 @@
         await this.CustomerService.UpdateSpecialCustomer(specialCustomer.Id, specialCustomer);
         this.specialCustomers.Remove(specialCustomer);
         this.CustomerService.FlushSpecialCustomers();
-        await this.AlertUser("Specialkund Inaktiverad.");
+        await this.NotificationService.AlertSuccess("Specialkund Inaktiverad.");
         this.StateHasChanged();
     }
 
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
 }

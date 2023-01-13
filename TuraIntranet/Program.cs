@@ -40,6 +40,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<ClaimsService>();
             builder.Services.AddScoped<OrdersService>();
             builder.Services.AddScoped<FileService>();
+            builder.Services.AddScoped<NotificationService>();
 
             //builder.Services.AddHsts(options =>
             //{

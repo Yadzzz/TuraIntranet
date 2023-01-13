@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Customers.CustomersService CustomerService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Kunder</PageTitle>
 
@@ -27,7 +28,7 @@
                             <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@customerNumber>
                         </div>
 
-                       @* <div class="col-sm-2">
+                        <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" placeholder="Företag" @bind-value=@company>
                         </div>
 
@@ -37,7 +38,7 @@
 
                         <div class="col-sm-2">
                             <input type="text" class="form-control form-control-sm" placeholder="Ort" @bind-value=@district>
-                        </div>*@
+                        </div>
 
                         <div class="col-xl-2 col-md-4">
                             <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@SearchCustomer>Sök</button>
@@ -109,7 +110,7 @@
             this.PageNavService.UpdateActiveSection("Kunder");
             this.PageNavService.UpdateActivePage("Kunduppgifter");
 
-            this.customers = new();
+            //this.customers = new();
 
             //await JS.InvokeVoidAsync("loadDataTableComponent");
         }
@@ -117,36 +118,70 @@
 
     private async Task SearchCustomer()
     {
-        this.customers.Clear();
+        if(this.customers != null && customers.Count > 0)
+        {
+            this.customers.Clear();
+        }
 
         if (!string.IsNullOrEmpty(this.customerNumber))
         {
             var customer = await this.CustomerService.GetCustomerAsync(customerNumber);
 
-            if (customer != null)
+            if (customer != null && !string.IsNullOrEmpty(customer.No))
             {
-                this.customers.Add(customer);
+                //this.customers.Add(customer);
+                this.customers = new List<Data.Customers.CustomerModel>()
+                {
+                    customer
+                };
             }
             else
             {
-                await this.AlertUser("Not Found");
+                await this.NotificationService.AlertError("Kunde inte hitta kund [" + this.customerNumber + "]");
             }
         }
         else if (!string.IsNullOrEmpty(this.company))
         {
+            var customersData = await this.CustomerService.GetCustomerByNameAsync(company);
 
+            if (customersData != null && customersData.Count > 0)
+            {
+                this.customers = customersData;
+            }
+            else
+            {
+                await this.NotificationService.AlertError("Kunde inte hitta kund [" + this.company + "]");
+            }
         }
         else if (!string.IsNullOrEmpty(this.postalCode))
         {
+            var customersData = await this.CustomerService.GetCustomerByPostalCodeAsync(postalCode);
 
+            if (customersData != null && customersData.Count > 0)
+            {
+                this.customers = customersData;
+            }
+            else
+            {
+                await this.NotificationService.AlertError("Kunde inte hitta kund [" + this.postalCode + "]");
+            }
         }
         else if (!string.IsNullOrEmpty(this.district))
         {
+            var customersData = await this.CustomerService.GetCustomerByCityAsync(district);
 
+            if (customersData != null && customersData.Count > 0)
+            {
+                this.customers = customersData;
+            }
+            else
+            {
+                await this.NotificationService.AlertError("Kunde inte hitta kund [" + this.district + "]");
+            }
         }
         else
         {
-            await this.AlertUser("Fyll i en av kollumnerna!");
+            await this.NotificationService.AlertError("Fyll i en av kollumnerna!");
         }
 
         this.StateHasChanged();
@@ -164,17 +199,5 @@
         this.company = string.Empty;
         this.postalCode = string.Empty;
         this.district = string.Empty;
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
     }
 }

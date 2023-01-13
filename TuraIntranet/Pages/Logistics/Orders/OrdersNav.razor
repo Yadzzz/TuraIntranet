@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Orders.OrdersService OrdersService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Order Nav</PageTitle>
 
@@ -149,7 +150,7 @@
 
         if (string.IsNullOrEmpty(this.orderType) || string.IsNullOrWhiteSpace(this.orderType) || string.IsNullOrEmpty(this.searchText) || string.IsNullOrWhiteSpace(this.searchText))
         {
-            await this.AlertUser("Invalid Data Input");
+            await this.NotificationService.AlertError("Invalid Data Input");
             return;
         }
 
@@ -163,7 +164,7 @@
         }
         else
         {
-            await this.AlertUser("Invalid Data Input");
+            await this.NotificationService.AlertError("Invalid Data Input");
             return;
         }
 
@@ -177,18 +178,6 @@
         if (e != null && e.Value != null && e.Value.ToString() != null)
         {
             this.orderType = e.Value.ToString();
-        }
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
         }
     }
 }

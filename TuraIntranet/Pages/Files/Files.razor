@@ -5,6 +5,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject Services.Files.FileService FileService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Files</PageTitle>
 
@@ -88,10 +89,11 @@
         try
         {
             await this.JS.InvokeVoidAsync("SavePdfFile", (file.Name), Convert.ToBase64String(fileBytes));
+            await this.NotificationService.AlertSuccess("File Donwloaded");
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            await this.NotificationService.AlertError("Could not download file");
         }
     }
 }

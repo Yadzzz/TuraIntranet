@@ -26,6 +26,21 @@ namespace TuraIntranet.Services.Customers
             return await this._customerManager.GetCustomerAsync(id);
         }
 
+        public async Task<List<CustomerModel>> GetCustomerByNameAsync(string name)
+        {
+            return await this._customerManager.GetCustomerByNameAsync(name);
+        }
+
+        public async Task<List<CustomerModel>> GetCustomerByPostalCodeAsync(string postalCode)
+        {
+            return await this._customerManager.GetCustomerByPostalCodeAsync(postalCode);
+        }
+
+        public async Task<List<CustomerModel>> GetCustomerByCityAsync(string city)
+        {
+            return await this._customerManager.GetCustomerByCityAsync(city);
+        }
+
         public async Task<SpecialCustomerModel?> GetSpecialCustomerAsync(string id)
         {
             return await this._customerManager.GetSpecialCustomerAsync(id);

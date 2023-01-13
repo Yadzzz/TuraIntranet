@@ -17,7 +17,7 @@ namespace TuraIntranet.Data.Customers
 
         public async Task<List<SpecialCustomerModel>?> GetSpecialCustomersAsync(bool forceFlush = false)
         {
-            if(this._specialCustomers != null && !forceFlush)
+            if (this._specialCustomers != null && !forceFlush)
             {
                 return this._specialCustomers;
             }
@@ -52,7 +52,7 @@ namespace TuraIntranet.Data.Customers
             {
                 var specialCustomer = this._specialCustomers.Where(x => x.CustomerNumber == id).FirstOrDefault();
 
-                if(specialCustomer != null)
+                if (specialCustomer != null)
                 {
                     return specialCustomer;
                 }
@@ -84,23 +84,23 @@ namespace TuraIntranet.Data.Customers
 
         public async Task<Dictionary<string, CustomerModel>?> GetSpecialCustomersDataAsync()
         {
-            if(this._specialCustomersData != null && this._specialCustomersData.Count > 0)
+            if (this._specialCustomersData != null && this._specialCustomersData.Count > 0)
             {
                 return this._specialCustomersData;
             }
 
-            if(this._specialCustomers == null)
+            if (this._specialCustomers == null)
             {
                 return null;
             }
 
             this._specialCustomersData = new();
 
-            foreach(var specialCustomer in this._specialCustomers)
+            foreach (var specialCustomer in this._specialCustomers)
             {
                 CustomerModel? customer = await this.GetCustomerAsync(specialCustomer.CustomerNumber);
 
-                if(customer != null && !this._specialCustomersData.ContainsKey(specialCustomer.CustomerNumber))
+                if (customer != null && !this._specialCustomersData.ContainsKey(specialCustomer.CustomerNumber))
                 {
                     this._specialCustomersData.Add(specialCustomer.CustomerNumber, customer);
                 }
@@ -120,6 +120,84 @@ namespace TuraIntranet.Data.Customers
                 if (response != null && response.Content != null)
                 {
                     var customerModel = JsonConvert.DeserializeObject<CustomerModel>(response.Content);
+
+                    return customerModel;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+
+        public async Task<List<CustomerModel>> GetCustomerByNameAsync(string name)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/getbyname/" + name);
+
+            var response = await api.GetResponse();
+
+            try
+            {
+                if (response != null && response.Content != null)
+                {
+                    var customerModel = JsonConvert.DeserializeObject<List<CustomerModel>>(response.Content);
+
+                    return customerModel;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+
+        public async Task<List<CustomerModel>> GetCustomerByPostalCodeAsync(string postalCode)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/getbypostalcode/" + postalCode);
+
+            var response = await api.GetResponse();
+
+            try
+            {
+                if (response != null && response.Content != null)
+                {
+                    var customerModel = JsonConvert.DeserializeObject<List<CustomerModel>>(response.Content);
+
+                    return customerModel;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+
+        public async Task<List<CustomerModel>> GetCustomerByCityAsync(string city)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/getbycity/" + city);
+
+            var response = await api.GetResponse();
+
+            try
+            {
+                if (response != null && response.Content != null)
+                {
+                    var customerModel = JsonConvert.DeserializeObject<List<CustomerModel>>(response.Content);
 
                     return customerModel;
                 }

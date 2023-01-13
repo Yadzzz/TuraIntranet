@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Network.NetworkService NetworkService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Nätverk</PageTitle>
 
@@ -157,19 +158,7 @@
     private async Task Save()
     {
         await this.NetworkService.UpdateNetworkIp(this.network);
-        await this.AlertUser("Nätverk Uppdaterad");
+        await this.NotificationService.AlertSuccess("Nätverk Uppdaterad");
         this.NetworkService.Flush();
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
     }
 }

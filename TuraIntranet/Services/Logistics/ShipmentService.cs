@@ -1,4 +1,5 @@
-﻿using TuraIntranet.Data.Logistics.Shipments;
+﻿using System.Runtime.CompilerServices;
+using TuraIntranet.Data.Logistics.Shipments;
 
 namespace TuraIntranet.Services.Logistics
 {
@@ -74,6 +75,16 @@ namespace TuraIntranet.Services.Logistics
         public void FlushShipments()
         {
             this._shipmentsManager.FlushShipments();
+        }
+
+        public Task AddDeviation(ShipmentDeviationData deviation)
+        {
+            return this._shipmentsManager.AddDeviation(deviation);
+        }
+
+        public Task UpdateDeviation(ShipmentDeviationData deviation)
+        {
+            return this._shipmentsManager.UpdateDeviation(deviation);
         }
     }
 }

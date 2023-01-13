@@ -232,16 +232,4 @@
             this.tableRef.OnStateChange();
         }
     }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
 }

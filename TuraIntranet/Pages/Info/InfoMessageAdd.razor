@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Info.InfoService InfoService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Meddelanden - Lägg till</PageTitle>
 
@@ -126,18 +127,6 @@
     {
         await this.InfoService.AddInfoMessageAsync(this.infoMessageModel);
         this.InfoService.Flush();
-        await this.AlertUser("Info Uppdaterad");
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
+        await this.NotificationService.AlertSuccess("Info Uppdaterad");
     }
 }

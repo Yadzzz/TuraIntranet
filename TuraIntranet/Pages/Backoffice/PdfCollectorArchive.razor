@@ -7,6 +7,7 @@
 @inject TuraIntranet.Services.Backoffice.PdfCollectorService pdfCollectorService
 @inject PageNavigationService PageNavService
 @inject NavigationManager NavManager
+@inject Services.NotificationService NotificationService
 
 <PageTitle>PDF Arkiv</PageTitle>
 
@@ -270,7 +271,7 @@
             }
             else
             {
-                await this.AlertUser("Fyll i en av kollumnerna.");
+                await this.NotificationService.AlertError("Fyll i en av kollumnerna.");
             }
         }
         else if (this.documentsTypeId == 2)
@@ -295,7 +296,7 @@
             }
             else
             {
-                await this.AlertUser("Fyll i en av kollumnerna.");
+                await this.NotificationService.AlertError("Fyll i en av kollumnerna.");
             }
         }
         else if (this.documentsTypeId == 3)
@@ -320,7 +321,7 @@
             }
             else
             {
-                await this.AlertUser("Fyll i en av kollumnerna.");
+                await this.NotificationService.AlertError("Fyll i en av kollumnerna.");
             }
         }
         else if (this.documentsTypeId == 4)
@@ -345,7 +346,7 @@
             }
             else
             {
-                await this.AlertUser("Fyll i en av kollumnerna.");
+                await this.NotificationService.AlertError("Fyll i en av kollumnerna.");
             }
         }
         else if (this.documentsTypeId == 5)
@@ -370,12 +371,12 @@
             }
             else
             {
-                await this.AlertUser("Fyll i en av kollumnerna.");
+                await this.NotificationService.AlertError("Fyll i en av kollumnerna.");
             }
         }
         else
         {
-            await this.AlertUser("Invalid Type");
+            await this.NotificationService.AlertError("Invalid Type");
         }
 
         this.ResetVariables();
@@ -410,15 +411,4 @@
         this.documentsTypeId = int.Parse(inputValue);
     }
 
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
 }

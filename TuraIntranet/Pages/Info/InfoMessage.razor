@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Info.InfoService InfoService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Meddelanden - Visa</PageTitle>
 
@@ -133,25 +134,13 @@
     {
         await this.InfoService.UpdateInfoMessageAsync(this.infoMessageModel.Id, this.infoMessageModel);
         this.InfoService.Flush();
-        await this.AlertUser("Info Uppdaterad");
+        await this.NotificationService.AlertSuccess("Info Uppdaterad");
     }
 
     private async Task Delete()
     {
         await this.InfoService.DeleteInfoMessageAsync(this.infoMessageModel.Id);
         this.InfoService.Flush();
-        await this.AlertUser("Info Raderad");
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
+        await this.NotificationService.AlertSuccess("Info Raderad");
     }
 }

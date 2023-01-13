@@ -5,6 +5,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Customers.CustomersService CustService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Specialkunder - Visa</PageTitle>
 
@@ -169,7 +170,7 @@
     {
         await this.CustService.UpdateSpecialCustomer(this.specialCustomer.Id, this.specialCustomer);
         this.CustService.FlushSpecialCustomers();
-        await this.AlertUser("Specialkund uppdaterad.");
+        await this.NotificationService.AlertSuccess("Specialkund uppdaterad.");
     }
 
     public async Task OnDelete()
@@ -177,17 +178,5 @@
         specialCustomer.IsDeleted = true;
         await this.Save();
         this.StateHasChanged();
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
     }
 }

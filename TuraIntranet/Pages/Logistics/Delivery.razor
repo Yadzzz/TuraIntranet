@@ -5,6 +5,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Inleverans - Visa</PageTitle>
 
@@ -152,7 +153,6 @@
                                                                     <label class="custom-control-label" for="sChkbox"></label>
                                                                 </div>
                                                             </div>
-
                                                         </div>
 
                                                     </div>
@@ -316,11 +316,11 @@
         this._shipment.ShipmentUpdates = new List<Data.Logistics.Shipments.ShipmentUpdateData>();
     }
 
-    private void FinishShipment()
+    private async Task FinishShipment()
     {
         if (this._updatedBy == 0)
         {
-            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
+            await this.NotificationService.AlertError("Välj ändrat av användare");
             return;
         }
 
@@ -337,13 +337,14 @@
         this._shipment.ShipmentUpdates.Add(shipmentUpdate);
         this.ShipmentService.RemoveShipment(this._shipment);
         this.StateHasChanged();
+        await this.NotificationService.AlertSuccess("Inleverans Uppdaterad");
     }
 
-    private void SaveShipment()
+    private async Task SaveShipment()
     {
         if (this._updatedBy == 0)
         {
-            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
+            await this.NotificationService.AlertError("Välj ändrat av användare");
             return;
         }
 
@@ -364,13 +365,14 @@
         this._shipment.ShipmentUpdates.Add(shipmentUpdate);
         this.ShipmentService.FlushShipments();
         this.StateHasChanged();
+        await this.NotificationService.AlertSuccess("Inleverans Uppdaterad");
     }
 
-    private void OnAddComment()
+    private async Task OnAddComment()
     {
         if (this._updatedBy == 0)
         {
-            JS.InvokeVoidAsync("alert", "Välj ändrat av användare");
+            await this.NotificationService.AlertError("Välj ändrat av användare");
             return;
         }
 
@@ -386,6 +388,7 @@
         this.ShipmentService.AddUpdate(shipmentUpdate);
         this._shipment.ShipmentUpdates.Add(shipmentUpdate);
         this.StateHasChanged();
+        await this.NotificationService.AlertSuccess("Inleverans kommentar tillagd");
     }
 
     private void OnChangeUpdatedById(ChangeEventArgs e)
@@ -416,23 +419,5 @@
         {
             this._shipment.Shipment.Prioritized = true;
         }
-    }
-
-    private void OnClickUpdateStatusId(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment, int statusId)
-    {
-        var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
-            {
-                ShipmentId = shipment.Shipment.Id,
-                UpdatedBy = 3,
-                UpdatedAt = DateTime.Now,
-                StatusId = statusId,
-                Note = string.Empty
-            };
-
-        this.ShipmentService.AddUpdate(shipmentUpdate);
-        shipment.ShipmentUpdates.Add(shipmentUpdate);
-        shipment.ShipmentUpdate = shipmentUpdate;
-        this.ShipmentService.FlushShipments();
-        this.StateHasChanged();
     }
 }

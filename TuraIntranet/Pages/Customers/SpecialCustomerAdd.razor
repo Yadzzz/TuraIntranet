@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Customers.CustomersService CustService
+@inject Services.NotificationService NotificationService
 
 <PageTitle>Specialkunder - Lägg Till</PageTitle>
 
@@ -182,18 +183,6 @@
     {
         await this.CustService.AddSpecialCustomer(this.specialCustomer);
         this.CustService.FlushSpecialCustomers();
-        await this.AlertUser("Specialkund Uppdaterad.");
-    }
-
-    private async Task AlertUser(string text)
-    {
-        try
-        {
-            await this.JS.InvokeVoidAsync("alert", text);
-        }
-        catch (Exception e)
-        {
-
-        }
+        await this.NotificationService.AlertSuccess("Specialkund Uppdaterad.");
     }
 }

@@ -1,0 +1,476 @@
+﻿@page "/inleveransdeviation/{ShipmentId}"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
+@inject Services.NotificationService NotificationService
+
+<PageTitle>Inleverans - Lägg till</PageTitle>
+
+<link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
+<link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
+<link href="plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
+<link href="plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+        <div class="row invoice layout-top-spacing layout-spacing">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+                <div class="doc-container">
+
+                    <div class="row">
+                        <div class="col-xl-9">
+
+                            <div class="invoice-content">
+
+                                <div class="invoice-detail-body">
+
+                                    @if (this.shipment != null)
+                                    {
+                                        if (this.shipment.ShipmentDeviation != null)
+                                        {
+                                            <div class="invoice-detail-header">
+
+                                                <div class="row justify-content-between">
+
+                                                    <div class="col-xl-6 invoice-address-company">
+
+                                                        <div class="invoice-address-company-fields">
+
+                                                            @*<div class="form-group row">
+                                                    <label class="col-sm-5 col-form-label col-form-label-sm">Ändrat av</label>
+                                                    <div class="col-sm-7">
+                                                    <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
+                                                    <option value="0">Välj användare</option>
+                                                    @if (this.shipmentEmployees != null)
+                                                    {
+                                                    foreach (var employee in this.shipmentEmployees)
+                                                    {
+                                                    <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
+                                                    }
+                                                    }
+                                                    </select>
+                                                    </div>
+                                                    </div>*@
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Fraktskador/Bruten plast (innebär anmäld skada till chaufför och att ta kort)</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="DamagedGoods" checked="@this.shipment.ShipmentDeviation.DamagedGoods" @onclick=@OnClickDamagedGoods>
+                                                                        <label class="custom-control-label" for="DamagedGoods"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Godtagbara och hela pall (120x80)</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="AcceptablePallets" checked="@this.shipment.ShipmentDeviation.AcceptablePallets" @onclick=@OnClickAcceptablePallets>
+                                                                        <label class="custom-control-label" for="AcceptablePallets"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Ok pallhöjd (1,40)</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="CorrectPalletHeight" checked="@this.shipment.ShipmentDeviation.CorrectPalletHeight" @onclick=@OnClickCorrectPalletHeight>
+                                                                        <label class="custom-control-label" for="CorrectPalletHeight"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Bifogade följesedlar på pallenl</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="HasDeliveryNote" checked="@this.shipment.ShipmentDeviation.HasDeliveryNote" @onclick=@OnClickHasDeliveryNote>
+                                                                        <label class="custom-control-label" for="HasDeliveryNote"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Ordernr på följesedeln</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="OrderNumberOnDeliveryNote" checked="@this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote" @onclick=@OnClickOrderNumberOnDeliveryNote>
+                                                                        <label class="custom-control-label" for="OrderNumberOnDeliveryNote"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div class="col-xl-6 invoice-address-client">
+                                                        <div class="invoice-address-client-fields">
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Dolda fraktskador</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="ConcealedFreigtDamage" checked="@this.shipment.ShipmentDeviation.ConcealedFreigtDamage" @onclick=@OnClickConcealedFreigtDamage>
+                                                                        <label class="custom-control-label" for="ConcealedFreigtDamage"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Avvikelser på följesedeln</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="DeliveryNoteDeviations" checked="@this.shipment.ShipmentDeviation.DeliveryNoteDeviations" @onclick=@OnClickDeliveryNoteDeviations>
+                                                                        <label class="custom-control-label" for="DeliveryNoteDeviations"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Sortrent</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="SortedBoxwise" checked="@this.shipment.ShipmentDeviation.SortedBoxwise" @onclick=@OnClickSortedBoxwise>
+                                                                        <label class="custom-control-label" for="SortedBoxwise"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Uppmärkta blandlådor</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="TaggedMixedBoxes" checked="@this.shipment.ShipmentDeviation.TaggedMixedBoxes" @onclick=@OnClickTaggedMixedBoxes>
+                                                                        <label class="custom-control-label" for="TaggedMixedBoxes"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Meddelande</label>
+                                                                <div class="col-sm-7">
+                                                                    <textarea class="form-control" placeholder="Meddelande" @bind=@this.shipment.ShipmentDeviation.Note rows="5" />
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                            <hr />
+
+                                        }
+                                        else
+                                        {
+                                            <p>N/A DEVIATION</p>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>N/A</p>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3">
+
+                            <div class="invoice-actions-btn">
+                                <div class="invoice-action-btn">
+
+                                    <div class="row">
+                                        <label class="col-sm-4 col-form-label col-form-label-sm">Ändrat av</label>
+                                        <div class="col-sm-8">
+                                            <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
+                                                <option value="0">Välj användare</option>
+                                                @if (this.shipmentEmployees != null)
+                                                {
+                                                    foreach (var employee in this.shipmentEmployees)
+                                                    {
+                                                        <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+
+                                    <div class="row">
+                                        <div class="col-xl-12 col-md-4">
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Save>Spara</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <Footer />
+</div>
+
+@code {
+    [Parameter]
+    public string? ShipmentId { get; set; }
+    private Data.Logistics.Shipments.ShipmentModel? shipment;
+    private List<Data.Logistics.Shipments.ShipmentEmployee>? shipmentEmployees;
+    private int updatedBy = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.PageNavService.UpdateActiveSection("Logistik");
+            this.PageNavService.UpdateActivePage("Inleveranser");
+
+            if (!string.IsNullOrEmpty(this.ShipmentId))
+            {
+                if (int.TryParse(this.ShipmentId, out int id))
+                {
+                    this.shipment = await this.ShipmentService.GetShipment(id);
+                    this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
+
+                    if (this.shipment != null && this.shipment.ShipmentDeviation == null)
+                    {
+                        this.shipment.ShipmentDeviation = new();
+                    }
+
+                    this.StateHasChanged();
+                }
+            }
+        }
+    }
+
+    private void OnChangeUpdatedById(ChangeEventArgs e)
+    {
+        string inputValue = e.Value.ToString();
+        this.updatedBy = int.Parse(inputValue);
+    }
+
+    private void OnClickDamagedGoods()
+    {
+        if (this.shipment.ShipmentDeviation.DamagedGoods == null || !this.shipment.ShipmentDeviation.DamagedGoods.HasValue)
+        {
+            this.shipment.ShipmentDeviation.DamagedGoods = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.DamagedGoods.Value)
+        {
+            this.shipment.ShipmentDeviation.DamagedGoods = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.DamagedGoods = true;
+        }
+    }
+
+    private void OnClickAcceptablePallets()
+    {
+        if (this.shipment.ShipmentDeviation.AcceptablePallets == null || !this.shipment.ShipmentDeviation.AcceptablePallets.HasValue)
+        {
+            this.shipment.ShipmentDeviation.AcceptablePallets = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.AcceptablePallets.Value)
+        {
+            this.shipment.ShipmentDeviation.AcceptablePallets = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.AcceptablePallets = true;
+        }
+    }
+
+    private void OnClickCorrectPalletHeight()
+    {
+        if (this.shipment.ShipmentDeviation.CorrectPalletHeight == null || !this.shipment.ShipmentDeviation.CorrectPalletHeight.HasValue)
+        {
+            this.shipment.ShipmentDeviation.CorrectPalletHeight = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.CorrectPalletHeight.Value)
+        {
+            this.shipment.ShipmentDeviation.CorrectPalletHeight = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.CorrectPalletHeight = true;
+        }
+    }
+
+    private void OnClickHasDeliveryNote()
+    {
+        if (this.shipment.ShipmentDeviation.HasDeliveryNote == null || !this.shipment.ShipmentDeviation.HasDeliveryNote.HasValue)
+        {
+            this.shipment.ShipmentDeviation.HasDeliveryNote = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.HasDeliveryNote.Value)
+        {
+            this.shipment.ShipmentDeviation.HasDeliveryNote = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.HasDeliveryNote = true;
+        }
+    }
+
+    private void OnClickOrderNumberOnDeliveryNote()
+    {
+        if (this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote == null || !this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote.HasValue)
+        {
+            this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote.Value)
+        {
+            this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote = true;
+        }
+    }
+
+    private void OnClickConcealedFreigtDamage()
+    {
+        if (this.shipment.ShipmentDeviation.ConcealedFreigtDamage == null || !this.shipment.ShipmentDeviation.ConcealedFreigtDamage.HasValue)
+        {
+            this.shipment.ShipmentDeviation.ConcealedFreigtDamage = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.ConcealedFreigtDamage.Value)
+        {
+            this.shipment.ShipmentDeviation.ConcealedFreigtDamage = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.ConcealedFreigtDamage = true;
+        }
+    }
+
+    private void OnClickDeliveryNoteDeviations()
+    {
+        if (this.shipment.ShipmentDeviation.DeliveryNoteDeviations == null || !this.shipment.ShipmentDeviation.DeliveryNoteDeviations.HasValue)
+        {
+            this.shipment.ShipmentDeviation.DeliveryNoteDeviations = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.DeliveryNoteDeviations.Value)
+        {
+            this.shipment.ShipmentDeviation.DeliveryNoteDeviations = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.DeliveryNoteDeviations = true;
+        }
+    }
+
+    private void OnClickSortedBoxwise()
+    {
+        if (this.shipment.ShipmentDeviation.SortedBoxwise == null || !this.shipment.ShipmentDeviation.SortedBoxwise.HasValue)
+        {
+            this.shipment.ShipmentDeviation.SortedBoxwise = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.SortedBoxwise.Value)
+        {
+            this.shipment.ShipmentDeviation.SortedBoxwise = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.SortedBoxwise = true;
+        }
+    }
+
+    private void OnClickTaggedMixedBoxes()
+    {
+        if (this.shipment.ShipmentDeviation.TaggedMixedBoxes == null || !this.shipment.ShipmentDeviation.TaggedMixedBoxes.HasValue)
+        {
+            this.shipment.ShipmentDeviation.TaggedMixedBoxes = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.TaggedMixedBoxes.Value)
+        {
+            this.shipment.ShipmentDeviation.TaggedMixedBoxes = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.TaggedMixedBoxes = true;
+        }
+
+        Console.WriteLine(this.shipment.ShipmentDeviation.TaggedMixedBoxes);
+    }
+
+    public async Task Save()
+    {
+        if (this.updatedBy == 0)
+        {
+            await this.NotificationService.AlertError("Välj Användare");
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.ShipmentId == 0)
+        {
+            this.shipment.ShipmentDeviation.ShipmentId = this.shipment.Shipment.Id;
+
+            var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+            {
+                ShipmentId = this.shipment.Shipment.Id,
+                UpdatedBy = this.updatedBy,
+                UpdatedAt = DateTime.Now,
+                StatusId = this.shipment.ShipmentUpdate.StatusId,
+                Note = "Avvikelse Inrapporterad"
+            };
+
+            this.ShipmentService.AddUpdate(shipmentUpdate);
+            await this.ShipmentService.AddDeviation(this.shipment.ShipmentDeviation);
+            this.ShipmentService.FlushShipments();
+            await this.NotificationService.AlertSuccess("Avvikelse Tillagd");
+        }
+        else
+        {
+            var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
+                {
+                    ShipmentId = this.shipment.Shipment.Id,
+                    UpdatedBy = this.updatedBy,
+                    UpdatedAt = DateTime.Now,
+                    StatusId = this.shipment.ShipmentUpdate.StatusId,
+                    Note = "Avvikelse Uppdaterad"
+                };
+
+            this.ShipmentService.AddUpdate(shipmentUpdate);
+            await this.ShipmentService.UpdateDeviation(this.shipment.ShipmentDeviation);
+            this.ShipmentService.FlushShipments();
+            await this.NotificationService.AlertSuccess("Avvikelse Uppdaterad");
+        }
+    }
+}
