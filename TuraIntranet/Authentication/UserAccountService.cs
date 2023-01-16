@@ -28,17 +28,29 @@ namespace TuraIntranet.Authentication
                 {
                     userGroups = userPrincipal.GetGroups(context).Select(x => x.Name).ToList();
 
-                    if (!userGroups.Contains("Tura Intranet Users"))
+                    //foreach (var group in userGroups)
+                    //{
+                    //    Console.WriteLine(group);
+                    //}
+
+                    if (!userGroups.Contains("Tura Intranet Users") && !userGroups.Contains("Tura Intranet Administrators"))
                     {
                         error = "Permission Denied for User";
                         return false;
                     }
                     else
                     {
+                        string role = string.Empty;
+
+                        if (userGroups.Contains("Tura Intranet Administrators"))
+                            role = "Administrator";
+                        else
+                            role = "User";
+
                         userAccount = new UserAccount()
                         {
                             Username = username,
-                            Role = "User"
+                            Role = role
                         };
 
                         return true;
