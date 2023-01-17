@@ -6,20 +6,26 @@ using System.Text;
 using System.Threading.Tasks;
 using TuraIntranet.Data.API;
 
-namespace TuraIntranet.Data.Logistics.Orders
+namespace TuraIntranet.Data.Backoffice.Koss
 {
-    public class OrdersManager
+    public class KossManager
     {
-        private List<R08T1> _orders;
+        private List<KossHeadphoneModel> _kossHeadphones;
+        private List<KossRma> _kossRma;
 
-        public async Task<List<R08T1>> GetOrdersAsync()
+        public KossManager()
         {
-            if (_orders != null && _orders.Count > 0)
+
+        }
+
+        public async Task<List<KossRma>> GetKossRmasAsync()
+        {
+            if (this._kossRma != null && this._kossRma.Count > 0)
             {
-                return _orders;
+                return this._kossRma;
             }
 
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/orders/Orders");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/koss/KossRmas");
 
             var response = await api.GetResponse();
 
@@ -27,9 +33,9 @@ namespace TuraIntranet.Data.Logistics.Orders
             {
                 if (response != null && response.Content != null)
                 {
-                    _orders = JsonConvert.DeserializeObject<List<R08T1>>(response.Content);
+                    this._kossRma = JsonConvert.DeserializeObject<List<KossRma>>(response.Content);
 
-                    return _orders;
+                    return this._kossRma;
                 }
                 else
                 {
@@ -43,9 +49,14 @@ namespace TuraIntranet.Data.Logistics.Orders
             }
         }
 
-        public async Task<List<O08T1>> GetNavOrderAsync(string id, string type)
+        public async Task<List<KossHeadphoneModel>> GetKossModelsAsync()
         {
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/orders/Orders/" + id + "/" + type);
+            if (this._kossHeadphones != null && this._kossHeadphones.Count > 0)
+            {
+                return this._kossHeadphones;
+            }
+
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/koss/KossHeadphoneModels");
 
             var response = await api.GetResponse();
 
@@ -53,9 +64,9 @@ namespace TuraIntranet.Data.Logistics.Orders
             {
                 if (response != null && response.Content != null)
                 {
-                    var order = JsonConvert.DeserializeObject<List<O08T1>>(response.Content);
+                    this._kossHeadphones = JsonConvert.DeserializeObject<List<KossHeadphoneModel>>(response.Content);
 
-                    return order;
+                    return this._kossHeadphones;
                 }
                 else
                 {
@@ -68,5 +79,7 @@ namespace TuraIntranet.Data.Logistics.Orders
                 return null;
             }
         }
+
+
     }
 }

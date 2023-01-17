@@ -1,0 +1,426 @@
+﻿@page "/kossrma"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@inject TuraIntranet.Services.Backoffice.KossService KossService
+@inject Services.EmailService EmailService
+
+<PageTitle>Koss RMA</PageTitle>
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Koss RMA</h5></center>
+                    <br />
+
+                    <div class="form-group row" style="padding-left:25px;">
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Sök" @bind-value=@searchText>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <select name="nät" class="form-control country_code  form-control-sm" @onchange=@OnChangeCountry>
+                                <option value="">Alla</option>
+                                <option value="sv">Sverige</option>
+                                <option value="dk">Danmark</option>
+                                <option value="no">Norge</option>
+                                <option value="fi">Finland</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xl-2 col-md-4">
+                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <table id="zero-config" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Namn</th>
+                                <th>Address</th>
+                                <th>Postnr</th>
+                                <th>Ort</th>
+                                <th>Datum</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (this.filteredKossRmas != null && this.filteredKossRmas.Count > 0)
+                            {
+                                foreach (var koss in this.filteredKossRmas)
+                                {
+                                    <tr @onclick=@(() => this.Select(koss))>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@(koss.FirstName + " " + koss.LastName)</div></td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.StreetAddress</div></td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">@koss.Zipcode</td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">@koss.City</td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">@koss.Date</td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-dark btn-sm">Ändra</button>
+                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                    <a class="dropdown-item" @onclick=@Print>Skriv ut</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @if (this.selectedKossRma != null)
+            {
+                <div class="col-xl-4 col-lg-12 col-sm-12  layout-spacing">
+                    <div class="widget-content widget-content-area br-6">
+
+                        <br />
+                        <center><h5>@(this.GetModelName(this.selectedKossRma.KossModelId))</h5></center>
+                        <br />
+
+                        <div class="form-group row" style="padding-left:25px;">
+                            <div class="col-sm-11">
+                                <label class="col-sm-3 col-form-label col-form-label-sm">Inköpsställe</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="@this.selectedKossRma.Vendor" disabled>
+                            </div>
+
+                            <div class="col-sm-11">
+                                <label class="col-sm-3 col-form-label col-form-label-sm">Kvittonummer</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="@this.selectedKossRma.Receipt" disabled>
+                            </div>
+
+                            <div class="col-sm-11">
+                                <label class="col-sm-3 col-form-label col-form-label-sm">Felbeskrivning</label>
+                                <textarea class="form-control" placeholder="@this.selectedKossRma.ProblemDescription" rows="7" disabled />
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row" style="padding-left:25px;">
+                            <div class="col-sm-11">
+                                <select name="nät" class="form-control country_code  form-control-sm" @onchange=@OnchangeResponseMessage>
+                                    <option value="0">Välj Svar</option>
+                                    <option value="1">Felaktigt Kvitto</option>
+                                    <option value="2">Godkänd</option>
+                                    <option value="3">Skicka In</option>
+                                    <option value="4">Fritext</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="padding-left:25px;">
+                            @if (this.showResponseField)
+                            {
+                                <div class="col-sm-11">
+                                    @*<label class="col-sm-3 col-form-label col-form-label-sm">Felbeskrivning</label>*@
+                                    <textarea class="form-control" @bind=@(this.responseMessage) rows="10" />
+                                </div>
+                            }
+                        </div>
+
+                        <div class="form-group row" style="padding-left:25px;">
+
+                            <div class="col-xl-5 col-md-4">
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@SendEmail>Skicka</button>
+                                @*<button class="btn btn-dark btn-block mb-4 mr-2">Klarmarkera</button>*@
+                            </div>
+                            <div class="col-xl-5 col-md-4">
+                                <button class="btn btn-dark btn-block mb-4 mr-2">Klarmarkera</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+    <Footer />
+</div>
+
+@code {
+    private List<Data.Backoffice.Koss.KossHeadphoneModel> models;
+    private List<Data.Backoffice.Koss.KossRma> kossRmas;
+    private List<Data.Backoffice.Koss.KossRma> filteredKossRmas;
+    private Data.Backoffice.Koss.KossRma selectedKossRma;
+
+    private string searchText = string.Empty;
+    private string searchCountry = "";
+
+    private Dictionary<string, string> responseMessages;
+    private bool showResponseField = false;
+    private string responseMessage = string.Empty;
+    private string selectedResponseId = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.PageNavService.UpdateActiveSection("Backoffice");
+            this.PageNavService.UpdateActivePage("KossRMA");
+
+            this.LoadResponses();
+            this.models = await this.KossService.GetKossModelsAsync();
+            this.kossRmas = await this.KossService.GetKossRmasAsync();
+            this.Search();
+            this.StateHasChanged();
+            //await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    private void Print()
+    {
+
+    }
+
+    private void Search()
+    {
+        if (this.filteredKossRmas != null && this.filteredKossRmas.Count > 0)
+            this.filteredKossRmas.Clear();
+
+        List<Data.Backoffice.Koss.KossRma> filtered = new();
+
+        if (this.kossRmas == null || this.kossRmas.Count == 0)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(this.searchText))
+        {
+            var filter = this.kossRmas.Where(x => x.FirstName.ToLower().Contains(this.searchText.ToLower()) || x.LastName.ToLower().Contains(this.searchText.ToLower()) ||
+                                                 x.StreetAddress.ToLower().Contains(this.searchText.ToLower()) || x.City.ToLower().Contains(this.searchText.ToLower()))
+                                                    .ToList().Where(x => (string.IsNullOrEmpty(this.searchCountry) ? true : x.Country.Contains(this.searchCountry))).ToList();
+
+            if (filter != null && filter.Count > 0)
+            {
+                var byFilter = filter.ConvertAll(x => new Data.Backoffice.Koss.KossRma
+                    {
+                        Id = x.Id,
+                        KossModelId = x.KossModelId,
+                        ProblemDescription = x.ProblemDescription,
+                        Vendor = x.Vendor,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        CoAddress = x.CoAddress,
+                        StreetAddress = x.StreetAddress,
+                        Zipcode = x.Zipcode,
+                        City = x.City,
+                        Phone = x.Phone,
+                        Email = x.Email,
+                        Date = x.Date,
+                        Finished = x.Finished,
+                        Receipt = x.Receipt,
+                        CustomReply = x.CustomReply,
+                        ReplyMessageId = x.ReplyMessageId,
+                        ReplyDate = x.ReplyDate,
+                        Country = x.Country
+                    });
+
+                filtered.AddRange(byFilter);
+            }
+        }
+        else
+        {
+            var all = this.kossRmas.Where(x => (string.IsNullOrEmpty(this.searchCountry) ? true : x.Country.Contains(this.searchCountry))).ToList().ConvertAll(x => new Data.Backoffice.Koss.KossRma
+                {
+                    Id = x.Id,
+                    KossModelId = x.KossModelId,
+                    ProblemDescription = x.ProblemDescription,
+                    Vendor = x.Vendor,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    CoAddress = x.CoAddress,
+                    StreetAddress = x.StreetAddress,
+                    Zipcode = x.Zipcode,
+                    City = x.City,
+                    Phone = x.Phone,
+                    Email = x.Email,
+                    Date = x.Date,
+                    Finished = x.Finished,
+                    Receipt = x.Receipt,
+                    CustomReply = x.CustomReply,
+                    ReplyMessageId = x.ReplyMessageId,
+                    ReplyDate = x.ReplyDate,
+                    Country = x.Country
+                });
+
+            filtered.AddRange(all);
+        }
+
+        this.filteredKossRmas = filtered;
+        this.StateHasChanged();
+    }
+
+    private void OnChangeCountry(ChangeEventArgs e)
+    {
+        this.searchCountry = e.Value.ToString();
+    }
+
+    private void OnchangeResponseMessage(ChangeEventArgs e)
+    {
+        var input = e.Value.ToString();
+        this.selectedResponseId = input;
+
+        if (input == "1" || input == "2" || input == "3")
+        {
+            if (this.responseMessages.TryGetValue(input, out string message))
+            {
+                message = message.Replace("[name]", this.selectedKossRma.FirstName);
+                //if (!string.IsNullOrEmpty(this.selectedKossRma.CoAddress))
+                //    message = message.Replace("Hägnadsgatan 21 A", this.selectedKossRma.StreetAddress + "\n" + this.selectedKossRma.CoAddress);
+                //else
+                message = message.Replace("Hägnadsgatan 21 A", this.selectedKossRma.StreetAddress);
+                message = message.Replace("54166", this.selectedKossRma.Zipcode);
+                message = message.Replace("Skövde", this.selectedKossRma.City);
+                this.responseMessage = message;
+            }
+
+            this.showResponseField = true;
+        }
+        else if (input == "4")
+        {
+            this.responseMessage = string.Empty;
+            this.showResponseField = true;
+        }
+        else
+        {
+            this.responseMessage = string.Empty;
+            this.showResponseField = false;
+        }
+
+        this.StateHasChanged();
+    }
+
+    private void OnchangeResponseMessageForce(string input)
+    {
+        if (input == "1" || input == "2" || input == "3")
+        {
+            if (this.responseMessages.TryGetValue(input, out string message))
+            {
+                message = message.Replace("[name]", this.selectedKossRma.FirstName);
+                //if (!string.IsNullOrEmpty(this.selectedKossRma.CoAddress))
+                //    message = message.Replace("Hägnadsgatan 21 A", this.selectedKossRma.StreetAddress + "\n" + this.selectedKossRma.CoAddress);
+                //else
+                message = message.Replace("Hägnadsgatan 21 A", this.selectedKossRma.StreetAddress);
+                message = message.Replace("54166", this.selectedKossRma.Zipcode);
+                message = message.Replace("Skövde", this.selectedKossRma.City);
+                this.responseMessage = message;
+            }
+
+            this.showResponseField = true;
+        }
+        else if (input == "4")
+        {
+            this.responseMessage = string.Empty;
+            this.showResponseField = true;
+        }
+        else
+        {
+            this.responseMessage = string.Empty;
+            this.showResponseField = false;
+        }
+
+        this.StateHasChanged();
+    }
+
+
+    private void Select(Data.Backoffice.Koss.KossRma koss)
+    {
+        //this.responseMessage = string.Empty;
+        //this.showResponseField = false;
+        this.selectedKossRma = koss;
+        this.OnchangeResponseMessageForce(this.selectedResponseId);
+        this.StateHasChanged();
+    }
+
+    private void SendEmail()
+    {
+        var success = this.EmailService.SendEmail(this.selectedKossRma, this.responseMessage, false);
+
+        if(success)
+        {
+            Console.WriteLine("Success");
+        }
+        else
+        {
+            Console.WriteLine("naa");
+        }
+    }
+
+    private string GetModelName(int id)
+    {
+        if (this.models == null)
+            return "";
+
+        var model = this.models.Where(x => x.Id == id).FirstOrDefault();
+
+        if (model == null || model.Name == null)
+            return "";
+
+        return model.Name;
+    }
+
+    private void LoadResponses()
+    {
+        this.responseMessages = new()
+            {
+              {"1", @"Hej [name]!
+
+Tyvärr är ditt kvittonummer felaktigt/ofullständigt.
+
+
+
+Vänligen skicka en bild på ditt kvitto/order/kontoutdrag.
+
+
+
+My Portapro" },
+
+                              {"2", @"Hej [name]!
+
+Vi har tagit emot och godkänner din reklamation. Utbyteskitet kommer att skickas till nedan angivna adress
+
+
+Hägnadsgatan 21 A
+54166  Skövde
+
+Är du osäker på hur du ska gå tillväga vid byte, titta på filmen på www.koss.se
+
+Med vänlig hälsning
+
+My Portapro" },
+
+                              {"3", @"Hej [name]!
+
+Vid denna typ av skada / saknat kvittonr, skall hörlurarna skickas in till oss.
+
+Tura Scandinavia AB
+My Porta Pro
+Energigatan 15 B
+434 37 Kungsbacka
+
+Med vänlig hälsning
+
+My Porta Pro" },
+            };
+    }
+}

@@ -33,7 +33,7 @@ namespace TuraIntranet.Data.Claims
                 }
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/claims/Claims/" + id);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims/" + id);
 
             var response = await api.GetResponse();
 
@@ -67,7 +67,7 @@ namespace TuraIntranet.Data.Claims
                 return this._claims;
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/claims/Claims");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims");
 
             var response = await api.GetResponse();
 
@@ -98,7 +98,7 @@ namespace TuraIntranet.Data.Claims
                 return this._currencies;
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/claims/ClaimCurrencies");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/ClaimCurrencies");
 
             var response = await api.GetResponse();
 
@@ -134,7 +134,7 @@ namespace TuraIntranet.Data.Claims
                 }
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/claims/ClaimCurrencies/" + id);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/ClaimCurrencies/" + id);
 
             var response = await api.GetResponse();
 
@@ -160,13 +160,13 @@ namespace TuraIntranet.Data.Claims
 
         public async Task UpdateClaim(Claim claim)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/claims/Claims/" + claim.Id);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims/" + claim.Id);
             bool success = await api.SendPutRequest(claim);
         }
 
         public async Task AddClaim(Claim claim)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/claims/Claims");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/claims/Claims");
             bool success = await api.SendPostRequest(claim);
         }
 

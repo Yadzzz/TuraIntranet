@@ -41,6 +41,8 @@ namespace TuraIntranet
             builder.Services.AddScoped<OrdersService>();
             builder.Services.AddScoped<FileService>();
             builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<KossService>();
+            builder.Services.AddScoped<EmailService>();
 
             //builder.Services.AddHsts(options =>
             //{
