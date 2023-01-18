@@ -80,6 +80,12 @@ namespace TuraIntranet.Data.Backoffice.Koss
             }
         }
 
+        public async Task<bool> UpdateKossModelAsync(KossRma kossRma)
+        {
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/koss/KossRmas");
+            bool success = await api.SendPutRequest(kossRma);
 
+            return success;
+        }
     }
 }

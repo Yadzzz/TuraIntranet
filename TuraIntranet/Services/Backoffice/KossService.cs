@@ -21,5 +21,10 @@ namespace TuraIntranet.Services.Backoffice
         {
             return this._kossManager.GetKossModelsAsync();
         }
+
+        public Task<bool> UpdateKossModelAsync(KossRma kossRma)
+        {
+            return this._kossManager.UpdateKossModelAsync(kossRma);
+        }
     }
 }

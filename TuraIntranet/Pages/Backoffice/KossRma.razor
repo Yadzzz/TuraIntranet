@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Backoffice.KossService KossService
 @inject Services.EmailService EmailService
+@inject Services.LabelService LabelService
 
 <PageTitle>Koss RMA</PageTitle>
 
@@ -66,9 +67,9 @@
                                     <tr @onclick=@(() => this.Select(koss))>
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@(koss.FirstName + " " + koss.LastName)</div></td>
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.StreetAddress</div></td>
-                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">@koss.Zipcode</td>
-                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">@koss.City</td>
-                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">@koss.Date</td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.Zipcode</div></td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.City</div></td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.Date</div></td>
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-dark btn-sm">Ändra</button>
@@ -76,7 +77,7 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item" @onclick=@Print>Skriv ut</a>
+                                                    <a class="dropdown-item" @onclick=@(async () => await this.Print(koss))>Skriv ut</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -118,11 +119,31 @@
                         <div class="form-group row" style="padding-left:25px;">
                             <div class="col-sm-11">
                                 <select name="nät" class="form-control country_code  form-control-sm" @onchange=@OnchangeResponseMessage>
-                                    <option value="0">Välj Svar</option>
-                                    <option value="1">Felaktigt Kvitto</option>
-                                    <option value="2">Godkänd</option>
-                                    <option value="3">Skicka In</option>
-                                    <option value="4">Fritext</option>
+                                    @if (this.selectedKossRma.Country == "sv")
+                                    {
+                                        <option value="0">Välj Svar</option>
+                                        <option value="1">Felaktigt Kvitto</option>
+                                        <option value="2">Godkänd</option>
+                                        <option value="3">Skicka In</option>
+                                        <option value="6">Fritext</option>
+                                    }
+                                    else if (this.selectedKossRma.Country == "no")
+                                    {
+                                        <option value="0">Välj Svar</option>
+                                        <option value="5">Godkjend</option>
+                                        <option value="6">Fritext</option>
+                                    }
+                                    else if (this.selectedKossRma.Country == "dk")
+                                    {
+                                        <option value="0">Välj Svar</option>
+                                        <option value="4">Godkänt</option>
+                                        <option value="6">Fritext</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="0">Välj Svar</option>
+                                        <option value="6">Fritext</option>
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -144,7 +165,7 @@
                                 @*<button class="btn btn-dark btn-block mb-4 mr-2">Klarmarkera</button>*@
                             </div>
                             <div class="col-xl-5 col-md-4">
-                                <button class="btn btn-dark btn-block mb-4 mr-2">Klarmarkera</button>
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Finish>Klarmarkera</button>
                             </div>
                         </div>
 
@@ -185,11 +206,6 @@
             this.StateHasChanged();
             //await JS.InvokeVoidAsync("loadDataTableComponent");
         }
-    }
-
-    private void Print()
-    {
-
     }
 
     private void Search()
@@ -275,6 +291,11 @@
         this.searchCountry = e.Value.ToString();
     }
 
+    private void Finish()
+    {
+        this.selectedKossRma.Finished = true;
+    }
+
     private void OnchangeResponseMessage(ChangeEventArgs e)
     {
         var input = e.Value.ToString();
@@ -342,7 +363,6 @@
         this.StateHasChanged();
     }
 
-
     private void Select(Data.Backoffice.Koss.KossRma koss)
     {
         //this.responseMessage = string.Empty;
@@ -356,8 +376,12 @@
     {
         var success = this.EmailService.SendEmail(this.selectedKossRma, this.responseMessage, false);
 
-        if(success)
+        if (success)
         {
+            this.selectedKossRma.ReplyMessageId = int.Parse(this.selectedResponseId);
+            this.selectedKossRma.CustomReply = this.responseMessage;
+            this.selectedKossRma.ReplyDate = DateTime.Now;
+
             Console.WriteLine("Success");
         }
         else
@@ -377,6 +401,23 @@
             return "";
 
         return model.Name;
+    }
+
+    private async Task Print(Data.Backoffice.Koss.KossRma rma)
+    {
+        try
+        {
+            byte[] bytes = this.LabelService.GenerateLablel(rma, this.GetModelName(rma.KossModelId));
+            if (bytes != null)
+            {
+                //byte[]? decompressed = TuraIntranet.Data.Backoffice.PdfCollector.Decompressor.Decompress(bytes);
+                await this.JS.InvokeVoidAsync("SavePdfFile", ("Label.pdf"), Convert.ToBase64String(bytes));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
     }
 
     private void LoadResponses()
@@ -421,6 +462,43 @@ Energigatan 15 B
 Med vänlig hälsning
 
 My Porta Pro" },
+                              {"5", @"Hei [name]!
+
+
+
+Vi har mottatt din reklamasjon og godkjenner denne. De nødvendige erstatningsdelene vil bli sendt til den adressen du har oppgitt. Er du usikker på hvordan du bytter elementsettet anbefaler vi deg å gå inn på www.myportapro.com hvor det ligger en instruksjonsvideo.
+
+
+
+Med vennlig hilsen
+
+
+
+Koss support
+
+Tura Scandinavia
+" },
+                            {"4", @"Hej [name]!
+
+
+
+Vi har modtaget din ansøgning og godkendt din reklamation.
+
+Et reparationskit bliver sendt til den adresse du har oplyst.
+
+Er du usikker på hvordan du monterer højttalerne,
+
+anbefaler vi dig at se filmen på www.myportapro.com
+
+
+
+Med venlig hilsen
+
+
+My Portapro
+
+Vi vil så gerne have dig som medlem på facebook
+Søg på Koss Danmark"}
             };
     }
 }

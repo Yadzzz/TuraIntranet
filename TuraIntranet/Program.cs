@@ -43,6 +43,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<NotificationService>();
             builder.Services.AddScoped<KossService>();
             builder.Services.AddScoped<EmailService>();
+            builder.Services.AddScoped<LabelService>();
 
             //builder.Services.AddHsts(options =>
             //{
