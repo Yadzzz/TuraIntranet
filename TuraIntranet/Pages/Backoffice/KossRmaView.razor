@@ -91,11 +91,11 @@
                                                         </div>
 
                                                         @*<div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Finished</label>
-                                                            <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Last Name" @bind-value="@this.kossRma.Finished">
-                                                            </div>
-                                                        </div>*@
+                                                    <label class="col-sm-3 col-form-label col-form-label-sm">Finished</label>
+                                                    <div class="col-sm-9">
+                                                    <input type="text" class="form-control form-control-sm" placeholder="Last Name" @bind-value="@this.kossRma.Finished">
+                                                    </div>
+                                                    </div>*@
 
                                                     </div>
 
@@ -167,7 +167,7 @@
                                                             </div>
                                                         </div>
 
-                                                         <div class="form-group row">
+                                                        <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Email</label>
                                                             <div class="col-sm-9">
                                                                 <input type="text" class="form-control form-control-sm" placeholder="Email" @bind-value="@this.kossRma.Email">
@@ -181,7 +181,7 @@
                                                             </div>
                                                         </div>
 
-                                                         <div class="form-group row">
+                                                        <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Reply Message Id</label>
                                                             <div class="col-sm-9">
                                                                 <input type="text" class="form-control form-control-sm" placeholder="ReplyMessageId" @bind-value="@this.kossRma.ReplyMessageId">
@@ -272,7 +272,7 @@
     {
         bool success = await this.KossService.UpdateKossModelAsync(this.kossRma);
 
-        if(success)
+        if (success)
         {
             await this.NotificationService.AlertSuccess("RMA Uppdaterad.");
         }
@@ -298,8 +298,6 @@
         if (model == null || model.Name == null)
             return this.kossRma.KossModelId.ToString();
 
-        Console.WriteLine(model.Name);
-        
         return model.Name;
     }
 }
