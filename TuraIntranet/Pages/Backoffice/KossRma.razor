@@ -6,6 +6,7 @@
 @inject TuraIntranet.Services.Backoffice.KossService KossService
 @inject Services.EmailService EmailService
 @inject Services.LabelService LabelService
+@inject Services.NotificationService Notification
 
 <PageTitle>Koss RMA</PageTitle>
 
@@ -72,7 +73,7 @@
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.Date</div></td>
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm">Ändra</button>
+                                                <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => this.ViewRma(koss.Id))>Ändra</button>
                                                 <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                                 </button>
@@ -291,9 +292,31 @@
         this.searchCountry = e.Value.ToString();
     }
 
-    private void Finish()
+    private async Task Finish()
     {
         this.selectedKossRma.Finished = true;
+        bool success = await this.KossService.UpdateKossModelAsync(this.selectedKossRma);
+
+        if(success)
+        {
+            if (this.filteredKossRmas.Contains(this.selectedKossRma))
+            {
+                this.filteredKossRmas.Remove(this.selectedKossRma);
+            }
+
+            if (this.kossRmas.Contains(this.selectedKossRma))
+            {
+                this.kossRmas.Remove(this.selectedKossRma);
+            }
+
+            this.selectedKossRma = null;
+
+            await this.Notification.AlertSuccess("RMA Uppdaterad");
+        }
+        else
+        {
+            await this.Notification.AlertError("Kunde inte uppdatera RMA");
+        }
     }
 
     private void OnchangeResponseMessage(ChangeEventArgs e)
@@ -388,6 +411,11 @@
         {
             Console.WriteLine("naa");
         }
+    }
+
+    private void ViewRma(int id)
+    {
+        this.NavManager.NavigateTo(("/kossrmaview/" + id), false);
     }
 
     private string GetModelName(int id)

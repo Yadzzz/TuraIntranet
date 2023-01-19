@@ -89,30 +89,39 @@
     private List<TuraIntranet.Data.Networks.Network>? filteredNetworks;
     private NetworksDataTableComponent? tableRef;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            this.PageNavService.UpdateActiveSection("");
-            this.PageNavService.UpdateActivePage("IT-Admin");
+        this.PageNavService.UpdateActiveSection("");
+        this.PageNavService.UpdateActivePage("IT-Admin");
 
-            this.networks = await this.NetworkService.GetNetworks();
-            //this.filteredNetworks = this.networks.ToList();
-            //this.filteredNetworks = this.networks.ConvertAll(s => new Data.Networks.Network
-            //    {
-            //        Id = s.Id,
-            //        Address = s.Address,
-            //        NetworkName = s.NetworkName,
-            //        SubnetAddress= s.SubnetAddress,
-            //        VlanId = s.VlanId,
-            //        NetworkIps = s.NetworkIps
-            //    });
-
-            this.StateHasChanged();
-
-            //await JS.InvokeVoidAsync("loadDataTableComponent");
-        }
+        this.networks = await this.NetworkService.GetNetworks();
+        this.StateHasChanged();
     }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        this.PageNavService.UpdateActiveSection("");
+    //        this.PageNavService.UpdateActivePage("IT-Admin");
+
+    //        this.networks = await this.NetworkService.GetNetworks();
+    //        //this.filteredNetworks = this.networks.ToList();
+    //        //this.filteredNetworks = this.networks.ConvertAll(s => new Data.Networks.Network
+    //        //    {
+    //        //        Id = s.Id,
+    //        //        Address = s.Address,
+    //        //        NetworkName = s.NetworkName,
+    //        //        SubnetAddress= s.SubnetAddress,
+    //        //        VlanId = s.VlanId,
+    //        //        NetworkIps = s.NetworkIps
+    //        //    });
+
+    //        this.StateHasChanged();
+
+    //        //await JS.InvokeVoidAsync("loadDataTableComponent");
+    //    }
+    //}
 
     public void ShowNetworkIp(string networkIpId)
     {

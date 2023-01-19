@@ -85,14 +85,22 @@
 </div>
 
 @code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            this.PageNavService.UpdateActiveSection("Logistik");
-            this.PageNavService.UpdateActivePage("Orderstatus");
+        this.PageNavService.UpdateActiveSection("Logistik");
+        this.PageNavService.UpdateActivePage("Orderstatus");
 
-            await JS.InvokeVoidAsync("loadDataTableComponent");
-        }
+        await JS.InvokeVoidAsync("loadDataTableComponent");
     }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        this.PageNavService.UpdateActiveSection("Logistik");
+    //        this.PageNavService.UpdateActivePage("Orderstatus");
+
+    //        await JS.InvokeVoidAsync("loadDataTableComponent");
+    //    }
+    //}
 }

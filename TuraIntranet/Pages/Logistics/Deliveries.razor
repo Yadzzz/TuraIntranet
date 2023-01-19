@@ -212,20 +212,29 @@
 @code {
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentModel>? _shipments;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            this.PageNavService.UpdateActiveSection("Logistik");
-            this.PageNavService.UpdateActivePage("Inleveranser");
+        this.PageNavService.UpdateActiveSection("Logistik");
+        this.PageNavService.UpdateActivePage("Inleveranser");
 
-            await this.GetShipments();
-            this.StateHasChanged();
-
-            //await JS.InvokeVoidAsync("loadDataTableHtml5Component");
-            //await JS.InvokeVoidAsync("OnScrollEvent");
-        }
+        await this.GetShipments();
+        this.StateHasChanged();
     }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        this.PageNavService.UpdateActiveSection("Logistik");
+    //        this.PageNavService.UpdateActivePage("Inleveranser");
+
+    //        await this.GetShipments();
+    //        this.StateHasChanged();
+
+    //        //await JS.InvokeVoidAsync("loadDataTableHtml5Component");
+    //        //await JS.InvokeVoidAsync("OnScrollEvent");
+    //    }
+    //}
 
     private void ShowDelivery(string delivery)
     {

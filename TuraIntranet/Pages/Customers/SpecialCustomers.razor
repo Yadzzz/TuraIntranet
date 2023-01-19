@@ -83,21 +83,34 @@
     private List<TuraIntranet.Data.Customers.SpecialCustomerModel>? specialCustomers;
     private Dictionary<string, TuraIntranet.Data.Customers.CustomerModel>? customers;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            this.PageNavService.UpdateActiveSection("Kunder");
-            this.PageNavService.UpdateActivePage("Specialkunder");
+        this.PageNavService.UpdateActiveSection("Kunder");
+        this.PageNavService.UpdateActivePage("Specialkunder");
 
-            this.specialCustomers = new();
-            this.customers = new();
+        this.specialCustomers = new();
+        this.customers = new();
 
-            await this.LoadCustomerData();
-            this.StateHasChanged();
-            await JS.InvokeVoidAsync("loadDataTableComponent");
-        }
+        await this.LoadCustomerData();
+        this.StateHasChanged();
+        await JS.InvokeVoidAsync("loadDataTableComponent");
     }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        this.PageNavService.UpdateActiveSection("Kunder");
+    //        this.PageNavService.UpdateActivePage("Specialkunder");
+
+    //        this.specialCustomers = new();
+    //        this.customers = new();
+
+    //        await this.LoadCustomerData();
+    //        this.StateHasChanged();
+    //        await JS.InvokeVoidAsync("loadDataTableComponent");
+    //    }
+    //}
 
     private async Task LoadCustomerData()
     {

@@ -70,18 +70,27 @@
 
     private List<TuraIntranet.Data.Info.InfoMessageModel>? infoMessages;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            this.PageNavService.UpdateActiveSection("Info");
-            this.PageNavService.UpdateActivePage("Info");
+        this.PageNavService.UpdateActiveSection("Info");
+        this.PageNavService.UpdateActivePage("Info");
 
-            this.infoMessages = await this.InfoService.GetInfoMessagesAsync();
-            this.StateHasChanged();
-            //await JS.InvokeVoidAsync("loadDataTableComponent");
-        }
+        this.infoMessages = await this.InfoService.GetInfoMessagesAsync();
+        this.StateHasChanged();
     }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        this.PageNavService.UpdateActiveSection("Info");
+    //        this.PageNavService.UpdateActivePage("Info");
+
+    //        this.infoMessages = await this.InfoService.GetInfoMessagesAsync();
+    //        this.StateHasChanged();
+    //        //await JS.InvokeVoidAsync("loadDataTableComponent");
+    //    }
+    //}
 
     private void EditInfoMessage(int id)
     {
