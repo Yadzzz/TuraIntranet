@@ -83,7 +83,7 @@ namespace TuraIntranet.Data.Backoffice.Koss
             }
         }
 
-        public async Task<List<KossHeadphoneModel>> GetKossModelsAsync()
+        public async Task<List<KossHeadphoneModel>?> GetKossModelsAsync()
         {
             if (this._kossHeadphones != null && this._kossHeadphones.Count > 0)
             {
