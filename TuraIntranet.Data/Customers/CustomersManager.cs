@@ -22,7 +22,7 @@ namespace TuraIntranet.Data.Customers
                 return this._specialCustomers;
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/SpecialCustomers");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/SpecialCustomers");
 
             var response = await api.GetResponse();
 
@@ -58,7 +58,7 @@ namespace TuraIntranet.Data.Customers
                 }
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/SpecialCustomers/" + id);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/SpecialCustomers/" + id);
 
             var response = await api.GetResponse();
 
@@ -111,7 +111,7 @@ namespace TuraIntranet.Data.Customers
 
         public async Task<CustomerModel?> GetCustomerAsync(string id)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/Customers/" + id);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/" + id);
 
             var response = await api.GetResponse();
 
@@ -137,7 +137,7 @@ namespace TuraIntranet.Data.Customers
 
         public async Task<List<CustomerModel>> GetCustomerByNameAsync(string name)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/Customers/getbyname/" + name);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/getbyname/" + name);
 
             var response = await api.GetResponse();
 
@@ -163,7 +163,7 @@ namespace TuraIntranet.Data.Customers
 
         public async Task<List<CustomerModel>> GetCustomerByPostalCodeAsync(string postalCode)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/Customers/getbypostalcode/" + postalCode);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/getbypostalcode/" + postalCode);
 
             var response = await api.GetResponse();
 
@@ -189,7 +189,7 @@ namespace TuraIntranet.Data.Customers
 
         public async Task<List<CustomerModel>> GetCustomerByCityAsync(string city)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/Customers/getbycity/" + city);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/Customers/getbycity/" + city);
 
             var response = await api.GetResponse();
 
@@ -215,13 +215,13 @@ namespace TuraIntranet.Data.Customers
 
         public async Task AddSpecialCustomer(SpecialCustomerModel specialCustomer)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/SpecialCustomers");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/SpecialCustomers");
             bool success = await api.SendPostRequest(specialCustomer);
         }
 
         public async Task UpdateSpecialCustomer(int id, SpecialCustomerModel specialCustomer)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/customers/SpecialCustomers/" + id);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/customers/SpecialCustomers/" + id);
             bool success = await api.SendPutRequest(specialCustomer);
 
             //if (this._specialCustomers != null)

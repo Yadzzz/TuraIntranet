@@ -40,7 +40,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 return this._shipments;
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/Shipments");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/Shipments");
 
             var response = await api.GetResponse();
 
@@ -79,7 +79,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
 
             if(shipment == null)
             {
-                APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/Shipments/" + id);
+                APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/Shipments/" + id);
 
                 var response = await api.GetResponse();
 
@@ -115,7 +115,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 return this._shipmentEmployees;
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/ShipmentEmployee");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentEmployee");
 
             var response = await api.GetResponse();
 
@@ -141,19 +141,19 @@ namespace TuraIntranet.Data.Logistics.Shipments
 
         public async Task UpdateShipment(ShipmentModel shipmentModel)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/Shipments/");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/Shipments/");
             bool success = await api.SendPutRequest(shipmentModel);
         }
 
         public async Task AddUpdate(ShipmentUpdateData shipmentUpdateData)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/ShipmentUpdate/");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentUpdate/");
             bool success = await api.SendPostRequest(shipmentUpdateData);
         }
 
         public async Task AddShipment(ShipmentModel shipmentModel)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/Shipments/");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/Shipments/");
             bool success = await api.SendPostRequest(shipmentModel);
         }
 
@@ -177,7 +177,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 return this._shipmentReceivingCompanies;
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/ShipmentReceivingCompany");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentReceivingCompany");
 
             var response = await api.GetResponse();
 
@@ -222,7 +222,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 return this._shipmentStatuses;
             }
 
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/ShipmentStatus");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentStatus");
 
             var response = await api.GetResponse();
 
@@ -275,13 +275,13 @@ namespace TuraIntranet.Data.Logistics.Shipments
 
         public async Task AddDeviation(ShipmentDeviationData deviation)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/ShipmentDeviations");
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentDeviations");
             bool success = await api.SendPostRequest(deviation);
         }
 
         public async Task UpdateDeviation(ShipmentDeviationData deviation)
         {
-            APIRequest api = new APIRequest("https://apitest.turascandinavia.com/api/v1/intranet/logistics/shipments/ShipmentDeviations/" + deviation.ShipmentId);
+            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/shipments/ShipmentDeviations/" + deviation.ShipmentId);
             bool success = await api.SendPutRequest(deviation);
         }
     }
