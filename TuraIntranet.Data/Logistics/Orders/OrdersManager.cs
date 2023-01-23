@@ -19,7 +19,7 @@ namespace TuraIntranet.Data.Logistics.Orders
                 return _orders;
             }
 
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/orders/Orders");
+            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/intranet/logistics/orders/Orders");
 
             var response = await api.GetResponse();
 
@@ -45,7 +45,7 @@ namespace TuraIntranet.Data.Logistics.Orders
 
         public async Task<List<O08T1>> GetNavOrderAsync(string id, string type)
         {
-            APIRequest api = new APIRequest("https://localhost:7245/api/v1/intranet/logistics/orders/Orders/" + id + "/" + type);
+            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/intranet/logistics/orders/Orders/" + id + "/" + type);
 
             var response = await api.GetResponse();
 
