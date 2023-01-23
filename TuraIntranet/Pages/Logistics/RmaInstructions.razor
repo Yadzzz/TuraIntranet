@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
 <link href="assets/css/components/tabs-accordian/custom-tabs.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="assets/css/elements/alert.css">
 
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
@@ -38,70 +39,88 @@
                 </div>
             </div>
 
-            @*@if (this.rmaData != null)*@
-            @*{*@
-            <div class="col-xl-8 col-lg-12 col-sm-12  layout-spacing">
-                <div class="statbox widget box box-shadow">
+            @if (this.rmaData != null && this.rmaData.Item != null && this.rmaData.L62T1 != null)
+            {
+                <div class="col-xl-8 col-lg-12 col-sm-12  layout-spacing">
 
-                    <div class="widget-header">
-                        <div class="row">
-                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>INFO</h4>
-                            </div>
+                    <br />
+
+                    @if (this.rmaData.Item.Activity_Code == "4" || this.rmaData.Item.Activity_Code == "5" ||
+                        this.rmaData.Item.Activity_Code == "6" || this.rmaData.Item.Activity_Code == "7")
+                    {
+                        <div class="alert alert-light-danger border-0 mb-2" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg> ... </svg></button>
+                            <strong>Ej RMA!</strong> @(this.activityCodes?.Where(x => x.Code == this.rmaData.Item.Activity_Code).FirstOrDefault()?.Description)
                         </div>
-                    </div>
+                        <br />
+                    }
 
-                    <div class="widget-content widget-content-area vertical-line-pill">
-                        <div class="row mb-4 mt-3">
-                            <div class="col-sm-3 col-12">
-                                <div class="nav flex-column nav-pills mb-sm-0 mb-3 text-center mx-auto" id="v-line-pills-tab" role="tablist" aria-orientation="vertical">
-                                    <a class="nav-link active mb-3" id="v-line-pills-home-tab" data-toggle="pill" href="#v-line-pills-home" role="tab" aria-controls="v-line-pills-home" aria-selected="true">RMA</a>
-                                    <a class="nav-link mb-3  text-center" id="v-line-pills-navision-tab" data-toggle="pill" href="#v-line-pills-navision" role="tab" aria-controls="v-line-pills-navision" aria-selected="false">Navision</a>
-                                    <a class="nav-link mb-3  text-center" id="v-line-pills-astro-tab" data-toggle="pill" href="#v-line-pills-astro" role="tab" aria-controls="v-line-pills-astro" aria-selected="false">Astro</a>
+                    <div class="statbox widget box box-shadow">
+
+                        <div class="widget-header">
+                            <div class="row">
+                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                    <h4>@this.rmaData.Item.Description</h4>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-sm-9 col-12">
-                                <div class="tab-content" id="v-line-pills-tabContent">
-                                    <div class="tab-pane fade show active" id="v-line-pills-home" role="tabpanel" aria-labelledby="v-line-pills-home-tab">
-                                        <div class="media">
-                                            <img class="mr-3 rounded-circle" src="assets/img/90x90.jpg" alt="Generic placeholder image">
-                                            <div class="media-body">
-                                                <h5 class="mt-0">ITEMNAME</h5>
-                                                ITEMINFO
+                        <div class="widget-content widget-content-area vertical-line-pill">
+                            <div class="row mb-4 mt-3">
+                                <div class="col-sm-3 col-12">
+                                    <div class="nav flex-column nav-pills mb-sm-0 mb-3 text-center mx-auto" id="v-line-pills-tab" role="tablist" aria-orientation="vertical">
+                                        <a class="nav-link active mb-3" id="v-line-pills-home-tab" data-toggle="pill" href="#v-line-pills-home" role="tab" aria-controls="v-line-pills-home" aria-selected="true">RMA</a>
+                                        <a class="nav-link mb-3  text-center" id="v-line-pills-navision-tab" data-toggle="pill" href="#v-line-pills-navision" role="tab" aria-controls="v-line-pills-navision" aria-selected="false">Navision</a>
+                                        <a class="nav-link mb-3  text-center" id="v-line-pills-astro-tab" data-toggle="pill" href="#v-line-pills-astro" role="tab" aria-controls="v-line-pills-astro" aria-selected="false">Astro</a>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-9 col-12">
+                                    <div class="tab-content" id="v-line-pills-tabContent">
+                                        <div class="tab-pane fade show active" id="v-line-pills-home" role="tabpanel" aria-labelledby="v-line-pills-home-tab">
+                                            <div class="media">
+                                                <img class="mr-3 rounded-circle" src="@(this.GetImagePath(this.rmaData.Item.No_))" alt="No Image">
+                                                <div class="media-body">
+                                                    <h5 class="mt-0">@this.rmaData.Item.No_</h5>
+                                                    @this.rmaData.Item.Description
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="v-line-pills-navision" role="tabpanel" aria-labelledby="v-line-pills-navision-tab">
+                                        <div class="tab-pane fade" id="v-line-pills-navision" role="tabpanel" aria-labelledby="v-line-pills-navision-tab">
+                                            <h4 class="mb-4">Navision Data</h4>
 
-                                        <h4 class="mb-4">Navision Data</h4>
-                                        <p class="mb-4">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                        </p>
+                                            <div><div style="display:inline-block; width:170px;"><b>Artikelnummber</b></div> @this.rmaData.Item.No_</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Benämning</b></div> @this.rmaData.Item.Description</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>EAN / UPC</b></div> @this.rmaData.Item.Primary_EAN_Code</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Lev artikelnummer</b></div> @this.rmaData.Item.Vendor_Item_No_</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Leverantör</b></div> @this.rmaData.Item.Vendor_Name</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Tillverkarkod</b></div> @this.rmaData.Item.Manufacturer_Code</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Aktivkod</b></div> @this.rmaData.Item.Activity_Code</div>
+                                            @*<div style="display:inline-block;"><div style="display:inline-block; width:170px;"><b>Uppdaterad</b></div> </div>*@
 
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                        </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-line-pills-astro" role="tabpanel" aria-labelledby="v-line-pills-astro-tab">
+                                            <h4 class="mb-4">Astro Data</h4>
 
-                                    </div>
-                                    <div class="tab-pane fade" id="v-line-pills-astro" role="tabpanel" aria-labelledby="v-line-pills-astro-tab">
-                                        <h4 class="mb-4">Astro Data</h4>
-                                        <p class="mb-4">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                        </p>
+                                            <div><div style="display:inline-block; width:170px;"><b>Företag</b></div> @this.rmaData.L62T1.divcode</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Tillg. saldo</b></div>@(string.Format("{0:0.00}", this.rmaData.L62T1.baltot))</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Ej tillg. saldo</b></div> @this.rmaData.L62T1.balnotav</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>PlockMHO saldo</b></div> @(string.Format("{0:0.00}", this.rmaData.L62T1.balpl))</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Plock-MHO</b></div> @this.rmaData.L62T1.pmha</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Buffert-MHO</b></div> @this.rmaData.L62T1.wmha</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Önskad lastbärare</b></div> @this.rmaData.L62T1.wldct</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Reg-datum</b></div> @this.rmaData.L62T1.regdate</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Uppd-datum</b></div> @this.rmaData.L62T1.upddate</div>
 
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                        </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
-            </div>
-            @*}*@
+            }
 
         </div>
     </div>
@@ -113,31 +132,34 @@
     private string eanOrUpcInput = string.Empty;
 
     private Data.Logistics.Rma.RmaData? rmaData;
+    private List<Data.Logistics.Rma.ActivityCode> activityCodes;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         this.PageNavService.UpdateActiveSection("Logistik");
         this.PageNavService.UpdateActivePage("RmaInformation");
+
+        this.activityCodes = await this.RmaService.GetActivityCodes();
     }
 
     private async Task Search()
     {
         rmaData = null;
 
-        if (string.IsNullOrEmpty(this.articleNumberInput))
+        if (!string.IsNullOrEmpty(this.articleNumberInput))
         {
             this.rmaData = await this.RmaService.GetRmaInformationAsync(this.articleNumberInput, "id");
 
-            if (this.rmaData == null)
+            if (this.rmaData == null || this.rmaData.Item == null || this.rmaData.L62T1 == null)
             {
                 await this.Notification.AlertError("Kunde inte hitta Id [" + this.articleNumberInput + "]");
             }
         }
-        else if (string.IsNullOrEmpty(this.eanOrUpcInput))
+        else if (!string.IsNullOrEmpty(this.eanOrUpcInput))
         {
             this.rmaData = await this.RmaService.GetRmaInformationAsync(this.eanOrUpcInput, "code");
 
-            if (this.rmaData == null)
+            if (this.rmaData == null || this.rmaData.Item == null || this.rmaData.L62T1 == null)
             {
                 await this.Notification.AlertError("Kunde inte hitta EAN/UPC [" + this.eanOrUpcInput + "]");
             }
@@ -149,5 +171,10 @@
         }
 
         this.StateHasChanged();
+    }
+
+    private string GetImagePath(string itemId)
+    {
+        return "https://www.turascandinavia.com/image/" + itemId + "ver.jpg";
     }
 }
