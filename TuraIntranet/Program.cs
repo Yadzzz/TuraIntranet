@@ -45,6 +45,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<EmailService>();
             builder.Services.AddScoped<LabelService>();
             builder.Services.AddScoped<RmaInformationService>();
+            builder.Services.AddScoped<EANGeneratorService>();
 
             //builder.Services.AddHsts(options =>
             //{

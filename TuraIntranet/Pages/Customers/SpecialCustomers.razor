@@ -23,21 +23,25 @@
                     <center><h5>Specialkunder</h5></center>
                     <br />
 
-                    <table id="zero-config" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Kundnummer</th>
-                                <th>Företag</th>
-                                @*<th>Uppdaterad</th>*@
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (this.specialCustomers != null && this.customers != null && this.specialCustomers.Count > 0)
-                            {
-                                foreach (var cust in this.specialCustomers)
+                    @if (this.specialCustomers != null && this.customers != null && this.specialCustomers.Count > 0)
+                    {
+                        <table id="zero-config" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Kundnummer</th>
+                                    <th>Företag</th>
+                                    @*<th>Uppdaterad</th>*@
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cust in this.specialCustomers)
                                 {
-                                    var customerData = this.customers[cust.CustomerNumber];
+                                    @*var customerData = this.customers[cust.CustomerNumber];*@
+                                    var customerData = this.GetCustomer(cust.CustomerNumber);
+
+                                    if (customerData == null)
+                                        continue;
 
                                     <tr>
                                         <td>@cust.CustomerNumber</td>
@@ -47,29 +51,37 @@
                                             <div class="btn-group">
                                                 <button class="btn btn-dark btn-sm" @onclick=@(() => this.ShowSpecialCustomer(cust.CustomerNumber))>Visa</button>
                                             </div>
-                                           @* <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => this.ShowSpecialCustomer(cust.CustomerNumber))>Ändra</button>
-                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item" @onclick=@(() => this.OnDelete(cust))>Radera</a>
-                                                </div>
-                                            </div>*@
+                                            @* <div class="btn-group">
+                                    <button type="button" class="btn btn-dark btn-sm" @onclick=@(() => this.ShowSpecialCustomer(cust.CustomerNumber))>Ändra</button>
+                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                    <a class="dropdown-item" @onclick=@(() => this.OnDelete(cust))>Radera</a>
+                                    </div>
+                                    </div>*@
                                         </td>
                                     </tr>
                                 }
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Kundnummer</th>
-                                <th>Företag</th>
-                                @*<th>Uppdaterad</th>*@
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Kundnummer</th>
+                                    <th>Företag</th>
+                                    @*<th>Uppdaterad</th>*@
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    }
+                    else if (this.isLoading)
+                    {
+                        <div class="col-xl-2 col-md-4">
+                            <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                        </div>
+
+                        <br />
+                    }
                 </div>
             </div>
 
@@ -112,6 +124,16 @@
     //    }
     //}
 
+    private Data.Customers.CustomerModel GetCustomer(string customerNumber)
+    {
+        if (this.customers.TryGetValue(customerNumber, out Data.Customers.CustomerModel customer))
+        {
+            return customer;
+        }
+
+        return null;
+    }
+
     private async Task LoadCustomerData()
     {
         this.specialCustomers = await this.CustomerService.GetSpecialCustomersAsync();
@@ -124,7 +146,7 @@
 
         this.customers = await this.CustomerService.GetSpecialCustomersData();
 
-        if(this.customers == null)
+        if (this.customers == null)
         {
             await this.NotificationService.AlertError("[ERROR] Could not get data");
             return;
@@ -163,5 +185,4 @@
         await this.NotificationService.AlertSuccess("Specialkund Inaktiverad.");
         this.StateHasChanged();
     }
-
 }

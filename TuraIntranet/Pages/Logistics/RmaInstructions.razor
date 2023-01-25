@@ -95,7 +95,8 @@
                                             <div><div style="display:inline-block; width:170px;"><b>Lev artikelnummer</b></div> @this.rmaData.Item.Vendor_Item_No_</div>
                                             <div><div style="display:inline-block; width:170px;"><b>Leverantör</b></div> @this.rmaData.Item.Vendor_Name</div>
                                             <div><div style="display:inline-block; width:170px;"><b>Tillverkarkod</b></div> @this.rmaData.Item.Manufacturer_Code</div>
-                                            <div><div style="display:inline-block; width:170px;"><b>Aktivkod</b></div> @this.rmaData.Item.Activity_Code</div>
+                                            <div><div style="display:inline-block; width:170px;"><b>Aktivkod</b></div> @this.rmaData.Item.Activity_Code
+                                            (@(this.activityCodes?.Where(x => x.Code == this.rmaData.Item.Activity_Code).FirstOrDefault()?.Description))</div>
                                             @*<div style="display:inline-block;"><div style="display:inline-block; width:170px;"><b>Uppdaterad</b></div> </div>*@
 
                                         </div>

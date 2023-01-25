@@ -29,21 +29,21 @@
 
                     <hr />
 
-                    <table id="zero-config" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Utskrivet</th>
-                                <th>Ordertyp</th>
-                                <th>Status</th>
-                                <th>Orderrader</th>
-                                <th>Frisläppt</th>
-                                <th>Plockat</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (this.orders != null && this.orders.Count > 0)
-                            {
-                                foreach (var order in this.orders)
+                    @if (this.orders != null && this.orders.Count > 0)
+                    {
+                        <table id="zero-config" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Utskrivet</th>
+                                    <th>Ordertyp</th>
+                                    <th>Status</th>
+                                    <th>Orderrader</th>
+                                    <th>Frisläppt</th>
+                                    <th>Plockat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in this.orders)
                                 {
                                     <tr>
                                         <td>@order.regdate</td>
@@ -54,9 +54,17 @@
                                         <td>@order.nopordl</td>
                                     </tr>
                                 }
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    }
+                    else if (this.isLoading)
+                    {
+                        <div class="col-xl-2 col-md-4">
+                            <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                        </div>
+
+                        <br />
+                    }
                 </div>
             </div>
 
@@ -68,6 +76,7 @@
 
 @code {
     private List<TuraIntranet.Data.Logistics.Orders.R08T1> orders;
+    private bool isLoading = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
