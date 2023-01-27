@@ -25,7 +25,7 @@ namespace TuraIntranet.Data.Backoffice.Koss
                 return this._kossRma;
             }
 
-            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/koss/KossRmas");
+            APIRequest api = new APIRequest("/api/v1/koss/KossRmas");
 
             var response = await api.GetResponse();
 
@@ -59,7 +59,7 @@ namespace TuraIntranet.Data.Backoffice.Koss
                     return rma;
             }
 
-            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/koss/KossRmas/" + id);
+            APIRequest api = new APIRequest("/api/v1/koss/KossRmas/" + id);
 
             var response = await api.GetResponse();
 
@@ -90,7 +90,7 @@ namespace TuraIntranet.Data.Backoffice.Koss
                 return this._kossHeadphones;
             }
 
-            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/koss/KossHeadphoneModels");
+            APIRequest api = new APIRequest("/api/v1/koss/KossHeadphoneModels");
 
             var response = await api.GetResponse();
 
@@ -116,7 +116,7 @@ namespace TuraIntranet.Data.Backoffice.Koss
 
         public async Task<bool> UpdateKossModelAsync(KossRma kossRma)
         {
-            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/koss/KossRmas/" + kossRma.Id);
+            APIRequest api = new APIRequest("/api/v1/koss/KossRmas/" + kossRma.Id);
             bool success = await api.SendPutRequest(kossRma);
 
             return success;

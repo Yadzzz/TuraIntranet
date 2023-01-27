@@ -1,9 +1,16 @@
-﻿using System.Runtime.CompilerServices;
+﻿using TuraIntranet.Data.EAN;
 
-namespace TuraIntranet.Services
+namespace TuraIntranet.Services.EAN
 {
-    public class EANGeneratorService
+    public class EANService
     {
+        private EANManager eanManager;
+
+        public EANService()
+        {
+            this.eanManager = new();
+        }
+
         /// <summary>
         /// Calculates Check Digit for EAN-13
         /// </summary>
@@ -18,9 +25,9 @@ namespace TuraIntranet.Services
 
             //Check if given data length is lower than 12 digits
 
-            if(temp.Length < 12)
+            if (temp.Length < 12)
             {
-                for(int i = temp.Length; i < 12; i++)
+                for (int i = temp.Length; i < 12; i++)
                 {
                     temp = "0" + temp;
                 }
@@ -70,6 +77,11 @@ namespace TuraIntranet.Services
             }
             int checkSum = (10 - (sum % 10)) % 10;
             return $"{temp}{checkSum}";
+        }
+
+        public Task<List<EanPrefix>?> GetEanPrefixes()
+        {
+            return this.eanManager.GetEanPrefixesAsync();
         }
     }
 }

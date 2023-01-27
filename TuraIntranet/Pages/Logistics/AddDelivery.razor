@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
+@inject NotificationService Notification
 
 <PageTitle>Inleverans - Lägg till</PageTitle>
 
@@ -207,19 +208,19 @@
     {
         if(this._shipment == null || this._shipment.Shipment == null)
         {
-            JS.InvokeVoidAsync("alert", "ERROR #F301");
+            await this.Notification.AlertError("ERROR #F301");
             return;
         }
 
         if (this._updatedBy == 0 || !this._shipment.Shipment.ReceivedBy.HasValue || this._shipment.Shipment.ReceivedBy.Value == 0)
         {
-            JS.InvokeVoidAsync("alert", "Välj Användare");
+            await this.Notification.AlertError("Välj Mottagare");
             return;
         }
 
         if (!this._shipment.Shipment.ReceivingCompany.HasValue || this._shipment.Shipment.ReceivingCompany.Value == 0)
         {
-            JS.InvokeVoidAsync("alert", "Välj Mottagare");
+            await this.Notification.AlertError("Välj Mottagare");
             return;
         }
 
@@ -243,7 +244,7 @@
         this.ShipmentService.AddShipment(this._shipment);
         this.ShipmentService.FlushShipments();
         //this.NavManager.NavigateTo("/inleveranser");
-        await JS.InvokeVoidAsync("alert", "Inleverans tillagd");
+        await this.Notification.AlertSuccess("Inleverans tillagd");
     }
 
     private void NullCheckingModel()

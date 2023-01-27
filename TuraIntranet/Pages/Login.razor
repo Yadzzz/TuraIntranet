@@ -7,6 +7,7 @@
 @inject IJSRuntime js
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
+@inject NotificationService notification
 
 @*<button type="button" @onclick=onLogin>Login</button>*@
 
@@ -70,7 +71,8 @@
     {
         if(string.IsNullOrEmpty(this.loginModel.Username) || string.IsNullOrEmpty(this.loginModel.Password))
         {
-            await js.InvokeVoidAsync("alert", "Please fill the required fields");
+            //await js.InvokeVoidAsync("alert", "Please fill the required fields");
+            await this.notification.AlertError("Please fill the required fields!");
             return;
         }
 
@@ -80,7 +82,8 @@
         {
             if (userAccount == null)
             {
-                await js.InvokeVoidAsync("alert", error);
+                //await js.InvokeVoidAsync("alert", error);
+                await this.notification.AlertError(error);
                 this.loginModel.Username = string.Empty;
                 this.loginModel.Password = string.Empty;
 
@@ -96,7 +99,8 @@
         }
         else
         {
-            await js.InvokeVoidAsync("alert", error);
+            //await js.InvokeVoidAsync("alert", error);
+            await this.notification.AlertError(error);
         }
 
         this.StateHasChanged();

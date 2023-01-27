@@ -24,19 +24,19 @@
                     <center><h5>Meddelanden</h5></center>
                     <br />
 
-                    <table id="zero-config" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Uppdaterad</th>
-                                <th>Rubrik</th>
-                                <th>Meddelande</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (this.infoMessages != null && this.infoMessages.Count > 0)
-                            {
-                                foreach (var info in this.infoMessages)
+                    @if (this.infoMessages != null && this.infoMessages.Count > 0)
+                    {
+                        <table id="zero-config" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Uppdaterad</th>
+                                    <th>Rubrik</th>
+                                    <th>Meddelande</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var info in this.infoMessages)
                                 {
                                     <tr>
                                         <td>@info.Updated</td>
@@ -55,9 +55,19 @@
                                         </td>
                                     </tr>
                                 }
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    }
+                    else if (this.isLoading)
+                    {
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
+
+                        <br />
+                    }
                 </div>
             </div>
         </div>
@@ -67,8 +77,8 @@
 </div>
 
 @code {
-
     private List<TuraIntranet.Data.Info.InfoMessageModel>? infoMessages;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,6 +86,7 @@
         this.PageNavService.UpdateActivePage("Info");
 
         this.infoMessages = await this.InfoService.GetInfoMessagesAsync();
+        this.isLoading = false;
         this.StateHasChanged();
     }
 
@@ -100,7 +111,7 @@
     private async Task Delete(TuraIntranet.Data.Info.InfoMessageModel info)
     {
         await this.InfoService.DeleteInfoMessageAsync(info.Id);
-        this.infoMessages.Remove(info);
+        this.infoMessages?.Remove(info);
         this.InfoService.Flush();
         this.StateHasChanged();
     }

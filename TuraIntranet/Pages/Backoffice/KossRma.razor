@@ -49,24 +49,30 @@
 
             <div class="col-xl-8 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <table id="zero-config" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Namn</th>
-                                <th>Address</th>
-                                <th>Postnr</th>
-                                <th>Ort</th>
-                                <th>Datum</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (this.filteredKossRmas != null && this.filteredKossRmas.Count > 0)
-                            {
-                                foreach (var koss in this.filteredKossRmas)
+                    @if (this.filteredKossRmas != null && this.filteredKossRmas.Count > 0)
+                    {
+                        <table id="zero-config" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Namn</th>
+                                    <th>Address</th>
+                                    <th>Postnr</th>
+                                    <th>Ort</th>
+                                    <th>Datum</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var koss in this.filteredKossRmas)
                                 {
                                     <tr @onclick=@(() => this.Select(koss))>
-                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@(koss.FirstName + " " + koss.LastName)</div></td>
+                                        <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")">
+                                            <div style="max-width:100%; white-space:pre-line;">
+                                                @(
+                                                    koss.FirstName + " " + koss.LastName
+                                                    )
+                                            </div>
+                                        </td>
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.StreetAddress</div></td>
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.Zipcode</div></td>
                                         <td style="@(this.selectedKossRma != null && this.selectedKossRma.Id == koss.Id ? "background-color:slategrey;" : "")"><div style="max-width:100%; white-space:pre-line;">@koss.City</div></td>
@@ -84,9 +90,19 @@
                                         </td>
                                     </tr>
                                 }
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    }
+                    else if (this.isLoading)
+                    {
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
+
+                        <br />
+                    }
                 </div>
             </div>
 
@@ -193,6 +209,8 @@
     private string responseMessage = string.Empty;
     private string selectedResponseId = string.Empty;
 
+    private bool isLoading = true;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -204,6 +222,7 @@
             this.models = await this.KossService.GetKossModelsAsync();
             this.kossRmas = await this.KossService.GetKossRmasAsync();
             this.Search();
+            this.isLoading = false;
             this.StateHasChanged();
             //await JS.InvokeVoidAsync("loadDataTableComponent");
         }
@@ -297,7 +316,7 @@
         this.selectedKossRma.Finished = true;
         bool success = await this.KossService.UpdateKossModelAsync(this.selectedKossRma);
 
-        if(success)
+        if (success)
         {
             if (this.filteredKossRmas.Contains(this.selectedKossRma))
             {

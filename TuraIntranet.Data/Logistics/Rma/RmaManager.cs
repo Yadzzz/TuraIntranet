@@ -14,7 +14,7 @@ namespace TuraIntranet.Data.Logistics.Rma
         
         public async Task<RmaData?> GetRmaInformationAsync(string identifier, string type)
         {
-            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/intranet/logistics/rma/RmaInformation/" + identifier + "/" + type);
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/rma/RmaInformation/" + identifier + "/" + type);
 
             var response = await api.GetResponse();
 
@@ -40,7 +40,7 @@ namespace TuraIntranet.Data.Logistics.Rma
 
         public async Task<List<ActivityCode>> GetActivityCodesAsync()
         {
-            APIRequest api = new APIRequest("https://prodapi.turascandinavia.com/api/v1/intranet/logistics/rma/ActivityCodes");
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/rma/ActivityCodes");
 
             var response = await api.GetResponse();
 

@@ -151,9 +151,11 @@
                     }
                     else if (this.isLoading)
                     {
-                        <div class="col-xl-2 col-md-4">
-                            <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
-                        </div>
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
 
                         <br />
                     }
@@ -224,7 +226,7 @@
         var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
             {
                 ShipmentId = shipment.Shipment.Id,
-                UpdatedBy = 3,
+                UpdatedBy = 77,
                 UpdatedAt = DateTime.Now,
                 StatusId = statusId,
                 Note = string.Empty
@@ -259,7 +261,7 @@
         var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
             {
                 ShipmentId = shipment.Shipment.Id,
-                UpdatedBy = 3,
+                UpdatedBy = 77,
                 UpdatedAt = DateTime.Now,
                 StatusId = statusId,
                 Note = string.Empty

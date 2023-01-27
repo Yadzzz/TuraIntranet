@@ -76,9 +76,11 @@
                     }
                     else if (this.isLoading)
                     {
-                        <div class="col-xl-2 col-md-4">
-                            <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
-                        </div>
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
 
                         <br />
                     }
@@ -94,6 +96,7 @@
 @code {
     private List<TuraIntranet.Data.Customers.SpecialCustomerModel>? specialCustomers;
     private Dictionary<string, TuraIntranet.Data.Customers.CustomerModel>? customers;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -104,6 +107,7 @@
         this.customers = new();
 
         await this.LoadCustomerData();
+        this.isLoading = false;
         this.StateHasChanged();
         await JS.InvokeVoidAsync("loadDataTableComponent");
     }

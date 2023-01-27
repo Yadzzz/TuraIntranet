@@ -22,15 +22,15 @@
                     <center><h5>Orderstatus Nässjö</h5></center>
                     <br />
 
-                    <center>
-                        <span>Totalt antal rader: @(this.GetTotalRows()) st</span>
-                        <span style="margin-left: 3em;">Rader att plocka: @(this.GetRowsToPick()) st</span>
-                    </center>
-
-                    <hr />
-
                     @if (this.orders != null && this.orders.Count > 0)
                     {
+                        <center>
+                            <span>Totalt antal rader: @(this.GetTotalRows()) st</span>
+                            <span style="margin-left: 3em;">Rader att plocka: @(this.GetRowsToPick()) st</span>
+                        </center>
+
+                        <hr />
+
                         <table id="zero-config" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
@@ -59,9 +59,11 @@
                     }
                     else if (this.isLoading)
                     {
-                        <div class="col-xl-2 col-md-4">
-                            <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
-                        </div>
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
 
                         <br />
                     }

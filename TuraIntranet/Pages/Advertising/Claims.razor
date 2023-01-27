@@ -22,22 +22,22 @@
                     <center><h5>Claims</h5></center>
                     <br />
 
-                    <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Kund</th>
-                                <th>Transaktioner</th>
-                                <th>Referens</th>
-                                <th>Belopp</th>
-                                <th>Kund</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (this.claims != null && this.claims.Count > 0)
-                            {
-                                foreach (var claim in this.claims)
+                    @if (this.claims != null && this.claims.Count > 0)
+                    {
+                        <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Kund</th>
+                                    <th>Transaktioner</th>
+                                    <th>Referens</th>
+                                    <th>Belopp</th>
+                                    <th>Kund</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var claim in this.claims)
                                 {
                                     <tr>
                                         <td><b>@claim.Date<br />@claim.TuraContactPerson</b></td>
@@ -94,9 +94,19 @@
                                         </td>
                                     </tr>
                                 }
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    }
+                    else if (this.isLoading)
+                    {
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
+
+                        <br />
+                    }
                 </div>
             </div>
 
@@ -109,6 +119,7 @@
 @code {
     private List<TuraIntranet.Data.Claims.Claim> claims;
     private List<TuraIntranet.Data.Claims.ClaimCurrency> currencies;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -117,6 +128,7 @@
 
         this.claims = await this.ClaimsService.GetClaims();
         this.currencies = await this.ClaimsService.GetClaimCurrencies();
+        this.isLoading = false;
         this.StateHasChanged();
 
         await JS.InvokeVoidAsync("loadDataTableHtml5Component");
@@ -146,7 +158,7 @@
 
         var claimCurrency = this.currencies.Where(x => x.Id == currencyId).FirstOrDefault();
 
-        if(claimCurrency != null)
+        if (claimCurrency != null)
         {
             return claimCurrency.Code;
         }

@@ -11,6 +11,7 @@ using TuraIntranet.Services;
 using TuraIntranet.Services.Backoffice;
 using TuraIntranet.Services.Claims;
 using TuraIntranet.Services.Customers;
+using TuraIntranet.Services.EAN;
 using TuraIntranet.Services.Files;
 using TuraIntranet.Services.Info;
 using TuraIntranet.Services.Logistics;
@@ -45,7 +46,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<EmailService>();
             builder.Services.AddScoped<LabelService>();
             builder.Services.AddScoped<RmaInformationService>();
-            builder.Services.AddScoped<EANGeneratorService>();
+            builder.Services.AddScoped<EANService>();
 
             //builder.Services.AddHsts(options =>
             //{

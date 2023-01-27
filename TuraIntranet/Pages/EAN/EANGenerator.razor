@@ -1,0 +1,199 @@
+﻿@page "/eangenerator"
+
+@inject IJSRuntime JS
+@inject PageNavigationService PageNavService
+@inject NotificationService Notification
+@inject Services.EAN.EANService EANService
+
+<PageTitle>EAN Generator</PageTitle>
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>EAN13 Generator</h5></center>
+                    <br />
+
+                    @if (this.eanPrefixes != null && this.eanPrefixes.Count > 0)
+                    {
+                        <div class="form-group row" style="padding-left:25px;">
+                            <div class="col-sm-2">
+                                <label>Företagsprefix</label>
+                                <select name="nät" class="form-control country_code  form-control-sm" @onchange=@OnChangeCompanyPrefix>
+                                    <option value="0">Prefix</option>
+                                    @foreach (var prefix in this.eanPrefixes)
+                                    {
+                                    <option value="@prefix.Prefix">@prefix.Prefix</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <label>Artikel</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="Artikel" @bind-value=@this.articleIdInput>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <label>Antal</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="Antal" @bind-value=@this.amountInput>
+                            </div>
+
+                            <div class="col-xl-2 col-md-4">
+                                <label>Skapa EAN-13</label>
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@this.Calculate>Skapa</button>
+                            </div>
+                        </div>
+                    }
+                    else if (this.isLoading)
+                    {
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
+
+                        <br />
+                    }
+
+                    <hr />
+
+                    @if (!string.IsNullOrEmpty(this.calculatedEAN13))
+                    {
+                        <div class="form-group row" style="padding-left:25px;">
+                            <div class="col-sm-4">
+                                <center><label>EAN-13</label></center>
+                                <textarea class="form-control" placeholder="EAN-13" rows="10" value="@this.calculatedEAN13" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="padding-left:25px;">
+                            <div class="col-sm-4">
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@this.OnClickCopy>Kopiera</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <Footer />
+</div>
+
+@code {
+    private List<Data.EAN.EanPrefix>? eanPrefixes;
+
+    private string companyPrefixInput = string.Empty;
+    private string articleIdInput = string.Empty;
+    private string amountInput = string.Empty;
+    private string calculatedEAN13 = string.Empty;
+
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.PageNavService.UpdateActiveSection("");
+        this.PageNavService.UpdateActivePage("EANGenerator");
+
+        this.eanPrefixes = await this.EANService.GetEanPrefixes();
+        this.isLoading = false;
+        this.StateHasChanged();
+    }
+
+    private void OnChangeCompanyPrefix(ChangeEventArgs e) => this.companyPrefixInput = e?.Value?.ToString() ?? string.Empty;
+
+    private async Task Calculate()
+    {
+        this.calculatedEAN13 = string.Empty;
+
+        if (string.IsNullOrEmpty(this.companyPrefixInput) || string.IsNullOrEmpty(this.articleIdInput) || string.IsNullOrEmpty(this.amountInput))
+        {
+            await this.Notification.AlertError("Vänligen fyll i alla kollumner!");
+            this.Reset();
+            this.StateHasChanged();
+            return;
+        }
+
+        if ((this.companyPrefixInput.Length + this.articleIdInput.Length) > 12)
+        {
+            await this.Notification.AlertError("Prefix + Artikel får max vara 12 siffror!");
+            this.Reset();
+            this.StateHasChanged();
+            return;
+        }
+
+        ulong data = 0;
+        if (ulong.TryParse((this.companyPrefixInput + this.articleIdInput), out data))
+        {
+
+        }
+        else
+        {
+            await this.Notification.AlertError("Fel data format!");
+            this.Reset();
+            this.StateHasChanged();
+            return;
+        }
+
+        int amount = 0;
+        if (int.TryParse(this.amountInput, out amount))
+        {
+            if (amount == 1)
+            {
+                this.calculatedEAN13 = this.EANService.CalculateEan13(this.companyPrefixInput + this.articleIdInput);
+            }
+            else if (amount > 1)
+            {
+                List<string> calculatedEAN13s = new();
+
+                for (int i = 0; i < amount; i++)
+                {
+                    string ean13 = this.EANService.CalculateEan13(data++.ToString());
+                    calculatedEAN13s.Add(ean13);
+                }
+
+                foreach (var v in calculatedEAN13s)
+                {
+                    this.calculatedEAN13 += v + "\n";
+                }
+            }
+            else
+            {
+                await this.Notification.AlertError("Vänligen fyll i antal!");
+                return;
+            }
+        }
+        else
+        {
+            await this.Notification.AlertError("Fel format i antal!");
+            return;
+        }
+
+        this.Reset();
+        this.StateHasChanged();
+
+        await this.Notification.AlertSuccess("EAN-13 Skapad");
+    }
+
+    private async Task OnClickCopy()
+    {
+        await this.JS.InvokeVoidAsync("clipboardCopy.copyText", this.calculatedEAN13);
+        await this.Notification.AlertSuccess("Kopierad");
+    }
+
+    private void Reset()
+    {
+        this.articleIdInput = string.Empty;
+        this.amountInput = string.Empty;
+    }
+}
