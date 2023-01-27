@@ -112,21 +112,23 @@
         await JS.InvokeVoidAsync("loadDataTableComponent");
     }
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        this.PageNavService.UpdateActiveSection("Kunder");
-    //        this.PageNavService.UpdateActivePage("Specialkunder");
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //this.PageNavService.UpdateActiveSection("Kunder");
+            //this.PageNavService.UpdateActivePage("Specialkunder");
 
-    //        this.specialCustomers = new();
-    //        this.customers = new();
+            //this.specialCustomers = new();
+            //this.customers = new();
 
-    //        await this.LoadCustomerData();
-    //        this.StateHasChanged();
-    //        await JS.InvokeVoidAsync("loadDataTableComponent");
-    //    }
-    //}
+            //await this.LoadCustomerData();
+            //this.isLoading = false;
+            //this.StateHasChanged();
+
+            await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
 
     private Data.Customers.CustomerModel GetCustomer(string customerNumber)
     {

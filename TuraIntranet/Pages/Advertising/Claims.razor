@@ -134,20 +134,20 @@
         await JS.InvokeVoidAsync("loadDataTableHtml5Component");
     }
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        this.PageNavService.UpdateActiveSection("Reklam");
-    //        this.PageNavService.UpdateActivePage("Claim");
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //this.PageNavService.UpdateActiveSection("Reklam");
+            //this.PageNavService.UpdateActivePage("Claim");
 
-    //        this.claims = await this.ClaimsService.GetClaims();
-    //        this.currencies = await this.ClaimsService.GetClaimCurrencies();
-    //        this.StateHasChanged();
+            //this.claims = await this.ClaimsService.GetClaims();
+            //this.currencies = await this.ClaimsService.GetClaimCurrencies();
+            //this.StateHasChanged();
 
-    //        await JS.InvokeVoidAsync("loadDataTableHtml5Component");
-    //    }
-    //}
+            await JS.InvokeVoidAsync("loadDataTableHtml5Component");
+        }
+    }
 
     private string GetCurrency(int? currencyId)
     {
