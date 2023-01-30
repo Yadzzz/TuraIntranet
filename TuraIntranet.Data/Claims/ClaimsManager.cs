@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,8 @@ namespace TuraIntranet.Data.Claims
 {
     public class ClaimsManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+
         private List<Claim> _claims;
         private List<ClaimCurrency> _currencies;
 
@@ -18,6 +22,10 @@ namespace TuraIntranet.Data.Claims
         {
             this._claims = new();
             this._currencies = new();
+
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
         }
 
 
@@ -55,6 +63,7 @@ namespace TuraIntranet.Data.Claims
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -86,6 +95,7 @@ namespace TuraIntranet.Data.Claims
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -117,6 +127,7 @@ namespace TuraIntranet.Data.Claims
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -153,6 +164,7 @@ namespace TuraIntranet.Data.Claims
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +13,15 @@ namespace TuraIntranet.Data.Networks
 {
     public class NetworkManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+
         private Dictionary<int, Network>? _networks;
 
         public NetworkManager()
         {
-
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
         }
 
         public async Task LoadNetworksAsync(bool forceLoad = false)
@@ -59,6 +65,7 @@ namespace TuraIntranet.Data.Networks
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
             }
         }

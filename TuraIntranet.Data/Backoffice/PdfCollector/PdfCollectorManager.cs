@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +15,15 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
 {
     public class PdfCollectorManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+
+        public PdfCollectorManager()
+        {
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
+        }
+
         public async Task<List<MetaInvoice>> GetInvoice(string invoiceNumber, DateTime start, DateTime end)
         {
             APIRequest api = new("/api/v1/intranet/pdfarchive/MetaInvoices/getdocument/" + invoiceNumber + "/" + start + "/" + end);
@@ -41,6 +52,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -74,6 +86,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -107,6 +120,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -122,6 +136,8 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             {
                 if (response != null && response.Content != null)
                 {
+                    Console.WriteLine(response.Content);
+
                     List<MetaFinanceChrg>? data = JsonConvert.DeserializeObject<List<MetaFinanceChrg>>(response.Content);
 
                     if (data == null)
@@ -140,6 +156,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -173,6 +190,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -206,6 +224,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -239,6 +258,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -272,6 +292,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -305,6 +326,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -338,6 +360,7 @@ namespace TuraIntranet.Data.Backoffice.PdfCollector
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }

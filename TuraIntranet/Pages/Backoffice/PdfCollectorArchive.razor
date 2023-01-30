@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@this.customerNumber>
+                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@this.customerNumber @bind-value:event="oninput">
                         </div>
 
                         <div class="col-xl-2 col-md-4">
@@ -71,138 +71,153 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
 
-                    <table id="zero-config" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Kundnummer</th>
-                                <th>Ordernummer</th>
-                                <th>Orderdatum</th>
-                                <th>Skapad</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (this.invoices != null && this.invoices.Count > 0)
-                            {
-                                foreach (var invoice in this.invoices)
-                                {
-                                    <tr>
-                                        <td>@invoice.CustomerNumber</td>
-                                        <td>@invoice.InvoiceNumber</td>
-                                        <td>@invoice.InvoiceDate</td>
-                                        <td>@invoice.BlobInfoCreationDateTime</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.InvoiceNumber, invoice.DocumentData))>Visa</a>
-                                                    @*<a class="dropdown-item">Radera</a>*@
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            }
+                    @if (this.isLoading)
+                    {
+                        <br />
+                        <center>
+                            <div class="col-xl-2 col-md-4">
+                                <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
+                            </div>
+                        </center>
 
-                            @if (this.interestInvoices != null && this.interestInvoices.Count > 0)
-                            {
-                                foreach (var invoice in this.interestInvoices)
+                        <br />
+                    }
+                    else
+                    {
+                        <table id="zero-config" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Kundnummer</th>
+                                    <th>Ordernummer</th>
+                                    <th>Orderdatum</th>
+                                    <th>Skapad</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (this.invoices != null && this.invoices.Count > 0)
                                 {
-                                    <tr>
-                                        <td>@invoice.CustomerNumber</td>
-                                        <td>@invoice.InvoiceNumber</td>
-                                        <td>@invoice.InvoiceDate</td>
-                                        <td>@invoice.BlobInfoCreationDateTime</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.InvoiceNumber, invoice.DocumentData))>Visa</a>
-                                                    @*<a class="dropdown-item">Radera</a>*@
+                                    foreach (var invoice in this.invoices.OrderByDescending(x => x.InvoiceDate))
+                                    {
+                                        <tr>
+                                            <td>@invoice.CustomerNumber</td>
+                                            <td>@invoice.InvoiceNumber</td>
+                                            <td>@invoice.InvoiceDate</td>
+                                            <td>@invoice.BlobInfoCreationDateTime</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                        <a class="dropdown-item" @onclick=@(() => this.Show(invoice.InvoiceNumber, invoice.DocumentData))>Visa</a>
+                                                        @*<a class="dropdown-item">Radera</a>*@
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
 
-                            @if (this.deliveryConfirmations != null && this.deliveryConfirmations.Count > 0)
-                            {
-                                foreach (var invoice in this.deliveryConfirmations)
+                                @if (this.interestInvoices != null && this.interestInvoices.Count > 0)
                                 {
-                                    <tr>
-                                        <td>@invoice.CustomerNumber</td>
-                                        <td>@invoice.OrderNumber</td>
-                                        <td>@invoice.OrderDate</td>
-                                        <td>@invoice.BlobInfoCreationDateTime</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
-                                                    @*<a class="dropdown-item">Radera</a>*@
+                                    foreach (var invoice in this.interestInvoices.OrderByDescending(x => x.InvoiceDate))
+                                    {
+                                        <tr>
+                                            <td>@invoice.CustomerNumber</td>
+                                            <td>@invoice.InvoiceNumber</td>
+                                            <td>@invoice.InvoiceDate</td>
+                                            <td>@invoice.BlobInfoCreationDateTime</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                        <a class="dropdown-item" @onclick=@(() => this.Show(invoice.InvoiceNumber, invoice.DocumentData))>Visa</a>
+                                                        @*<a class="dropdown-item">Radera</a>*@
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
 
-                            @if (this.orderConfirmations != null && this.orderConfirmations.Count > 0)
-                            {
-                                foreach (var invoice in this.orderConfirmations)
+                                @if (this.deliveryConfirmations != null && this.deliveryConfirmations.Count > 0)
                                 {
-                                    <tr>
-                                        <td>@invoice.CustomerNumber</td>
-                                        <td>@invoice.OrderNumber</td>
-                                        <td>@invoice.OrderDate</td>
-                                        <td>@invoice.BlobInfoCreationDateTime</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
-                                                    @*<a class="dropdown-item">Radera</a>*@
+                                    foreach (var invoice in this.deliveryConfirmations.OrderByDescending(x => x.OrderDate))
+                                    {
+                                        <tr>
+                                            <td>@invoice.CustomerNumber</td>
+                                            <td>@invoice.OrderNumber</td>
+                                            <td>@invoice.OrderDate</td>
+                                            <td>@invoice.BlobInfoCreationDateTime</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                        <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
+                                                        @*<a class="dropdown-item">Radera</a>*@
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
 
-                            @if (this.returnConfirmations != null && this.returnConfirmations.Count > 0)
-                            {
-                                foreach (var invoice in this.returnConfirmations)
+                                @if (this.orderConfirmations != null && this.orderConfirmations.Count > 0)
                                 {
-                                    <tr>
-                                        <td>@invoice.CustomerNumber</td>
-                                        <td>@invoice.OrderNumber</td>
-                                        <td>@invoice.OrderDate</td>
-                                        <td>@invoice.BlobInfoCreationDateTime</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
-                                                    <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
-                                                    @*<a class="dropdown-item">Radera</a>*@
+                                    foreach (var invoice in this.orderConfirmations.OrderByDescending(x => x.OrderDate))
+                                    {
+                                        <tr>
+                                            <td>@invoice.CustomerNumber</td>
+                                            <td>@invoice.OrderNumber</td>
+                                            <td>@invoice.OrderDate</td>
+                                            <td>@invoice.BlobInfoCreationDateTime</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                        <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
+                                                        @*<a class="dropdown-item">Radera</a>*@
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                        </tbody>
-                    </table>
+
+                                @if (this.returnConfirmations != null && this.returnConfirmations.Count > 0)
+                                {
+                                    foreach (var invoice in this.returnConfirmations.OrderByDescending(x => x.OrderDate))
+                                    {
+                                        <tr>
+                                            <td>@invoice.CustomerNumber</td>
+                                            <td>@invoice.OrderNumber</td>
+                                            <td>@invoice.OrderDate</td>
+                                            <td>@invoice.BlobInfoCreationDateTime</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference28" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference28">
+                                                        <a class="dropdown-item" @onclick=@(() => this.Show(invoice.OrderNumber, invoice.DocumentData))>Visa</a>
+                                                        @*<a class="dropdown-item">Radera</a>*@
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+
                 </div>
             </div>
 
@@ -225,6 +240,8 @@
     private List<TuraIntranet.Data.Backoffice.PdfCollector.MetaOrderbek> orderConfirmations;
     private List<TuraIntranet.Data.Backoffice.PdfCollector.MetaReturorder> returnConfirmations;
 
+    private bool isLoading = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -242,12 +259,6 @@
             //DATA = Decompressor.Decompress(data.Data);
             //await this.JS.InvokeVoidAsync("SavePdfFile", "Document.pdf", Convert.ToBase64String(bytes));
         }
-    }
-
-    private void OnChangeInvoiceNumber(ChangeEventArgs e)
-    {
-        this.invoiceNumber = e?.Value?.ToString();
-        this.StateHasChanged();
     }
 
     private string GetDocumentFieldName()
@@ -274,6 +285,9 @@
 
     private async Task Search()
     {
+        this.isLoading = true;
+        this.StateHasChanged();
+
         this.invoices.Clear();
         this.interestInvoices.Clear();
         this.deliveryConfirmations.Clear();
@@ -296,15 +310,12 @@
             }
             else if (!string.IsNullOrEmpty(customerNumber))
             {
-                this.dateStart = this.dateStart.AddYears(-15);
                 var invoicesData = await this.pdfCollectorService.GetInvoices(this.customerNumber, this.dateStart, this.dateEnd);
 
                 if (invoicesData != null && invoicesData.Count > 0)
                 {
                     this.invoices = invoicesData;
                 }
-
-                this.dateStart = DateTime.Now.AddDays(-30);
             }
             else
             {
@@ -315,12 +326,15 @@
         {
             if (!string.IsNullOrEmpty(invoiceNumber))
             {
+                this.dateStart = this.dateStart.AddYears(-15);
                 var invoice = await this.pdfCollectorService.GetInterestInvoice(this.invoiceNumber, this.dateStart, this.dateEnd);
 
                 if (invoice != null)
                 {
                     this.interestInvoices = invoice;
                 }
+
+                this.dateStart = DateTime.Now.AddDays(-30);
             }
             else if (!string.IsNullOrEmpty(customerNumber))
             {
@@ -416,8 +430,10 @@
             await this.NotificationService.AlertError("Invalid Type");
         }
 
+        this.isLoading = false;
         this.ResetVariables();
         this.StateHasChanged();
+        this.AlertUserBasedOnFetchedData();
     }
 
     private void ResetVariables()
@@ -448,4 +464,22 @@
         this.documentsTypeId = int.Parse(inputValue);
     }
 
+    private async Task AlertUserBasedOnFetchedData()
+    {
+        int totalRows = 0;
+        totalRows += this.invoices.Count;
+        totalRows += this.interestInvoices.Count;
+        totalRows += this.deliveryConfirmations.Count;
+        totalRows += this.orderConfirmations.Count;
+        totalRows += this.returnConfirmations.Count;
+
+        if (totalRows == 0)
+        {
+            await this.NotificationService.AlertError("Kunde inte hitta dokument(er)");
+        }
+        else
+        {
+            await this.NotificationService.AlertSuccess("[" + totalRows + "] dokument(er) hittad");
+        }
+    }
 }

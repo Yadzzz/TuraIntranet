@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,16 @@ namespace TuraIntranet.Data.Logistics.Orders
 {
     public class OrdersManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+
         private List<R08T1> _orders;
+
+        public OrdersManager()
+        {
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
+        }
 
         public async Task<List<R08T1>> GetOrdersAsync()
         {
@@ -38,6 +49,7 @@ namespace TuraIntranet.Data.Logistics.Orders
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -64,6 +76,7 @@ namespace TuraIntranet.Data.Logistics.Orders
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }

@@ -48,12 +48,12 @@ namespace TuraIntranet
             builder.Services.AddScoped<RmaInformationService>();
             builder.Services.AddScoped<EANService>();
 
-            //builder.Services.AddHsts(options =>
-            //{
-            //    options.Preload = true;
-            //    options.IncludeSubDomains = true;
-            //    options.MaxAge = TimeSpan.FromDays(365);
-            //});
+            builder.Services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(365);
+            });
 
             Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()

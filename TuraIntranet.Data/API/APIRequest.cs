@@ -6,16 +6,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TuraIntranet.Data.Logistics.Shipments;
+using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace TuraIntranet.Data.API
 {
     public class APIRequest
     {
         private string _apiUrl;
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
 
         public APIRequest(string apiUrl)
         {
             this._apiUrl = "https://prodapi.turascandinavia.com" + apiUrl;
+
+            //Temporary logger
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
         }
 
         public void SetUrl(string apiUrl)
@@ -45,6 +53,7 @@ namespace TuraIntranet.Data.API
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -67,6 +76,7 @@ namespace TuraIntranet.Data.API
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return false;
             }
@@ -91,6 +101,7 @@ namespace TuraIntranet.Data.API
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return false;
             }
@@ -112,6 +123,7 @@ namespace TuraIntranet.Data.API
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return false;
             }

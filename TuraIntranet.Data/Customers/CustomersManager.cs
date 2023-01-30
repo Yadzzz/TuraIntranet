@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +14,17 @@ namespace TuraIntranet.Data.Customers
 {
     public class CustomersManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+
         private List<SpecialCustomerModel>? _specialCustomers;
         private Dictionary<string, CustomerModel>? _specialCustomersData;
+
+        public CustomersManager()
+        {
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
+        }
 
         public async Task<List<SpecialCustomerModel>?> GetSpecialCustomersAsync(bool forceFlush = false)
         {
@@ -41,6 +52,7 @@ namespace TuraIntranet.Data.Customers
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -77,6 +89,7 @@ namespace TuraIntranet.Data.Customers
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -130,6 +143,7 @@ namespace TuraIntranet.Data.Customers
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -156,6 +170,7 @@ namespace TuraIntranet.Data.Customers
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -182,6 +197,7 @@ namespace TuraIntranet.Data.Customers
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -208,6 +224,7 @@ namespace TuraIntranet.Data.Customers
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }

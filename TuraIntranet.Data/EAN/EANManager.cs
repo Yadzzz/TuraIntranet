@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,16 @@ namespace TuraIntranet.Data.EAN
 {
     public class EANManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+        
         private List<EanPrefix>? eanPrefixes;
+
+        public EANManager()
+        {
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
+        }
 
         public async Task<List<EanPrefix>?> GetEanPrefixesAsync()
         {
@@ -39,6 +50,7 @@ namespace TuraIntranet.Data.EAN
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }

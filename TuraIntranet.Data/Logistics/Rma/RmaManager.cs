@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +12,17 @@ namespace TuraIntranet.Data.Logistics.Rma
 {
     public class RmaManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+
         private List<ActivityCode> _activityCodes;
-        
+
+        public RmaManager()
+        {
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
+        }
+
         public async Task<RmaData?> GetRmaInformationAsync(string identifier, string type)
         {
             APIRequest api = new APIRequest("/api/v1/intranet/logistics/rma/RmaInformation/" + identifier + "/" + type);
@@ -33,6 +44,7 @@ namespace TuraIntranet.Data.Logistics.Rma
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -59,6 +71,7 @@ namespace TuraIntranet.Data.Logistics.Rma
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -85,6 +98,7 @@ namespace TuraIntranet.Data.Logistics.Rma
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }

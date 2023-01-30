@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ namespace TuraIntranet.Data.Logistics.Shipments
 {
     public class ShipmentsManager
     {
+        private Microsoft.Extensions.Logging.ILogger _logger { get; set; }
+
         private List<ShipmentModel> _shipments { get; set; }
         private List<ShipmentEmployee>? _shipmentEmployees { get; set; }
         private List<ShipmentReceivingCompany>? _shipmentReceivingCompanies { get; set; }
@@ -17,6 +21,10 @@ namespace TuraIntranet.Data.Logistics.Shipments
 
         public ShipmentsManager()
         {
+            var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
+            var logger = loggerFactory.CreateLogger(string.Empty);
+            this._logger = logger;
+
             Task.Run(async () =>
             {
                 this._shipmentEmployees = await this.GetShipmentEmployees();
@@ -59,6 +67,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -98,6 +107,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 }
                 catch (Exception ex)
                 {
+                    this._logger.LogError(ex.ToString());
                     Console.WriteLine(ex.ToString());
                     return null;
                 }
@@ -134,6 +144,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -196,6 +207,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
@@ -241,6 +253,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
             catch (Exception ex)
             {
+                this._logger.LogError(ex.ToString());
                 Console.WriteLine(ex.ToString());
                 return null;
             }
