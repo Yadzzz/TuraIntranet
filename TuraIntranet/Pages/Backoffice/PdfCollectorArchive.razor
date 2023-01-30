@@ -39,7 +39,7 @@
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Fakturanummer" @bind-value=@this.invoiceNumber>
+                            <input type="text" class="form-control form-control-sm" placeholder="@(this.GetDocumentFieldName())" @bind-value=@this.invoiceNumber>
                         </div>
 
                         <div class="col-sm-2">
@@ -51,17 +51,20 @@
                         </div>
                     </div>
 
-                    <div class="form-group row" style="padding-left:25px;">
-                        <div class="col-sm-2">
-                            <label class="visually-hidden">Från</label>
-                            <InputDate @bind-Value=@dateStart />
-                        </div>
+                    @if (!string.IsNullOrEmpty(this.customerNumber))
+                    {
+                        <div class="form-group row" style="padding-left:25px;">
+                            <div class="col-sm-2">
+                                <label class="visually-hidden">Från</label>
+                                <InputDate @bind-Value=@dateStart />
+                            </div>
 
-                        <div class="col-sm-2">
-                            <label class="visually-hidden">Till</label>
-                            <InputDate @bind-Value=@dateEnd />
+                            <div class="col-sm-2">
+                                <label class="visually-hidden">Till</label>
+                                <InputDate @bind-Value=@dateEnd />
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
 
@@ -241,6 +244,34 @@
         }
     }
 
+    private void OnChangeInvoiceNumber(ChangeEventArgs e)
+    {
+        this.invoiceNumber = e?.Value?.ToString();
+        this.StateHasChanged();
+    }
+
+    private string GetDocumentFieldName()
+    {
+        switch (this.documentsTypeId)
+        {
+            case 0:
+                return "Fakturanummer";
+            case 1:
+                return "Fakturanummer";
+            case 2:
+                return "Fakturanummer";
+            case 3:
+                return "Ordernummer";
+            case 4:
+                return "Ordernummer";
+            case 5:
+                return "Ordernummer";
+
+            default:
+                return "Fakturanummer";
+        }
+    }
+
     private async Task Search()
     {
         this.invoices.Clear();
@@ -253,21 +284,27 @@
         {
             if (!string.IsNullOrEmpty(invoiceNumber))
             {
+                this.dateStart = this.dateStart.AddYears(-15);
                 var invoice = await this.pdfCollectorService.GetInvoice(this.invoiceNumber, this.dateStart, this.dateEnd);
 
                 if (invoice != null)
                 {
                     this.invoices = invoice;
                 }
+
+                this.dateStart = DateTime.Now.AddDays(-30);
             }
             else if (!string.IsNullOrEmpty(customerNumber))
             {
+                this.dateStart = this.dateStart.AddYears(-15);
                 var invoicesData = await this.pdfCollectorService.GetInvoices(this.customerNumber, this.dateStart, this.dateEnd);
 
                 if (invoicesData != null && invoicesData.Count > 0)
                 {
                     this.invoices = invoicesData;
                 }
+
+                this.dateStart = DateTime.Now.AddDays(-30);
             }
             else
             {
@@ -396,7 +433,7 @@
             if (id != null && bytes != null)
             {
                 byte[]? decompressed = TuraIntranet.Data.Backoffice.PdfCollector.Decompressor.Decompress(bytes);
-                await this.JS.InvokeVoidAsync("SavePdfFile", (id + ".pdf"), Convert.ToBase64String(decompressed));
+                await this.JS.InvokeVoidAsync("SaveAndOpenPdfFile", (id + ".pdf"), Convert.ToBase64String(decompressed));
             }
         }
         catch (Exception ex)

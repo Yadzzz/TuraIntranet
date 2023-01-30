@@ -15,12 +15,12 @@ namespace TuraIntranet.Data.API
 
         public APIRequest(string apiUrl)
         {
-            this._apiUrl = "https://localhost:7245" + apiUrl;
+            this._apiUrl = "https://prodapi.turascandinavia.com" + apiUrl;
         }
 
         public void SetUrl(string apiUrl)
         {
-            this._apiUrl = "https://localhost:7245" + apiUrl;
+            this._apiUrl = "https://prodapi.turascandinavia.com" + apiUrl;
         }
 
         public async Task<RestResponse?> GetResponse()

@@ -40,6 +40,13 @@
                             </select>
                         </div>
 
+                        <div class="col-sm-2">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" class="custom-control-input" id="sChkbox" @onclick=@OnClickShowFinished>
+                                <label class="custom-control-label" for="sChkbox">Visa Slutförda</label>
+                            </div>
+                        </div>
+
                         <div class="col-xl-2 col-md-4">
                             <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
                         </div>
@@ -95,6 +102,8 @@
                     }
                     else if (this.isLoading)
                     {
+                        <br />
+
                         <center>
                             <div class="col-xl-2 col-md-4">
                                 <div class="spinner-border spinner-border-reverse align-self-center text-dark">Laddar...</div>
@@ -203,6 +212,7 @@
 
     private string searchText = string.Empty;
     private string searchCountry = "";
+    private bool showFinished = false;
 
     private Dictionary<string, string> responseMessages;
     private bool showResponseField = false;
@@ -242,7 +252,7 @@
 
         if (!string.IsNullOrEmpty(this.searchText))
         {
-            var filter = this.kossRmas.Where(x => x.FirstName.ToLower().Contains(this.searchText.ToLower()) || x.LastName.ToLower().Contains(this.searchText.ToLower()) ||
+            var filter = this.kossRmas.Where(x => this.showFinished ? true : x.Finished == false).Where(x => x.FirstName.ToLower().Contains(this.searchText.ToLower()) || x.LastName.ToLower().Contains(this.searchText.ToLower()) ||
                                                  x.StreetAddress.ToLower().Contains(this.searchText.ToLower()) || x.City.ToLower().Contains(this.searchText.ToLower()))
                                                     .ToList().Where(x => (string.IsNullOrEmpty(this.searchCountry) ? true : x.Country.Contains(this.searchCountry))).ToList();
 
@@ -276,7 +286,7 @@
         }
         else
         {
-            var all = this.kossRmas.Where(x => (string.IsNullOrEmpty(this.searchCountry) ? true : x.Country.Contains(this.searchCountry))).ToList().ConvertAll(x => new Data.Backoffice.Koss.KossRma
+            var all = this.kossRmas.Where(x => this.showFinished ? true : x.Finished == false).Where(x => (string.IsNullOrEmpty(this.searchCountry) ? true : x.Country.Contains(this.searchCountry))).ToList().ConvertAll(x => new Data.Backoffice.Koss.KossRma
                 {
                     Id = x.Id,
                     KossModelId = x.KossModelId,
@@ -464,6 +474,18 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
+        }
+    }
+
+    private void OnClickShowFinished()
+    {
+        if (this.showFinished)
+        {
+            this.showFinished = false;
+        }
+        else
+        {
+            this.showFinished = true;
         }
     }
 

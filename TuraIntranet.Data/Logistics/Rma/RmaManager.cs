@@ -63,5 +63,47 @@ namespace TuraIntranet.Data.Logistics.Rma
                 return null;
             }
         }
+
+        public async Task<RmaInformation?> GetSpecialRmaInformation(string id)
+        {
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/RmaInformations/" + id);
+
+            var response = await api.GetResponse();
+
+            try
+            {
+                if (response != null && response.Content != null)
+                {
+                    var rmaInfo = JsonConvert.DeserializeObject<RmaInformation>(response.Content);
+
+                    return rmaInfo;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+
+        public async Task<bool> UpdateSpecialRmaInformationAsync(RmaInformation rmaInformation)
+        {
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/RmaInformations/" + rmaInformation.Id);
+            bool success = await api.SendPutRequest(rmaInformation);
+
+            return success;
+        }
+
+        public async Task<bool> AddSpecialRmaInformationAsync(RmaInformation rmaInformation)
+        {
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/RmaInformations");
+            bool success = await api.SendPostRequest(rmaInformation);
+
+            return success;
+        }
     }
 }

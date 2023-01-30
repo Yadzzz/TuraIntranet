@@ -130,31 +130,43 @@
     public string? CustomerId { get; set; }
     private TuraIntranet.Data.Customers.SpecialCustomerModel? specialCustomer;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
+        this.PageNavService.UpdateActiveSection("Kunder");
+        this.PageNavService.UpdateActivePage("Specialkunder");
+
+        if (this.CustomerId != null)
         {
-            this.PageNavService.UpdateActiveSection("Kunder");
-            this.PageNavService.UpdateActivePage("Specialkunder");
-
-            if (this.CustomerId != null)
-            {
-
-                this.specialCustomer = await this.CustService.GetSpecialCustomerAsync(this.CustomerId);
-                this.StateHasChanged();
-            }
-
-            //await JS.InvokeVoidAsync("loadDataTableComponent");
+            this.specialCustomer = await this.CustService.GetSpecialCustomerAsync(this.CustomerId);
+            this.StateHasChanged();
         }
     }
 
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        this.PageNavService.UpdateActiveSection("Kunder");
+    //        this.PageNavService.UpdateActivePage("Specialkunder");
+
+    //        if (this.CustomerId != null)
+    //        {
+
+    //            this.specialCustomer = await this.CustService.GetSpecialCustomerAsync(this.CustomerId);
+    //            this.StateHasChanged();
+    //        }
+
+    //        //await JS.InvokeVoidAsync("loadDataTableComponent");
+    //    }
+    //}
+
     private void OnClickDeleted()
     {
-        //if(this.specialCustomer.IsDeleted == null)
-        //{
-        //    this.specialCustomer.IsDeleted = true;
-        //    return;
-        //}
+        if(this.specialCustomer?.IsDeleted == null)
+        {
+            this.specialCustomer.IsDeleted = true;
+            return;
+        }
 
         if (this.specialCustomer.IsDeleted)
         {

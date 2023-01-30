@@ -20,5 +20,20 @@ namespace TuraIntranet.Services.Logistics
         {
             return this._rmaManager.GetActivityCodesAsync();
         }
+
+        public Task<RmaInformation?> GetSpecialRmaInformation(string id)
+        {
+            return this._rmaManager.GetSpecialRmaInformation(id);
+        }
+
+        public Task<bool> UpdateSpecialRmaInformationAsync(RmaInformation rmaInformation)
+        {
+            return this._rmaManager.UpdateSpecialRmaInformationAsync(rmaInformation);
+        }
+
+        public Task<bool> AddSpecialRmaInformationAsync(RmaInformation rmaInformation)
+        {
+            return this._rmaManager.AddSpecialRmaInformationAsync(rmaInformation);
+        }
     }
 }
