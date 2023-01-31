@@ -16,7 +16,14 @@ namespace TuraIntranet.Services
                 {"replyMail_sv", "noreply@turascandinavia.com" }
             };
 
-            this._smtp = "192.168.1.26";
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
+            //this._smtp = "192.168.1.26";
+            this._smtp = configuration.GetValue<string>("smtp-server");
+            Console.WriteLine(_smtp);
         }
 
         public bool SendEmail(KossRma rma, string text, bool replyable)
@@ -34,7 +41,7 @@ namespace TuraIntranet.Services
                 MailFrom = "noreply@turascandinavia.com";
             }
             //string MailTo = rma.Email;
-            string MailTo = "yadmarzan@gmail.com";
+            string MailTo = rma.Email;
             string smtp = this._smtp ?? "192.168.1.26";
 
             try

@@ -424,7 +424,7 @@
         this.StateHasChanged();
     }
 
-    private void SendEmail()
+    private async Task SendEmail()
     {
         var success = this.EmailService.SendEmail(this.selectedKossRma, this.responseMessage, false);
 
@@ -434,11 +434,11 @@
             this.selectedKossRma.CustomReply = this.responseMessage;
             this.selectedKossRma.ReplyDate = DateTime.Now;
 
-            Console.WriteLine("Success");
+            await this.Notification.AlertSuccess("Email Skickad");
         }
         else
         {
-            Console.WriteLine("naa");
+            await this.Notification.AlertError("Email kunde ej skickas");
         }
     }
 
