@@ -126,6 +126,30 @@ function alertUserError(text) {
     })
 }
 
+function onPageClick() {
+    $('#sidebar').click(function (e) {
+        console.log('clicked on div');
+    });
+    $('body').click(function (e) {
+        console.log('clicked outside of div');
+        DotNet.invokeMethodAsync('TuraIntranet', 'ForceCloseSidebar');
+    });
+}
+
+function onPageClick1(dotNetHelper) {
+    $('#sidebar').click(function (e) {
+        console.log('clicked on div');
+    });
+    $('#content').click(function (e) {
+        console.log('clicked outside of div');
+        dotNetHelper.invokeMethodAsync('ForceCloseSidebar');
+    });
+}
+
+function isDevice() {
+    return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(navigator.userAgent);
+}
+
 window.clipboardCopy = {
     copyText: function (text) {
         navigator.clipboard.writeText(text)
@@ -134,3 +158,4 @@ window.clipboardCopy = {
             });
     }
 };
+

@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
 @inject NotificationService Notification
+@inject DeviceDetectionService DeviceService
 
 <PageTitle>Intranet - Inleveranser</PageTitle>
 
@@ -23,25 +24,25 @@
                     <br />
                     <center><h5>Inleveranser</h5></center>
 
-                        <div class="col-xl-3" style="float:right">
-                            <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
-                                <option value="0">Välj användare</option>
-                                @if (this.shipmentEmployees != null)
+                    <div class="col-xl-3" style="float:right">
+                        <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
+                            <option value="0">Välj användare</option>
+                            @if (this.shipmentEmployees != null)
+                            {
+                                foreach (var employee in this.shipmentEmployees)
                                 {
-                                    foreach (var employee in this.shipmentEmployees)
-                                    {
-                                        <option value="@employee.Id">
-                                            @(
-                                                employee.FirstName + " " + employee.LastName
-                                                )
-                                        </option>
-                                    }
+                                    <option value="@employee.Id">
+                                        @(
+                                            employee.FirstName + " " + employee.LastName
+                                            )
+                                    </option>
                                 }
-                            </select>
-                            <br />
-                        </div>
-
+                            }
+                        </select>
                         <br />
+                    </div>
+
+                    <br />
 
                     @*<div class="col-xl-2 col-md-4">
                     <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@(() => this.NavManager.NavigateTo("/lagginleverans"))>Lägg till</button>
@@ -52,19 +53,27 @@
                         <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
                             <thead>
                                 <tr>
-                                    <th>Ankomst</th>
-                                    <th>Mottagare</th>
-                                    <th>Leverantör</th>
-                                    <th>Ordernr</th>
-                                    <th>Pall/Kollin</th>
-                                    <th>Placering</th>
-                                    <th>Status</th>
-                                    <th>Uppdaterad</th>
-                                    <th class="dt-no-sorting"></th>
+                                    @if (this.DeviceService.mobile)
+                                    {
+                                        <th>Ankomst</th>
+                                        <th>Leverantör</th>
+                                        <th class="dt-no-sorting"></th>
+                                    }
+                                    else
+                                    {
+                                        <th>Ankomst</th>
+                                        <th>Mottagare</th>
+                                        <th>Leverantör</th>
+                                        <th>Ordernr</th>
+                                        <th>Pall/Kollin</th>
+                                        <th>Placering</th>
+                                        <th>Status</th>
+                                        <th>Uppdaterad</th>
+                                        <th class="dt-no-sorting"></th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
-
                                 @foreach (var shipment in this._shipments.Where(x => x.Shipment?.Prioritized == true).OrderBy(x => x.Shipment?.ReceivedAt))
                                 {
                                     @*if (shipment.Shipment.Prioritized.HasValue && shipment.Shipment.Prioritized.Value == true)*@
@@ -131,7 +140,6 @@
                                         <td><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.ReceivedAt</div></td>
                                         <td>@this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value)</td>
                                         <td><div style="max-width:100%; white-space:pre-line;">@shipment.Shipment.Supplier</div></td>
-                                        @*<td><div style="max-width:50px; white-space:pre-line;">@shipment.Shipment.OrderNumbers</div></td>*@
                                         <td>
                                             <div style="max-width:150px; white-space:pre-line; overflow:hidden">
                                                 @shipment.Shipment.OrderNumbers
@@ -222,6 +230,8 @@
         this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
         this.isLoading = false;
         this.StateHasChanged();
+
+        //await JS.InvokeVoidAsync("loadDataTableComponent");
     }
 
     //protected override async Task OnAfterRenderAsync(bool firstRender)

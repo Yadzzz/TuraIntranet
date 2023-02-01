@@ -47,6 +47,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<LabelService>();
             builder.Services.AddScoped<RmaInformationService>();
             builder.Services.AddScoped<EANService>();
+            builder.Services.AddScoped<DeviceDetectionService>();
 
             builder.Services.AddHsts(options =>
             {
