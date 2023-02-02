@@ -63,10 +63,20 @@
 
     <script src="_framework/blazor.server.js" autostart="false"></script>
     <script>
-        Blazor.start().then(() => {
-            Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
-                document.location.reload();
-            }
+        //Blazor.start().then(() => {
+        //    Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+        //        document.location.reload();
+        //    }
+        //});
+
+        Blazor.start({
+        reconnectionOptions: {
+          maxRetries: 1,
+          retryIntervalMilliseconds: 1000
+        }}).then(() => {
+                Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+                    document.location.reload();
+                }
         });
     </script>
 
