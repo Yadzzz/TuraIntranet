@@ -23,7 +23,6 @@ namespace TuraIntranet.Services
 
             //this._smtp = "192.168.1.26";
             this._smtp = configuration.GetValue<string>("smtp-server");
-            Console.WriteLine(_smtp);
         }
 
         public bool SendEmail(KossRma rma, string text, bool replyable)

@@ -34,6 +34,8 @@ namespace TuraIntranet.Data.Backoffice.Koss
 
             var response = await api.GetResponse();
 
+            //Console.WriteLine(response.Content);
+
             try
             {
                 if (response != null && response.Content != null)

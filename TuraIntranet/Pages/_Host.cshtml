@@ -59,7 +59,16 @@
     <a class="dismiss">🗙</a>
     </div>*@
 
-    <script src="_framework/blazor.server.js"></script>
+    @*<script src="_framework/blazor.server.js"></script>*@
+
+    <script src="_framework/blazor.server.js" autostart="false"></script>
+    <script>
+        Blazor.start().then(() => {
+            Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+                document.location.reload();
+            }
+        });
+    </script>
 
     <script src="assets/js/libs/jquery-3.1.1.min.js"></script>
     <script src="bootstrap/js/popper.min.js"></script>
@@ -84,15 +93,5 @@
 
     <script src="components/components.js"></script>
 
-    @*<script src="_framework/blazor.{webassembly|server}.js"
-            autostart="false"></script>
-    <script>
-        Blazor.start().then(function () {
-            var customScript = document.createElement('script');
-            customScript.setAttribute('src', '../../layouts/vertical-light-menu/app.js');
-            document.head.appendChild(customScript);
-        });
-    </script>
-*@
 </body>
 </html>

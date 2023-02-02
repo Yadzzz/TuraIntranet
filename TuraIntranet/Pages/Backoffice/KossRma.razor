@@ -339,6 +339,8 @@
             }
 
             this.selectedKossRma = null;
+            this.KossService.Flush();
+            this.kossRmas = await this.KossService.GetKossRmasAsync();
 
             await this.Notification.AlertSuccess("RMA Uppdaterad");
         }
