@@ -40,8 +40,8 @@
 
                                                     <div class="invoice-address-company-fields">
 
-                                                        <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ändrat av</label>
+                                                       @* <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Skapad Av</label>
                                                             <div class="col-sm-9">
 
                                                                 <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
@@ -54,7 +54,7 @@
                                                                 </select>
 
                                                             </div>
-                                                        </div>
+                                                        </div>*@
 
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
@@ -184,7 +184,7 @@
 @code {
     private TuraIntranet.Data.Logistics.Shipments.ShipmentModel? _shipment { get; set; }
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentEmployee> shipmentEmployees { get; set; }
-    private int _updatedBy;
+    private int _updatedBy = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -212,7 +212,7 @@
             return;
         }
 
-        if (this._updatedBy == 0 || !this._shipment.Shipment.ReceivedBy.HasValue || this._shipment.Shipment.ReceivedBy.Value == 0)
+        if (!this._shipment.Shipment.ReceivedBy.HasValue || this._shipment.Shipment.ReceivedBy.Value == 0)
         {
             await this.Notification.AlertError("Välj Mottagare");
             return;
@@ -301,6 +301,9 @@
     {
         string inputValue = e.Value.ToString();
         this._shipment.Shipment.ReceivedBy = int.Parse(inputValue);
+
+        this._updatedBy = int.Parse(inputValue);
+        this._shipment.Shipment.InitatedBy = int.Parse(inputValue);
     }
 
     private void OnChangeReceiverId(ChangeEventArgs e)

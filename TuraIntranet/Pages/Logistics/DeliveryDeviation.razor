@@ -6,6 +6,9 @@
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
 @inject Services.NotificationService NotificationService
 
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage BrowserStorage
+
 <PageTitle>Inleverans - Lägg till</PageTitle>
 
 <link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
@@ -202,7 +205,14 @@
                                                 {
                                                     foreach (var employee in this.shipmentEmployees)
                                                     {
-                                                        <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
+                                                        if (employee.Id == this.updatedBy)
+                                                        {
+                                                            <option value="@employee.Id" selected>@(employee.FirstName + " " + employee.LastName)</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
+                                                        }
                                                     }
                                                 }
                                             </select>
@@ -246,6 +256,9 @@
             {
                 if (int.TryParse(this.ShipmentId, out int id))
                 {
+                    var selectedEmployeeId = await this.BrowserStorage.GetAsync<int>("SelectedEmployeeId");
+                    this.updatedBy = selectedEmployeeId.Success ? selectedEmployeeId.Value : 0;
+
                     this.shipment = await this.ShipmentService.GetShipment(id);
                     this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
 
@@ -260,10 +273,19 @@
         }
     }
 
-    private void OnChangeUpdatedById(ChangeEventArgs e)
+    private async Task OnChangeUpdatedById(ChangeEventArgs e)
     {
         string inputValue = e.Value.ToString();
         this.updatedBy = int.Parse(inputValue);
+        
+        try
+        {
+            await this.BrowserStorage.SetAsync("SelectedEmployeeId", this.updatedBy);
+        }
+        catch (Exception ex)
+        {
+
+        }
     }
 
     private void OnClickDamagedGoods()
@@ -443,13 +465,13 @@
             this.shipment.ShipmentDeviation.ShipmentId = this.shipment.Shipment.Id;
 
             var shipmentUpdate = new TuraIntranet.Data.Logistics.Shipments.ShipmentUpdateData()
-            {
-                ShipmentId = this.shipment.Shipment.Id,
-                UpdatedBy = this.updatedBy,
-                UpdatedAt = DateTime.Now,
-                StatusId = this.shipment.ShipmentUpdate.StatusId,
-                Note = "Avvikelse Inrapporterad"
-            };
+                {
+                    ShipmentId = this.shipment.Shipment.Id,
+                    UpdatedBy = this.updatedBy,
+                    UpdatedAt = DateTime.Now,
+                    StatusId = this.shipment.ShipmentUpdate.StatusId,
+                    Note = "Avvikelse Inrapporterad"
+                };
 
             this.ShipmentService.AddUpdate(shipmentUpdate);
             await this.ShipmentService.AddDeviation(this.shipment.ShipmentDeviation);

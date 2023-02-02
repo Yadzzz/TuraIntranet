@@ -18,7 +18,7 @@ namespace TuraIntranet.Data.API
 
         public APIRequest(string apiUrl)
         {
-            this._apiUrl = "https://prodapi.turascandinavia.com" + apiUrl;
+            this._apiUrl = "https://localhost:7245" + apiUrl;
 
             //Temporary logger
             var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddSerilog());
@@ -28,7 +28,7 @@ namespace TuraIntranet.Data.API
 
         public void SetUrl(string apiUrl)
         {
-            this._apiUrl = "https://prodapi.turascandinavia.com" + apiUrl;
+            this._apiUrl = "https://localhost:7245" + apiUrl;
         }
 
         public async Task<RestResponse?> GetResponse()
