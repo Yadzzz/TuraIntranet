@@ -11,6 +11,6 @@
         public bool SignedByShipmentLabel { get; set; }
         public bool SignedVisDosa { get; set; }
         public int ResponsibleSorageEmloyee { get; set; }
-        public string TotalParcelsPallets { get; set; }
+        public string PartDelivery { get; set; }
     }
 }

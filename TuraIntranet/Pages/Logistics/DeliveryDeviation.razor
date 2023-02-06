@@ -341,7 +341,7 @@
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Antal kollin/pallar</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Antal kollin/pallar" @bind-value="@this.shipmentDeviationPrintModel.TotalParcelsPallets">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Antal kollin/pallar" @bind-value="@this.shipmentDeviationPrintModel.PartDelivery">
                                                             </div>
                                                         </div>
                                                         
@@ -702,7 +702,7 @@
                     ResponsibleSorageEmloyee = shipment.Shipment.ReceivedBy.Value,
                     SignedByShipmentLabel = false,
                     SignedVisDosa = false,
-                    TotalParcelsPallets = (this.shipment?.Shipment?.NumberOfPackages?.ToString() + " / " + this.shipment?.Shipment?.NumberOfPallets?.ToString()),
+                    PartDelivery = shipment.ShipmentDeviation.PartDelivery,
                 };
         }
         else
@@ -711,9 +711,9 @@
             {
                 string template = this.DeviationService.GetHtmlTemplate(this.shipmentDeviationPrintModel.Supplier, this.shipmentDeviationPrintModel.ShipmentCompany,
                                                                         this.shipmentDeviationPrintModel.DeliveryDate, this.shipmentDeviationPrintModel.ResponsibleConsigneeEmployee.ToString(),
-                                                                        this.shipmentDeviationPrintModel.OrderNumbers, this.shipmentDeviationPrintModel.TotalParcelsPallets,
+                                                                        this.shipmentDeviationPrintModel.OrderNumbers, this.shipmentDeviationPrintModel.PartDelivery,
                                                                         this.shipmentDeviationPrintModel.ReceivedAt, this.shipmentDeviationPrintModel.ResponsibleSorageEmloyee.ToString(),
-                                                                        this.shipmentDeviationPrintModel.TotalParcelsPallets,
+                                                                        string.IsNullOrEmpty(this.shipmentDeviationPrintModel.PartDelivery) ? "___" : this.shipmentDeviationPrintModel.PartDelivery,
                                                                         this.shipmentDeviationPrintModel.SignedByShipmentLabel, this.shipmentDeviationPrintModel.SignedVisDosa,
                                                                         this.shipment.ShipmentDeviation.DamagedGoods ?? false, this.shipment.ShipmentDeviation.AcceptablePallets ?? false,
                                                                         this.shipment.ShipmentDeviation.CorrectPalletHeight ?? false, this.shipment.ShipmentDeviation.HasDeliveryNote ?? false,
@@ -723,7 +723,7 @@
                                                                         this.shipment.ShipmentDeviation.TaggedMixedBoxes ?? false);
 
                 var bytes = System.Text.Encoding.UTF8.GetBytes(template);
-                await this.JS.InvokeAsync<object>("saveBytesBase64AsFile", "test.html", Convert.ToBase64String(bytes));
+                await this.JS.InvokeAsync<object>("saveBytesBase64AsFile", (this.shipment.Shipment.Id + "-avvikelse.html"), Convert.ToBase64String(bytes));
                 await this.NotificationService.AlertSuccess("Avvikelse Rapport skapad");
             }
             catch (Exception e)
