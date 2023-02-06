@@ -8,8 +8,9 @@
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage BrowserStorage
+@inject Services.Logistics.ShipmentsDeviationChecklistService DeviationService
 
-<PageTitle>Inleverans - Lägg till</PageTitle>
+<PageTitle>Inleverans - Avvikelse</PageTitle>
 
 <link href="assets/css/apps/invoice-edit.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="plugins/dropify/dropify.min.css">
@@ -19,6 +20,8 @@
 
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+<link href="assets/css/apps/invoice-preview.css" rel="stylesheet" type="text/css" />
 
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
@@ -160,6 +163,24 @@
                                                             </div>
 
                                                             <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Order överförd</label>
+                                                                <div class="col-sm-7">
+                                                                    <div class="custom-control custom-checkbox checkbox-info">
+                                                                        <input type="checkbox" class="custom-control-input" id="OrderTransferred" checked="@this.shipment.ShipmentDeviation.OrderTransferred" @onclick=@OnClickOrderTransferred>
+                                                                        <label class="custom-control-label" for="OrderTransferred"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-5 col-form-label col-form-label-sm">Delleverans - Antal Kolli</label>
+                                                                <div class="col-sm-7">
+                                                                    <input type="text" class="form-control form-control-sm" placeholder="Delleverans" @bind-value="@this.shipment.ShipmentDeviation.PartDelivery">
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="form-group row">
                                                                 <label class="col-sm-5 col-form-label col-form-label-sm">Meddelande</label>
                                                                 <div class="col-sm-7">
                                                                     <textarea class="form-control" placeholder="Meddelande" @bind=@this.shipment.ShipmentDeviation.Note rows="5" />
@@ -173,18 +194,15 @@
                                                 </div>
 
                                             </div>
-
-                                            <hr />
-
                                         }
                                         else
                                         {
-                                            <p>N/A DEVIATION</p>
+
                                         }
                                     }
                                     else
                                     {
-                                        <p>N/A</p>
+
                                     }
 
                                 </div>
@@ -229,7 +247,139 @@
                                 </div>
                             </div>
 
+                            <div class="invoice-actions-btn">
+                                <div class="invoice-action-btn">
+                                    <div class="row">
+                                        <div class="col-xl-12 col-md-4">
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Print>Skriv Ut</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        @if (this.shipment != null && this.shipment.Shipment != null && this.shipment.ShipmentDeviation != null && this.shipmentDeviationPrintModel != null)
+                        {
+                            <div class="col-xl-9">
+
+                                <div class="invoice-content">
+
+                                    <div class="invoice-detail-body">
+
+                                        <div class="invoice-detail-header">
+
+                                            <div class="row justify-content-between">
+
+                                                <div class="col-xl-6 invoice-address-company">
+
+                                                    <div class="invoice-address-company-fields">
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Leverantör</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Leverantör" @bind-value="@this.shipmentDeviationPrintModel.Supplier">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Fraktbolag</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Fraktbolag" @bind-value=@this.shipmentDeviationPrintModel.ShipmentCompany>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ankomstdatum</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Ankomstdatum" @bind-value="@this.shipmentDeviationPrintModel.ReceivedAt">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ansvarig Godsmottagare</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Ansvarig Godmottagare" value="@(this.ShipmentService.GetShipmentEmployee(shipmentDeviationPrintModel.ResponsibleConsigneeEmployee))">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ordernr</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Ordernr" @bind-value="@this.shipmentDeviationPrintModel.OrderNumbers">
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="col-xl-6 invoice-address-client">
+
+                                                    <div class="invoice-address-client-fields">
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-5 col-form-label col-form-label-sm">Underskrivet via fraktsedel</label>
+                                                            <div class="col-sm-7">
+                                                                <div class="custom-control custom-checkbox checkbox-info">
+                                                                    <input type="checkbox" class="custom-control-input" id="SignedByShipmentLabel" checked="@this.shipmentDeviationPrintModel.SignedByShipmentLabel" @onclick=@OnClickSignedByShipmentLabel>
+                                                                    <label class="custom-control-label" for="SignedByShipmentLabel"></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-5 col-form-label col-form-label-sm">Underskrivet vis dosa</label>
+                                                            <div class="col-sm-7">
+                                                                <div class="custom-control custom-checkbox checkbox-info">
+                                                                    <input type="checkbox" class="custom-control-input" id="SignedVisDosa" checked="@this.shipmentDeviationPrintModel.SignedVisDosa" @onclick=@OnClickSignedVisDosa>
+                                                                    <label class="custom-control-label" for="SignedVisDosa"></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Antal kollin/pallar</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Antal kollin/pallar" @bind-value="@this.shipmentDeviationPrintModel.TotalParcelsPallets">
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Inlagrings datum</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Inlagrings datum" @bind-value="@this.shipmentDeviationPrintModel.ReceivedAt">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Ansvarig Inlagring</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" class="form-control form-control-sm" placeholer="Ansvarig Inlagring" value="@(this.ShipmentService.GetShipmentEmployee(shipmentDeviationPrintModel.ResponsibleSorageEmloyee))">
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <hr />
+
+                                        <div class="col-xl-12 col-md-4">
+                                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Print>Skriv Ut</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+
                     </div>
                 </div>
             </div>
@@ -244,6 +394,7 @@
     private Data.Logistics.Shipments.ShipmentModel? shipment;
     private List<Data.Logistics.Shipments.ShipmentEmployee>? shipmentEmployees;
     private int updatedBy = 0;
+    private Models.ShipmentDeviationPrintModel? shipmentDeviationPrintModel;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -277,7 +428,7 @@
     {
         string inputValue = e.Value.ToString();
         this.updatedBy = int.Parse(inputValue);
-        
+
         try
         {
             await this.BrowserStorage.SetAsync("SelectedEmployeeId", this.updatedBy);
@@ -448,8 +599,48 @@
         {
             this.shipment.ShipmentDeviation.TaggedMixedBoxes = true;
         }
+    }
 
-        Console.WriteLine(this.shipment.ShipmentDeviation.TaggedMixedBoxes);
+    private void OnClickOrderTransferred()
+    {
+        if (this.shipment.ShipmentDeviation.OrderTransferred == null || !this.shipment.ShipmentDeviation.OrderTransferred.HasValue)
+        {
+            this.shipment.ShipmentDeviation.OrderTransferred = true;
+            return;
+        }
+
+        if (this.shipment.ShipmentDeviation.OrderTransferred.Value)
+        {
+            this.shipment.ShipmentDeviation.OrderTransferred = false;
+        }
+        else
+        {
+            this.shipment.ShipmentDeviation.OrderTransferred = true;
+        }
+    }
+
+    private void OnClickSignedByShipmentLabel()
+    {
+        if (this.shipmentDeviationPrintModel.SignedByShipmentLabel)
+        {
+            this.shipmentDeviationPrintModel.SignedByShipmentLabel = false;
+        }
+        else
+        {
+            this.shipmentDeviationPrintModel.SignedByShipmentLabel = true;
+        }
+    }
+
+    private void OnClickSignedVisDosa()
+    {
+        if (this.shipmentDeviationPrintModel.SignedVisDosa)
+        {
+            this.shipmentDeviationPrintModel.SignedVisDosa = false;
+        }
+        else
+        {
+            this.shipmentDeviationPrintModel.SignedVisDosa = true;
+        }
     }
 
     public async Task Save()
@@ -494,5 +685,54 @@
             this.ShipmentService.FlushShipments();
             await this.NotificationService.AlertSuccess("Avvikelse Uppdaterad");
         }
+    }
+
+    private async Task Print()
+    {
+        if (this.shipmentDeviationPrintModel == null)
+        {
+            this.shipmentDeviationPrintModel = new()
+                {
+                    Supplier = this.shipment.Shipment.Supplier,
+                    ShipmentCompany = string.Empty,
+                    DeliveryDate = shipment.Shipment.ReceivedAt.ToShortDateString(),
+                    OrderNumbers = shipment.Shipment.OrderNumbers,
+                    ReceivedAt = shipment.Shipment.ReceivedAt.ToShortDateString(),
+                    ResponsibleConsigneeEmployee = shipment.Shipment.ReceivedBy.Value,
+                    ResponsibleSorageEmloyee = shipment.Shipment.ReceivedBy.Value,
+                    SignedByShipmentLabel = false,
+                    SignedVisDosa = false,
+                    TotalParcelsPallets = (this.shipment?.Shipment?.NumberOfPackages?.ToString() + " / " + this.shipment?.Shipment?.NumberOfPallets?.ToString()),
+                };
+        }
+        else
+        {
+            try
+            {
+                string template = this.DeviationService.GetHtmlTemplate(this.shipmentDeviationPrintModel.Supplier, this.shipmentDeviationPrintModel.ShipmentCompany,
+                                                                        this.shipmentDeviationPrintModel.DeliveryDate, this.shipmentDeviationPrintModel.ResponsibleConsigneeEmployee.ToString(),
+                                                                        this.shipmentDeviationPrintModel.OrderNumbers, this.shipmentDeviationPrintModel.TotalParcelsPallets,
+                                                                        this.shipmentDeviationPrintModel.ReceivedAt, this.shipmentDeviationPrintModel.ResponsibleSorageEmloyee.ToString(),
+                                                                        this.shipmentDeviationPrintModel.TotalParcelsPallets,
+                                                                        this.shipmentDeviationPrintModel.SignedByShipmentLabel, this.shipmentDeviationPrintModel.SignedVisDosa,
+                                                                        this.shipment.ShipmentDeviation.DamagedGoods ?? false, this.shipment.ShipmentDeviation.AcceptablePallets ?? false,
+                                                                        this.shipment.ShipmentDeviation.CorrectPalletHeight ?? false, this.shipment.ShipmentDeviation.HasDeliveryNote ?? false,
+                                                                        this.shipment.ShipmentDeviation.OrderNumberOnDeliveryNote ?? false,
+                                                                        this.shipment.ShipmentDeviation.ConcealedFreigtDamage ?? false, this.shipment.ShipmentDeviation.DeliveryNoteDeviations ?? false,
+                                                                        this.shipment.ShipmentDeviation.SortedBoxwise ?? false, this.shipment.ShipmentDeviation.OrderTransferred ?? false,
+                                                                        this.shipment.ShipmentDeviation.TaggedMixedBoxes ?? false);
+
+                var bytes = System.Text.Encoding.UTF8.GetBytes(template);
+                await this.JS.InvokeAsync<object>("saveBytesBase64AsFile", "test.html", Convert.ToBase64String(bytes));
+                await this.NotificationService.AlertSuccess("Avvikelse Rapport skapad");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                await this.NotificationService.AlertError("Kunde inte skriva ut Avvikelse Rapport");
+            }
+        }
+
+        this.StateHasChanged();
     }
 }

@@ -19,5 +19,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
         public bool? SortedBoxwise { get; set; }
         public bool? TaggedMixedBoxes { get; set; }
         public string? Note { get; set; }
+        public string? PartDelivery { get; set; }
+        public bool? OrderTransferred { get; set; }
     }
 }

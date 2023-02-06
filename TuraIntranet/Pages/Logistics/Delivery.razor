@@ -263,7 +263,18 @@
                                                 {
                                                     foreach (var employee in this.shipmentEmployees)
                                                     {
-                                                        <option value="@employee.Id"> @(employee.FirstName + " " + employee.LastName)</option>
+                                                        if (employee.Id == this._updatedBy)
+                                                        {
+                                                            <option value="@employee.Id" selected>@(
+                                                                                  employee.FirstName + " " + employee.LastName
+                                                                                  )</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@employee.Id"> @(
+                                                                                          employee.FirstName + " " + employee.LastName
+                                                                                          )</option>
+                                                        }
                                                     }
                                                 }
                                             </select>

@@ -1,0 +1,333 @@
+﻿<div class="formbold-main-wrapper">
+  <!-- Author: FormBold Team -->
+  <!-- Learn More: https://formbold.com -->
+  <div class="formbold-form-wrapper">
+    <form action="https://formbold.com/s/FORM_ID">
+
+        <div class="newDataRow" style="padding-bottom:60px;">
+            <center><h2>Checklista godsmottagning/Inlagring</h2></center>
+        </div>
+
+        <div class="newDataRow">
+          <div style="float:left">
+            <b>Leverantör: </b> <p style="display: inline; text-decoration: underline;">{LEVERANTOR}</p>
+            </div>
+        </div>
+
+      <div class="formbold-input-flex">
+
+            <div>
+            <b>Fraktbolag: </b> {FRAKTBOLAG}
+            </div>
+
+            <div>
+                <b>Underskrivet via fraktsedel: </b> 
+                <input type="checkbox" id="Underskrivet via fraktsedel" name="Underskrivet via fraktsedel">
+                </div>
+            <div>
+                <b>Underskrivet via dosa: </b> 
+                <input type="checkbox" id="Underskrivet via dosa" name="Underskrivet via dosa">
+             </div>
+      </div>
+
+      <div class="newDataRow">
+          <div style="float:left">
+            <b>Ankomstdatum: </b> {ANKOMSTDATUM}
+            </div>
+
+            <div style="float:right">
+            <b>Ansvarig godsmottagare: </b> {ANSVARIGGDSM}
+            </div>
+      </div>
+
+    <div class="newDataRow">
+      <div style="float:left">
+        <b>Ordernr: </b> {ORDERNR}
+        </div>
+    </div>
+
+    <div class="newDataRow">
+      <div style="float:left">
+        <b>Antal kollin/pallar: </b>{ANTALLKOLLINPALLAR}
+        </div>
+    </div>
+
+    <br />
+    <hr />
+    <br />
+    
+      <div class="formbold-mb-5">
+        <label for="qusOne" class="formbold-form-label">
+
+        </label>
+
+        <div class="formbold-radio-flex">
+          <div class="formbold-radio-group">
+            <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="Fraktskador" name="Fraktskador">
+                Fraktskador/Bruten plast (innebär anmäld skada till chaufför och att ta kort.)
+                </div>
+            </div>
+          </div>
+
+            <div class="formbold-radio-group">
+                <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="Godtagbara" name="Godtagbara">
+                Godtagbara och hela pall (120x80).
+                </div>
+
+            <div style="float:right">
+                Ok pall höjd (1.40).
+                <input type="checkbox" id="Ok pall" name="Ok pall">
+                </div>
+            </div>
+        </div>
+
+            <div class="formbold-radio-group">
+             <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="Bifogade följesedlar" name="Bifogade följesedlar">
+                Bifogade följesedlar på pallen.
+                </div>
+
+            <div style="float:right">
+                Delleverans. Antal Kolli: 
+                {PARTLEV}
+                </div>
+            </div>
+        </div>
+
+            <div class="formbold-radio-group">
+            <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="scales" name="Ordernr pa foljesedeln">
+                Ordernr på följesedeln.
+                </div>
+
+            <div style="float:right">
+                Order överförd. 
+                <input type="checkbox" id="scales" name="Order overford">
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+    <br />
+    
+    <div class="newDataRow">
+      <div style="float:left">
+        <b>Inlagrings datum: </b> {INLAGRINGSDATUM}
+        </div>
+
+        <div style="float:right">
+        <b>Ansvarig Inlagring: </b> {ANSVARIGINLAGRING}
+        </div>
+    </div>
+
+    <br />
+
+    <div class="formbold-mb-5">
+        <label for="qusOne" class="formbold-form-label">
+
+        </label>
+
+        <div class="formbold-radio-flex">
+          <div class="formbold-radio-group">
+            <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="Dolda fraktskador" name="Dolda fraktskador">
+                Dolda fraktskador. 
+                </div>
+            </div>
+          </div>
+
+            <div class="formbold-radio-group">
+                <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="Avvikelser pa foljesedeln" name="Avvikelser pa foljesedeln">
+                Avvikelser på följesedeln.
+                </div>
+            </div>
+        </div>
+
+            <div class="formbold-radio-group">
+                <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="Sortrent" name="Sortrent">
+                Sortrent.
+                </div>
+            </div>
+        </div>
+
+            <div class="formbold-radio-group">
+                <div class="newDataRowww">
+                <div style="float:left">
+                <input type="checkbox" id="Uppmarkta Blandlador" name="Uppmarkta Blandlador">
+                Uppmärkta Blandlådor.
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+    </form>
+  </div>
+</div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: auto;
+  }
+  .formbold-main-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+  }
+
+  .formbold-form-wrapper {
+    margin: 0 auto;
+    max-width: 700px;
+    width: 100%;
+    background: white;
+    padding: 20px;
+  }
+
+  .formbold-img {
+    margin-bottom: 40px;
+  }
+
+  .formbold-input-flex {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .formbold-input-flex > div {
+    width: 50%;
+  }
+  .formbold-form-input {
+    width: 100%;
+    padding: 13px 22px;
+    border-radius: 5px;
+    border: 1px solid #dde3ec;
+    background: #ffffff;
+    font-weight: 500;
+    font-size: 16px;
+    color: #536387;
+    outline: none;
+    resize: none;
+  }
+  .formbold-form-input:focus {
+    border-color: #6a64f1;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+  }
+  .formbold-form-label {
+    color: #536387;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .formbold-mb-5 {
+    margin-bottom: 20px;
+  }
+  .formbold-radio-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .formbold-radio-label {
+    font-size: 14px;
+    line-height: 24px;
+    color: #07074d;
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  .formbold-input-radio {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .formbold-radio-checkmark {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: #ffffff;
+    border: 1px solid #dde3ec;
+    border-radius: 50%;
+  }
+  .formbold-radio-label
+    .formbold-input-radio:checked
+    ~ .formbold-radio-checkmark {
+    background-color: #6a64f1;
+  }
+  .formbold-radio-checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+
+  .formbold-radio-label
+    .formbold-input-radio:checked
+    ~ .formbold-radio-checkmark:after {
+    display: block;
+  }
+
+  .formbold-radio-label .formbold-radio-checkmark:after {
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ffffff;
+    transform: translate(-50%, -50%);
+  }
+
+  .formbold-btn {
+    text-align: center;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 5px;
+    padding: 14px 25px;
+    border: none;
+    font-weight: 500;
+    background-color: #6a64f1;
+    color: white;
+    cursor: pointer;
+    margin-top: 25px;
+  }
+  .formbold-btn:hover {
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+  }
+
+   .newDataRow {
+    width:100%;
+    padding-bottom: 40px;
+  }
+
+  .newDataRowww {
+    width:100%;
+    padding-bottom: 30px;
+  }
+  
+</style>

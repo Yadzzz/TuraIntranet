@@ -13,6 +13,8 @@
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
 
+<link rel="stylesheet" type="text/css" href="assets/css/elements/alert.css">
+
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
 
@@ -100,6 +102,10 @@
                             </tbody>
                         </table>
                     }
+                    else if (this.kossRmas != null && this.kossRmas.Count > 0)
+                    {
+                        <p>---</p>
+                    }
                     else if (this.isLoading)
                     {
                         <br />
@@ -124,20 +130,29 @@
                         <center><h5>@(this.GetModelName(this.selectedKossRma.KossModelId))</h5></center>
                         <br />
 
+                        @if (this.selectedKossRma.ReplyDate != null)
+                        {
+                            <div class="alert alert-light-warning border-0 mb-2" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg> ... </svg></button>
+                                <strong>Besvarad</strong>
+                            </div>
+                            <br />
+                        }
+
                         <div class="form-group row" style="padding-left:25px;">
                             <div class="col-sm-11">
                                 <label class="col-sm-3 col-form-label col-form-label-sm">Inköpsställe</label>
-                                <input type="text" class="form-control form-control-sm" placeholder="@this.selectedKossRma.Vendor" disabled>
+                                <input type="text" class="form-control form-control-sm" value="@this.selectedKossRma.Vendor" disabled>
                             </div>
 
                             <div class="col-sm-11">
                                 <label class="col-sm-3 col-form-label col-form-label-sm">Kvittonummer</label>
-                                <input type="text" class="form-control form-control-sm" placeholder="@this.selectedKossRma.Receipt" disabled>
+                                <input type="text" class="form-control form-control-sm" value="@this.selectedKossRma.Receipt" disabled>
                             </div>
 
                             <div class="col-sm-11">
                                 <label class="col-sm-3 col-form-label col-form-label-sm">Felbeskrivning</label>
-                                <textarea class="form-control" placeholder="@this.selectedKossRma.ProblemDescription" rows="7" disabled />
+                                <textarea class="form-control" value="@this.selectedKossRma.ProblemDescription" rows="7" disabled />
                             </div>
 
                         </div>
@@ -196,6 +211,33 @@
                         </div>
 
                     </div>
+
+                    @if (!string.IsNullOrEmpty(this.selectedKossRma.CustomReply) && this.selectedKossRma.ReplyDate != null && this.selectedKossRma.ReplyMessageId != null)
+                    {
+                        <br />
+
+                        <div class="widget-content widget-content-area br-6">
+                            <br />
+                            <center><h5>Reply Data</h5></center>
+
+                            <div class="form-group row" style="padding-left:25px;">
+                                <div class="col-sm-11">
+                                    <label class="col-sm-5 col-form-label col-form-label-sm">Reply Date</label>
+                                    <input type="text" class="form-control form-control-sm" value="@this.selectedKossRma.ReplyDate" disabled>
+                                </div>
+
+                                <div class="col-sm-11">
+                                    <label class="col-sm-5 col-form-label col-form-label-sm">Reply Id</label>
+                                    <input type="text" class="form-control form-control-sm" value="@this.selectedKossRma.ReplyMessageId" disabled>
+                                </div>
+
+                                <div class="col-sm-11">
+                                    <label class="col-sm-5 col-form-label col-form-label-sm">Reply Text</label>
+                                    <textarea class="form-control" value="@this.selectedKossRma.CustomReply" rows="7" disabled />
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
 
@@ -424,6 +466,7 @@
         this.selectedKossRma = koss;
         this.OnchangeResponseMessageForce(this.selectedResponseId);
         this.StateHasChanged();
+        this.JS.InvokeVoidAsync("OnScrollEvent");
     }
 
     private async Task SendEmail()
@@ -435,6 +478,8 @@
             this.selectedKossRma.ReplyMessageId = int.Parse(this.selectedResponseId);
             this.selectedKossRma.CustomReply = this.responseMessage;
             this.selectedKossRma.ReplyDate = DateTime.Now;
+
+            await this.KossService.UpdateKossModelAsync(this.selectedKossRma);
 
             await this.Notification.AlertSuccess("Email Skickad");
         }
