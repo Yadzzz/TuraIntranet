@@ -21,19 +21,19 @@
             }
         }
 
-        public string GetTotalWebsiteVisits()
+        public int GetTotalWebsiteVisits()
         {
             lock(this._lockObj)
             {
-                return this._totalWebsiteVisits.ToString();
+                return this._totalWebsiteVisits;
             }
         }
 
-        public string GetTotalPageVisit()
+        public int GetTotalPageVisit()
         {
             lock(this._lockObj)
             {
-                return this._totalPageVisits.ToString();
+                return this._totalPageVisits;
             }
         }
     }

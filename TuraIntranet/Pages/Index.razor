@@ -33,7 +33,7 @@
                 <div class="widget widget-content-area br-4">
                     <div class="widget-one">
 
-                        <p>Total website visits since since server restart: @(this.VisitorsService.GetTotalWebsiteVisits())</p>
+                        <p>Total website visits since since server restart: @(this.VisitorsService.GetTotalWebsiteVisits() / 2)</p>
                         <p>Total page visits since since server restart: @(this.VisitorsService.GetTotalPageVisit())</p>
                         
                     </div>
@@ -56,6 +56,7 @@
         var state = await loggedInUser.GetAuthenticationStateAsync();
         this.loggedInUser = state?.User?.Identity?.Name ?? "";
 
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("");
         this.PageNavService.UpdateActivePage("Index");
     }

@@ -37,14 +37,24 @@ namespace TuraIntranet.Services.Logistics
             Task.Run(() => this._shipmentsManager.AddShipment(shipment));
         }
 
-        public async Task<List<ShipmentEmployee>?> GetShipmentEmployees()
+        public async Task<List<ShipmentEmployee>?> GetShipmentEmployees(bool showAll = false)
         {
-            return await this._shipmentsManager.GetShipmentEmployees();
+            return await this._shipmentsManager.GetShipmentEmployees(showAll);
+        }
+
+        public async Task UpdateShipmentEmployee(ShipmentEmployee shipmentEmployee)
+        {
+            await this._shipmentsManager.UpdateShipmentEmployee(shipmentEmployee);
         }
 
         public string GetShipmentEmployee(int id)
         {
             return this._shipmentsManager.GetShipmentEmployee(id);
+        }
+
+        public void AddShipmentEmployee(ShipmentEmployee employee)
+        {
+            Task.Run(() => this._shipmentsManager.AddShipmentEmployee(employee));
         }
 
         public async Task<List<ShipmentReceivingCompany>?> GetShipmentReceivingCompanies()
@@ -75,6 +85,11 @@ namespace TuraIntranet.Services.Logistics
         public void FlushShipments()
         {
             this._shipmentsManager.FlushShipments();
+        }
+
+        public void FlushShipmentEmployees()
+        {
+            this._shipmentsManager.FlushShipmentEmployees();
         }
 
         public Task AddDeviation(ShipmentDeviationData deviation)

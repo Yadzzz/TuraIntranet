@@ -27,7 +27,7 @@ namespace TuraIntranet.Data.Logistics.Shipments
 
             Task.Run(async () =>
             {
-                this._shipmentEmployees = await this.GetShipmentEmployees();
+                this._shipmentEmployees = await this.GetShipmentEmployees(true);
             });
 
             Task.Run(async () =>
@@ -118,14 +118,19 @@ namespace TuraIntranet.Data.Logistics.Shipments
             }
         }
 
-        public async Task<List<ShipmentEmployee>?> GetShipmentEmployees()
+        public async Task<List<ShipmentEmployee>?> GetShipmentEmployees(bool showAll = false)
         {
             if (this._shipmentEmployees != null)
             {
-                return this._shipmentEmployees;
+                if(showAll)
+                {
+                    return this._shipmentEmployees;
+                }
+
+                return this._shipmentEmployees.Where(x => !x.IsDeleted).ToList();
             }
 
-            APIRequest api = new APIRequest("/api/v1/intranet/logistics/shipments/ShipmentEmployee");
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/shipments/ShipmentEmployeeV2");
 
             var response = await api.GetResponse();
 
@@ -134,8 +139,14 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 if (response != null && response.Content != null)
                 {
                     List<ShipmentEmployee>? employees = JsonConvert.DeserializeObject<List<ShipmentEmployee>>(response.Content);
+                    this._shipmentEmployees = employees;
+                    
+                    if (showAll)
+                    {
+                        return employees;
+                    }
 
-                    return employees;
+                    return employees.Where(x => !x.IsDeleted).ToList();
                 }
                 else
                 {
@@ -148,6 +159,18 @@ namespace TuraIntranet.Data.Logistics.Shipments
                 Console.WriteLine(ex.ToString());
                 return null;
             }
+        }
+
+        public async Task AddShipmentEmployee(ShipmentEmployee shipmentEmployee)
+        {
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/shipments/ShipmentEmployeeV2/");
+            bool success = await api.SendPostRequest(shipmentEmployee);
+        }
+
+        public async Task UpdateShipmentEmployee(ShipmentEmployee shipmentEmployee)
+        {
+            APIRequest api = new APIRequest("/api/v1/intranet/logistics/shipments/ShipmentEmployeeV2/" + shipmentEmployee.Id);
+            bool success = await api.SendPutRequest(shipmentEmployee);
         }
 
         public async Task UpdateShipment(ShipmentModel shipmentModel)
@@ -284,6 +307,11 @@ namespace TuraIntranet.Data.Logistics.Shipments
         public async Task FlushShipments()
         {
             this._shipments = null;
+        }
+
+        public void FlushShipmentEmployees()
+        {
+            this._shipmentEmployees = null;
         }
 
         public async Task AddDeviation(ShipmentDeviationData deviation)
