@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Info.InfoService InfoService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Meddelanden - Visa</PageTitle>
 
@@ -116,6 +117,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Info");
             this.PageNavService.UpdateActivePage("Info");
 

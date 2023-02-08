@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject Services.Backoffice.KossService KossService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Koss RMA</PageTitle>
 
@@ -243,6 +244,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("Backoffice");
         this.PageNavService.UpdateActivePage("KossRMA");
 

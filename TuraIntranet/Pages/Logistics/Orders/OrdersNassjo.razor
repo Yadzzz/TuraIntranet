@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Orders.OrdersService OrdersService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Orderstatus Nässjö</PageTitle>
 
@@ -84,6 +85,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Logistik");
             this.PageNavService.UpdateActivePage("Orderstatus");
 

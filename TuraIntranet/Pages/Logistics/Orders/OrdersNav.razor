@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Orders.OrdersService OrdersService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Order Nav</PageTitle>
 
@@ -100,6 +101,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Logistik");
             this.PageNavService.UpdateActivePage("OrderstatusNav");
 

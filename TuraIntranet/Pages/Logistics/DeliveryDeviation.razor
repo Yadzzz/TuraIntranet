@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage BrowserStorage
@@ -284,7 +285,7 @@
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Fraktbolag</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Fraktbolag" @bind-value=@this.shipmentDeviationPrintModel.ShipmentCompany>
+                                                                <input type="text" class="form-control form-control-sm" @bind-value=@this.shipmentDeviationPrintModel.ShipmentCompany>
                                                             </div>
                                                         </div>
 
@@ -298,7 +299,7 @@
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Ansvarig Godsmottagare</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Ansvarig Godmottagare" value="@(this.ShipmentService.GetShipmentEmployee(shipmentDeviationPrintModel.ResponsibleConsigneeEmployee))">
+                                                                <input type="text" class="form-control form-control-sm" placeholder="Ansvarig Godmottagare" value="@shipmentDeviationPrintModel.ResponsibleConsigneeEmployee">
                                                             </div>
                                                         </div>
 
@@ -355,7 +356,7 @@
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Ansvarig Inlagring</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholer="Ansvarig Inlagring" value="@(this.ShipmentService.GetShipmentEmployee(shipmentDeviationPrintModel.ResponsibleSorageEmloyee))">
+                                                                <input type="text" class="form-control form-control-sm" placeholer="Ansvarig Inlagring" value="@shipmentDeviationPrintModel.ResponsibleSorageEmloyee">
                                                             </div>
                                                         </div>
 
@@ -400,6 +401,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Logistik");
             this.PageNavService.UpdateActivePage("Inleveranser");
 
@@ -698,8 +700,8 @@
                     DeliveryDate = shipment.Shipment.ReceivedAt.ToShortDateString(),
                     OrderNumbers = shipment.Shipment.OrderNumbers,
                     ReceivedAt = shipment.Shipment.ReceivedAt.ToShortDateString(),
-                    ResponsibleConsigneeEmployee = shipment.Shipment.ReceivedBy.Value,
-                    ResponsibleSorageEmloyee = shipment.Shipment.ReceivedBy.Value,
+                    ResponsibleConsigneeEmployee = (shipment.Shipment.ReceivedBy != null ? this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value) : ""),
+                    ResponsibleSorageEmloyee = (shipment.Shipment.ReceivedBy != null ? this.ShipmentService.GetShipmentEmployee(shipment.Shipment.ReceivedBy.Value) : ""),
                     SignedByShipmentLabel = false,
                     SignedVisDosa = false,
                     PartDelivery = shipment.ShipmentDeviation.PartDelivery,

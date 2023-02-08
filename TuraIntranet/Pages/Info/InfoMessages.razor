@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Info.InfoService InfoService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Meddelanden</PageTitle>
 
@@ -82,6 +83,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("Info");
         this.PageNavService.UpdateActivePage("Info");
 

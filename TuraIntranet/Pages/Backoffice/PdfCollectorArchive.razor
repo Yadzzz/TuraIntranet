@@ -8,6 +8,7 @@
 @inject PageNavigationService PageNavService
 @inject NavigationManager NavManager
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>PDF Arkiv</PageTitle>
 
@@ -246,6 +247,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Backoffice");
             this.PageNavService.UpdateActivePage("pdfcollector");
 

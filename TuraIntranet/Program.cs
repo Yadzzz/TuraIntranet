@@ -50,6 +50,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<EANService>();
             builder.Services.AddScoped<DeviceDetectionService>();
             builder.Services.AddScoped<ShipmentsDeviationChecklistService>();
+            builder.Services.AddSingleton<VisitorsService>();
 
             builder.Services.AddHsts(options =>
             {

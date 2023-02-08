@@ -3,6 +3,7 @@
 @inject PageNavigationService PageNavService
 @inject NotificationService Notification
 @inject Services.Logistics.RmaInformationService RmaService
+@inject VisitorsService VisitorsService
 
 <PageTitle>RMA Information</PageTitle>
 
@@ -161,6 +162,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("Logistik");
         this.PageNavService.UpdateActivePage("RmaInformation");
 

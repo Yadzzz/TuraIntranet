@@ -4,6 +4,7 @@
 @inject TuraIntranet.Services.Claims.ClaimsService ClaimsService
 @inject PageNavigationService PageNavService
 @inject NavigationManager NavManager
+@inject VisitorsService VisitorsService
 
 <PageTitle>Claims</PageTitle>
 
@@ -22,6 +23,17 @@
                     <center><h5>Claims</h5></center>
                     <br />
 
+                    <div class="col-xl-2" style="float:left">
+                        <div class="col-sm-12">
+                            <div class="custom-control custom-checkbox checkbox-info">
+                                <input type="checkbox" class="custom-control-input" id="showNI" checked="@this.showCompleted" @onclick=@this.OnClickShowCompleted>
+                                <label class="custom-control-label" for="showNI">Visa Färdiga</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+
                     @if (this.claims != null && this.claims.Count > 0)
                     {
                         <table id="html5-extension" class="table table-hover non-hover" style="width:100%;">
@@ -37,7 +49,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var claim in this.claims)
+                                @foreach (var claim in this.claims.Where(x => !x.Completed))
                                 {
                                     <tr>
                                         <td><b>@claim.Date<br />@claim.TuraContactPerson</b></td>
@@ -65,24 +77,32 @@
                                         <td>
                                             <b>Referenser</b><br />
                                             <div>
-                                                <label>
-                                                    @(claim.InvoiceFromCustomerReference ?? "")
-                                                </label>
+                                                <div style="max-width:100%; white-space:pre-line;">
+                                                    <label>
+                                                        @(claim.InvoiceFromCustomerReference ?? "")
+                                                    </label>
+                                                </div>
                                             </div>
                                             <div>
-                                                <label>
-                                                    @(claim.CreditToCustomerReference ?? "")
-                                                </label>
+                                                <div style="max-width:100%; white-space:pre-line;">
+                                                    <label>
+                                                        @(claim.CreditToCustomerReference ?? "")
+                                                    </label>
+                                                </div>
                                             </div>
                                             <div>
-                                                <label>
-                                                    @(claim.InvoiceToSupplierReference ?? "")
-                                                </label>
+                                                <div style="max-width:100%; white-space:pre-line;">
+                                                    <label>
+                                                        @(claim.InvoiceToSupplierReference ?? "")
+                                                    </label>
+                                                </div>
                                             </div>
                                             <div>
-                                                <label>
-                                                    @(claim.CreditFromSupplierReference ?? "")
-                                                </label>
+                                                <div style="max-width:100%; white-space:pre-line;">
+                                                    <label>
+                                                        @(claim.CreditFromSupplierReference ?? "")
+                                                    </label>
+                                                </div>
                                             </div>
                                         </td>
                                         <td><b>Belopp</b><br />In: @claim.AmountIn @(this.GetCurrency(claim.CurrencyIn))<br />Ut: @claim.AmountOut @(this.GetCurrency(claim.CurrencyOut))</td>
@@ -93,6 +113,86 @@
                                             </div>
                                         </td>
                                     </tr>
+                                }
+
+                                @if (this.showCompleted)
+                                {
+                                    foreach (var claim in this.claims.Where(x => x.Completed))
+                                    {
+                                        <tr style="background-color:#dcedc9;">
+                                            <td><b>@claim.Date<br />@claim.TuraContactPerson</b></td>
+                                            <td><div style="max-width:100%; white-space:pre-line;"><b>Projekt: @claim.Supplier - @claim.Customer</b></div><br /><div style="max-width:100%; white-space:pre-line;">@claim.Subject</div></td>
+                                            <td>
+                                                <b>Transaktioner</b>
+                                                <br />
+                                                <div class="custom-control custom-checkbox checkbox-info">
+                                                    <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.InvoiceFromCustomer disabled>
+                                                    <label class="custom-control-label" for="sChkbox">Faktura från kund</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox checkbox-info">
+                                                    <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.CreditToCustomer disabled>
+                                                    <label class="custom-control-label" for="sChkbox">Kredit till kund</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox checkbox-info">
+                                                    <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.InvoiceToSupplier disabled>
+                                                    <label class="custom-control-label" for="sChkbox">Faktura till leverantör</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox checkbox-info">
+                                                    <input type="checkbox" class="custom-control-input" id="sChkbox" checked=@claim.CreditFromSupplier disabled>
+                                                    <label class="custom-control-label" for="sChkbox">Kredit från leverantör</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <b>Referenser</b><br />
+                                                <div>
+                                                    <div style="max-width:100%; white-space:pre-line;">
+                                                        <label>
+                                                            @(
+                                                                claim.InvoiceFromCustomerReference ?? ""
+                                                                )
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div style="max-width:100%; white-space:pre-line;">
+                                                        <label>
+                                                            @(
+                                                                claim.CreditToCustomerReference ?? ""
+                                                                )
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div style="max-width:100%; white-space:pre-line;">
+                                                        <label>
+                                                            @(
+                                                                claim.InvoiceToSupplierReference ?? ""
+                                                                )
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div style="max-width:100%; white-space:pre-line;">
+                                                        <label>
+                                                            @(
+                                                                claim.CreditFromSupplierReference ?? ""
+                                                                )
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <b>Belopp</b><br />In: @claim.AmountIn @(this.GetCurrency(claim.CurrencyIn) )
+                                                    <br />Ut: @claim.AmountOut @( this.GetCurrency(claim.CurrencyOut))
+                                            </td>
+                                            <td><b>Kund</b><br /><div style="max-width:100%; white-space:pre-line;">@claim.Customer<br />@claim.CustomerContactPerson</div></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-dark btn-sm" @onclick=@(() => this.Show(claim.Id.ToString()))>Ändra</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
                             </tbody>
                         </table>
@@ -119,10 +219,12 @@
 @code {
     private List<TuraIntranet.Data.Claims.Claim> claims;
     private List<TuraIntranet.Data.Claims.ClaimCurrency> currencies;
+    private bool showCompleted = false;
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("Reklam");
         this.PageNavService.UpdateActivePage("Claim");
 
@@ -145,7 +247,7 @@
             //this.currencies = await this.ClaimsService.GetClaimCurrencies();
             //this.StateHasChanged();
 
-            await JS.InvokeVoidAsync("loadDataTableHtml5Component");
+            //await JS.InvokeVoidAsync("loadDataTableHtml5Component");
         }
     }
 
@@ -190,6 +292,20 @@
         //{
         //    return "N/A";
         //}
+    }
+
+    private void OnClickShowCompleted()
+    {
+        if (this.showCompleted)
+        {
+            this.showCompleted = false;
+        }
+        else
+        {
+            this.showCompleted = true;
+        }
+
+        this.StateHasChanged();
     }
 
     private void Show(string claimId)

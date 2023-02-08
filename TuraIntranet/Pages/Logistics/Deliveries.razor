@@ -6,6 +6,7 @@
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
 @inject NotificationService Notification
 @inject DeviceDetectionService DeviceService
+@inject VisitorsService VisitorsService
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage BrowserStorage
@@ -483,6 +484,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("Logistik");
         this.PageNavService.UpdateActivePage("Inleveranser");
 

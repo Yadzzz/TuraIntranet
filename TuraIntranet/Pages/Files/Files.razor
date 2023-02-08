@@ -1,11 +1,11 @@
 ﻿@page "/files"
 
-
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject Services.Files.FileService FileService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Files</PageTitle>
 
@@ -72,6 +72,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("");
             this.PageNavService.UpdateActivePage("Files");
 

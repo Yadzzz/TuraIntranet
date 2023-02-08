@@ -5,6 +5,8 @@
 
 @inject IJSRuntime JS
 @inject PageNavigationService PageNavService
+@inject VisitorsService VisitorsService
+@inject AuthenticationStateProvider authStateProvider
 
 <PageTitle>Index</PageTitle>
 
@@ -20,10 +22,24 @@
                     <div class="widget-one">
 
                         <h6>Welcome to Tura Intranet</h6>
+                        
+                    </div>
+                </div>
+            </div
 
+            @if(this.loggedInUser == "Yad.Mohamad")
+            {
+                <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
+                <div class="widget widget-content-area br-4">
+                    <div class="widget-one">
+
+                        <p>Total website visits since since server restart: @(this.VisitorsService.GetTotalWebsiteVisits())</p>
+                        <p>Total page visits since since server restart: @(this.VisitorsService.GetTotalPageVisit())</p>
+                        
                     </div>
                 </div>
             </div>
+            }
 
         </div>
 
@@ -32,8 +48,14 @@
 </div>
 
 @code {
-    protected override void OnInitialized()
+    private string loggedInUser = string.Empty;
+
+    protected override async Task OnInitializedAsync()
     {
+        var loggedInUser = (Authentication.CustomAuthenticationStateProvider)authStateProvider;
+        var state = await loggedInUser.GetAuthenticationStateAsync();
+        this.loggedInUser = state?.User?.Identity?.Name ?? "";
+
         this.PageNavService.UpdateActiveSection("");
         this.PageNavService.UpdateActivePage("Index");
     }

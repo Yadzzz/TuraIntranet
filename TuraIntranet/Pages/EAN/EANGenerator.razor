@@ -4,6 +4,7 @@
 @inject PageNavigationService PageNavService
 @inject NotificationService Notification
 @inject Services.EAN.EANService EANService
+@inject VisitorsService VisitorsService
 
 <PageTitle>EAN Generator</PageTitle>
 
@@ -102,6 +103,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("");
         this.PageNavService.UpdateActivePage("EANGenerator");
 

@@ -5,6 +5,7 @@
 @inject PageNavigationService PageNavService
 @inject NavigationManager NavManager
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Claim</PageTitle>
 
@@ -302,6 +303,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Reklam");
             this.PageNavService.UpdateActivePage("Claim");
 

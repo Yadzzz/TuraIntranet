@@ -4,6 +4,7 @@
 @inject TuraIntranet.Services.PageNavigationService NavService
 @inject PageNavigationService PageNav
 @inject DeviceDetectionService DeviceService
+@inject VisitorsService VisitorsService
 
 <PageTitle>TuraIntranet</PageTitle>
 
@@ -54,6 +55,11 @@
 @code {
     private string sideBarStatus = "closed";
     private string currentPage = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        this.VisitorsService.IncrementWebsiteVisits();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Network.NetworkService NetworkService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Nätverk</PageTitle>
 
@@ -91,6 +92,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("");
         this.PageNavService.UpdateActivePage("IT-Admin");
 

@@ -6,6 +6,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Logistics.ShipmentService ShipmentService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage BrowserStorage
@@ -313,6 +314,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Logistik");
             this.PageNavService.UpdateActivePage("Inleveranser");
 

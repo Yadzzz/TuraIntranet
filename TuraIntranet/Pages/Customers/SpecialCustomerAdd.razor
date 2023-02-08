@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Customers.CustomersService CustService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Specialkunder - Lägg Till</PageTitle>
 
@@ -129,6 +130,7 @@
     {
         if (firstRender)
         {
+            this.VisitorsService.IncrementPageVisit();
             this.PageNavService.UpdateActiveSection("Kunder");
             this.PageNavService.UpdateActivePage("AddSpecialKund");
 

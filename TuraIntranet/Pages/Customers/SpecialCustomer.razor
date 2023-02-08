@@ -6,6 +6,7 @@
 @inject NavigationManager NavManager
 @inject TuraIntranet.Services.Customers.CustomersService CustService
 @inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
 
 <PageTitle>Specialkunder - Visa</PageTitle>
 
@@ -132,6 +133,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("Kunder");
         this.PageNavService.UpdateActivePage("Specialkunder");
 

@@ -3,6 +3,7 @@
 @inject PageNavigationService PageNavService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager
+@inject VisitorsService VisitorsService
 
 <PageTitle>Orderstatus</PageTitle>
 
@@ -87,6 +88,7 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
+        this.VisitorsService.IncrementPageVisit();
         this.PageNavService.UpdateActiveSection("Logistik");
         this.PageNavService.UpdateActivePage("Orderstatus");
 
