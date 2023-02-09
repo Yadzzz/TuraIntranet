@@ -143,6 +143,7 @@
         await this.NotificationService.AlertSuccess("Användare Uppdaterad");
         this.ShipmentService.FlushShipmentEmployees();
         this.shipmentEmployees = await this.ShipmentService.GetShipmentEmployees();
+        this.selectedShipmentEmployee = null;
         this.StateHasChanged();
     }
 

@@ -33,7 +33,7 @@ namespace TuraIntranet.Authentication
                     //    Console.WriteLine(group);
                     //}
 
-                    if (!userGroups.Contains("Tura Intranet Users") && !userGroups.Contains("Tura Intranet Administrators"))
+                    if (!userGroups.Contains("Tura Intranet Users") && !userGroups.Contains("Tura Intranet Administrators") && !userGroups.Contains("Tura Intranet Power Users"))
                     {
                         error = "Permission Denied for User";
                         return false;
@@ -43,7 +43,13 @@ namespace TuraIntranet.Authentication
                         string role = string.Empty;
 
                         if (userGroups.Contains("Tura Intranet Administrators"))
+                        {
                             role = "Administrator";
+                        }
+                        else if (userGroups.Contains("Tura Intranet Power Users"))
+                        {
+                            role = "Power User";
+                        }
                         else
                             role = "User";
 
