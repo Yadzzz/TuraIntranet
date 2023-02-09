@@ -32,6 +32,11 @@
 
                                 <div class="invoice-detail-body">
 
+                                    @*<EditForm Model="@addShipmentModel">
+                                    <label for="supplier">Leverantör</label>
+                                    <InputText id="supplier" @bind-Value="addShipmentModel.Supplier" />
+                                    </EditForm>*@
+
                                     @if (this._shipment != null)
                                     {
                                         <div class="invoice-detail-header">
@@ -40,22 +45,6 @@
                                                 <div class="col-xl-5 invoice-address-company">
 
                                                     <div class="invoice-address-company-fields">
-
-                                                       @* <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label col-form-label-sm">Skapad Av</label>
-                                                            <div class="col-sm-9">
-
-                                                                <select name="användare" class="form-control country_code  form-control-sm" @onchange=@OnChangeUpdatedById>
-                                                                    <option value="0">Välj användare</option>
-
-                                                                    @foreach (var employee in this.shipmentEmployees)
-                                                                    {
-                                                                        <option value="@employee.Id">@(employee.FirstName + " " + employee.LastName)</option>
-                                                                    }
-                                                                </select>
-
-                                                            </div>
-                                                        </div>*@
 
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Mottaget av</label>
@@ -85,7 +74,7 @@
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label col-form-label-sm">Leverantör</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" class="form-control form-control-sm" placeholder="Leverantör" @bind-value="@this._shipment.Shipment.Supplier">
+                                                                <input type="text" autocomplete="on" name="supplier" id="supplier" class="form-control form-control-sm" placeholder="Leverantör" @bind-value="@this._shipment.Shipment.Supplier">
                                                             </div>
                                                         </div>
 
@@ -147,14 +136,10 @@
 
                                         <hr />
 
-                                        @*<div class="col-xl-12 col-md-4">
-                                    <button class="btn btn-dark btn-block mb-4 mr-2">Spara</button>
-                                    </div>*@
-
                                     }
                                     else
                                     {
-                                        <p>N/A</p>
+
                                     }
 
                                 </div>
@@ -187,6 +172,8 @@
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentEmployee> shipmentEmployees { get; set; }
     private int _updatedBy = 0;
 
+    private Models.AddShipmentModel addShipmentModel = new();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -208,7 +195,7 @@
 
     private async Task SaveShipment()
     {
-        if(this._shipment == null || this._shipment.Shipment == null)
+        if (this._shipment == null || this._shipment.Shipment == null)
         {
             await this.Notification.AlertError("ERROR #F301");
             return;

@@ -171,7 +171,7 @@
 
                                                         @if (shipment.ShipmentUpdate.StatusId == 2)
                                                         {
-                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                            <a class="dropdown-item" @onclick=@(() => this.OpenDialog(shipment))>Väntar Info</a>
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
                                                             <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                             <div class="dropdown-divider"></div>
@@ -231,7 +231,7 @@
 
                                                         @if (shipment.ShipmentUpdate.StatusId == 2)
                                                         {
-                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                            <a class="dropdown-item" @onclick=@(() => this.OpenDialog(shipment))>Väntar Info</a>
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
                                                             <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                             <div class="dropdown-divider"></div>
@@ -276,7 +276,7 @@
 
                                                         @if (shipment.ShipmentUpdate.StatusId == 2)
                                                         {
-                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                            <a class="dropdown-item" @onclick=@(() => this.OpenDialog(shipment))>Väntar Info</a>
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
                                                             <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                             <div class="dropdown-divider"></div>
@@ -334,7 +334,7 @@
 
                                                         @if (shipment.ShipmentUpdate.StatusId == 2)
                                                         {
-                                                            <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                            <a class="dropdown-item" @onclick=@(() => this.OpenDialog(shipment))>Väntar Info</a>
                                                             <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
                                                             <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                             <div class="dropdown-divider"></div>
@@ -381,7 +381,7 @@
 
                                                             @if (shipment.ShipmentUpdate.StatusId == 2)
                                                             {
-                                                                <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                                <a class="dropdown-item" @onclick=@(() => this.OpenDialog(shipment))>Väntar Info</a>
                                                                 <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
                                                                 <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                                 <div class="dropdown-divider"></div>
@@ -445,7 +445,8 @@
 
                                                             @if (shipment.ShipmentUpdate.StatusId == 2)
                                                             {
-                                                                <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>
+                                                                @*<a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 3))>Väntar Info</a>*@
+                                                                <a class="dropdown-item" @onclick=@(() => this.OpenDialog(shipment))>Väntar Info</a>
                                                                 <a class="dropdown-item" @onclick=@(() => this.OnClickUpdateStatusId(shipment, 1))>Återställ</a>
                                                                 <a class="dropdown-item" @onclick=@(() => ShowDeviation(shipment.Shipment.Id.ToString()))>Lägg till avvikelse</a>
                                                                 <div class="dropdown-divider"></div>
@@ -485,6 +486,17 @@
     <Footer />
 </div>
 
+@if (DialogIsOpen)
+{
+    <Dialog Caption=@caption
+        Message="@message"
+        OnClose="@OnDialogClose"
+        Type="Dialog.Category.SaveNot"
+        TakesInput="true"
+        @ref="dialogRef">
+    </Dialog>
+}
+
 @code {
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentModel>? _shipments;
     private List<TuraIntranet.Data.Logistics.Shipments.ShipmentEmployee>? shipmentEmployees;
@@ -494,6 +506,12 @@
     private bool showNI = true;
     private bool showActiveAndAwaitingInfo = false;
     private bool isLoading = true;
+
+    private TuraIntranet.Data.Logistics.Shipments.ShipmentModel? _onTriggerShipmentModel;
+    private Dialog? dialogRef = null;
+    private string caption;
+    private string message;
+    private bool DialogIsOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -530,6 +548,31 @@
     //    }
     //}
 
+    private void OpenDialog(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipmentModel)
+    {
+        this._onTriggerShipmentModel = shipmentModel;
+        caption = "Väntar Info";
+        message = "Notering: ";
+        DialogIsOpen = true;
+    }
+
+    private async Task OnDialogClose(bool isOk)
+    {
+        if (isOk)
+        {
+            if (this.dialogRef == null || string.IsNullOrEmpty(this.dialogRef.InputText) || this._onTriggerShipmentModel == null)
+            {
+                return;
+            }
+
+            this.OnClickUpdateStatusId(this._onTriggerShipmentModel, 3, this.dialogRef.InputText);
+        }
+
+        this._onTriggerShipmentModel = null;
+        this.dialogRef.InputText = "";
+        DialogIsOpen = false;
+    }
+    
     private void OnclickShowAll()
     {
         if (this.showAll)
@@ -667,7 +710,7 @@
         this.StateHasChanged();
     }
 
-    private void OnClickUpdateStatusId(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment, int statusId)
+    private void OnClickUpdateStatusId(TuraIntranet.Data.Logistics.Shipments.ShipmentModel shipment, int statusId, string note = "")
     {
         if (this._updatedBy == 0)
         {
@@ -682,7 +725,7 @@
                 UpdatedBy = this._updatedBy,
                 UpdatedAt = DateTime.Now,
                 StatusId = statusId,
-                Note = string.Empty
+                Note = note
             };
 
         this.ShipmentService.AddUpdate(shipmentUpdate);

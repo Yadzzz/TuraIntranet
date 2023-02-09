@@ -23,6 +23,8 @@
 
                         <h6>Welcome to Tura Intranet</h6>
                         
+                        @*<a class="btn btn-warning" @onclick="(() => OpenDialog())">Save</a>*@
+
                     </div>
                 </div>
             </div
@@ -47,7 +49,44 @@
     <Footer />
 </div>
 
+@if (DialogIsOpen)
+{
+   <Dialog Caption=@caption
+           Message="@message"
+           OnClose="@OnDialogClose"
+           Type="Dialog.Category.SaveNot"
+           TakesInput="true"
+           @ref="dialogRef">
+   </Dialog>
+}
+
 @code {
+    private Dialog? dialogRef = null;
+    private string caption;
+    private string message;
+    private bool DialogIsOpen = false;
+
+    private void OpenDialog()
+    {
+        caption = "Väntar Info";
+        message = "Notering: ";
+        DialogIsOpen = true;
+    }
+    private async Task OnDialogClose(bool isOk)
+    {
+        if (isOk)
+        {
+            if(this.dialogRef == null || string.IsNullOrEmpty(this.dialogRef.InputText))
+            {
+                return;
+            }
+
+            Console.WriteLine(this.dialogRef.InputText);
+        }
+
+        DialogIsOpen = false;
+   }
+
     private string loggedInUser = string.Empty;
 
     protected override async Task OnInitializedAsync()
