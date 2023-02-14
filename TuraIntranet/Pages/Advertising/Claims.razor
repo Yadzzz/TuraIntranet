@@ -23,15 +23,29 @@
                     <center><h5>Claims</h5></center>
                     <br />
 
-                    <div class="col-xl-2" style="float:left">
-                        <div class="col-sm-12">
-                            <div class="custom-control custom-checkbox checkbox-info">
-                                <input type="checkbox" class="custom-control-input" id="showNI" checked="@this.showCompleted" @onclick=@this.OnClickShowCompleted>
-                                <label class="custom-control-label" for="showNI">Visa Färdiga</label>
+                    <div class="form-group row">
+                        <div class="col-xl-2">
+                            <div class="col-sm-12">
+                                <div class="custom-control custom-checkbox checkbox-info">
+                                    <input type="checkbox" class="custom-control-input" id="showcompleted" checked="@this.showCompleted" @onclick=@this.OnClickShowCompleted>
+                                    <label class="custom-control-label" for="showcompleted">Visa Färdiga</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control form-control-sm" placeholder="Leverantör" @bind-value=@this.supplierSearchText @bind-value:event="oninput">
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control form-control-sm" placeholder="Kund" @bind-value=@this.customerSearchText @bind-value:event="oninput">
                             </div>
                         </div>
                     </div>
-                    <br />
+
                     <br />
 
                     @if (this.claims != null && this.claims.Count > 0)
@@ -49,7 +63,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var claim in this.claims.Where(x => !x.Completed))
+                                @foreach (var claim in this.claims.Where(x => !x.Completed && (string.IsNullOrEmpty(this.supplierSearchText) ? true : (x.Supplier.ToLower().Contains(this.supplierSearchText.ToLower()))) &&
+                               (string.IsNullOrEmpty(this.customerSearchText) ? true : (x.Customer.ToLower().Contains(this.customerSearchText.ToLower())))))
                                 {
                                     <tr>
                                         <td><b>@claim.Date<br />@claim.TuraContactPerson</b></td>
@@ -117,7 +132,8 @@
 
                                 @if (this.showCompleted)
                                 {
-                                    foreach (var claim in this.claims.Where(x => x.Completed))
+                                    foreach (var claim in this.claims.Where(x => x.Completed && (string.IsNullOrEmpty(this.supplierSearchText) ? true : (x.Supplier.ToLower().Contains(this.supplierSearchText.ToLower()))) &&
+                                                                        (string.IsNullOrEmpty(this.customerSearchText) ? true : (x.Customer.ToLower().Contains(this.customerSearchText.ToLower())))))
                                     {
                                         <tr style="background-color:#dcedc9;">
                                             <td><b>@claim.Date<br />@claim.TuraContactPerson</b></td>
@@ -182,8 +198,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <b>Belopp</b><br />In: @claim.AmountIn @(this.GetCurrency(claim.CurrencyIn) )
-                                                    <br />Ut: @claim.AmountOut @( this.GetCurrency(claim.CurrencyOut))
+                                                <b>Belopp</b><br />In: @claim.AmountIn @(this.GetCurrency(claim.CurrencyIn))
+                                                <br />Ut: @claim.AmountOut @(this.GetCurrency(claim.CurrencyOut))
                                             </td>
                                             <td><b>Kund</b><br /><div style="max-width:100%; white-space:pre-line;">@claim.Customer<br />@claim.CustomerContactPerson</div></td>
                                             <td>
@@ -220,6 +236,8 @@
     private List<TuraIntranet.Data.Claims.Claim> claims;
     private List<TuraIntranet.Data.Claims.ClaimCurrency> currencies;
     private bool showCompleted = false;
+    private string supplierSearchText = string.Empty;
+    private string customerSearchText = string.Empty;
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
