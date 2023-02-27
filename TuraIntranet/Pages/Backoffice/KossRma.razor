@@ -167,24 +167,24 @@
                                         <option value="1">Felaktigt Kvitto</option>
                                         <option value="2">Godkänd</option>
                                         <option value="3">Skicka In</option>
-                                        <option value="6">Fritext</option>
+                                        <option value="9">Fritext</option>
                                     }
                                     else if (this.selectedKossRma.Country == "no")
                                     {
                                         <option value="0">Välj Svar</option>
                                         <option value="5">Godkjend</option>
-                                        <option value="6">Fritext</option>
+                                        <option value="9">Fritext</option>
                                     }
                                     else if (this.selectedKossRma.Country == "dk")
                                     {
                                         <option value="0">Välj Svar</option>
                                         <option value="4">Godkänt</option>
-                                        <option value="6">Fritext</option>
+                                        <option value="9">Fritext</option>
                                     }
                                     else
                                     {
                                         <option value="0">Välj Svar</option>
-                                        <option value="6">Fritext</option>
+                                        <option value="9">Fritext</option>
                                     }
                                 </select>
                             </div>
@@ -302,34 +302,6 @@
             if (filter != null && filter.Count > 0)
             {
                 var byFilter = filter.ConvertAll(x => new Data.Backoffice.Koss.KossRma
-                    {
-                        Id = x.Id,
-                        KossModelId = x.KossModelId,
-                        ProblemDescription = x.ProblemDescription,
-                        Vendor = x.Vendor,
-                        FirstName = x.FirstName,
-                        LastName = x.LastName,
-                        CoAddress = x.CoAddress,
-                        StreetAddress = x.StreetAddress,
-                        Zipcode = x.Zipcode,
-                        City = x.City,
-                        Phone = x.Phone,
-                        Email = x.Email,
-                        Date = x.Date,
-                        Finished = x.Finished,
-                        Receipt = x.Receipt,
-                        CustomReply = x.CustomReply,
-                        ReplyMessageId = x.ReplyMessageId,
-                        ReplyDate = x.ReplyDate,
-                        Country = x.Country
-                    });
-
-                filtered.AddRange(byFilter);
-            }
-        }
-        else
-        {
-            var all = this.kossRmas.Where(x => this.showFinished ? true : x.Finished == false).Where(x => (string.IsNullOrEmpty(this.searchCountry) ? true : x.Country.Contains(this.searchCountry))).ToList().ConvertAll(x => new Data.Backoffice.Koss.KossRma
                 {
                     Id = x.Id,
                     KossModelId = x.KossModelId,
@@ -351,6 +323,34 @@
                     ReplyDate = x.ReplyDate,
                     Country = x.Country
                 });
+
+                filtered.AddRange(byFilter);
+            }
+        }
+        else
+        {
+            var all = this.kossRmas.Where(x => this.showFinished ? true : x.Finished == false).Where(x => (string.IsNullOrEmpty(this.searchCountry) ? true : x.Country.Contains(this.searchCountry))).ToList().ConvertAll(x => new Data.Backoffice.Koss.KossRma
+            {
+                Id = x.Id,
+                KossModelId = x.KossModelId,
+                ProblemDescription = x.ProblemDescription,
+                Vendor = x.Vendor,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                CoAddress = x.CoAddress,
+                StreetAddress = x.StreetAddress,
+                Zipcode = x.Zipcode,
+                City = x.City,
+                Phone = x.Phone,
+                Email = x.Email,
+                Date = x.Date,
+                Finished = x.Finished,
+                Receipt = x.Receipt,
+                CustomReply = x.CustomReply,
+                ReplyMessageId = x.ReplyMessageId,
+                ReplyDate = x.ReplyDate,
+                Country = x.Country
+            });
 
             filtered.AddRange(all);
         }
@@ -414,7 +414,7 @@
 
             this.showResponseField = true;
         }
-        else if (input == "6")
+        else if (input == "9")
         {
             this.responseMessage = string.Empty;
             this.showResponseField = true;
@@ -446,7 +446,7 @@
 
             this.showResponseField = true;
         }
-        else if (input == "6")
+        else if (input == "9")
         {
             this.responseMessage = string.Empty;
             this.showResponseField = true;
@@ -472,7 +472,8 @@
 
     private async Task SendEmail()
     {
-        var success = this.EmailService.SendEmail(this.selectedKossRma, this.responseMessage, false);
+        //var success = this.EmailService.SendEmail(this.selectedKossRma, this.responseMessage, false);
+        var success = true;
 
         if (success)
         {

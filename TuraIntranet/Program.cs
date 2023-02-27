@@ -17,6 +17,7 @@ using TuraIntranet.Services.Info;
 using TuraIntranet.Services.Logistics;
 using TuraIntranet.Services.Network;
 using TuraIntranet.Services.Orders;
+using TuraIntranet.Services.PriceList;
 
 namespace TuraIntranet
 {
@@ -51,6 +52,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<DeviceDetectionService>();
             builder.Services.AddScoped<ShipmentsDeviationChecklistService>();
             builder.Services.AddSingleton<VisitorsService>();
+            builder.Services.AddScoped<PriceListService>();
 
             builder.Services.AddHsts(options =>
             {

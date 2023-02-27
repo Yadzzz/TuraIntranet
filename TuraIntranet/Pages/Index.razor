@@ -22,26 +22,33 @@
                     <div class="widget-one">
 
                         <h6>Welcome to Tura Intranet</h6>
-                        
+
                         @*<a class="btn btn-warning" @onclick="(() => OpenDialog())">Save</a>*@
 
                     </div>
                 </div>
-            </div
-
-            @if(this.loggedInUser == "Yad.Mohamad")
-            {
-                <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
-                <div class="widget widget-content-area br-4">
-                    <div class="widget-one">
-
-                        <p>Total website visits since since server restart: @(this.VisitorsService.GetTotalWebsiteVisits() / 2)</p>
-                        <p>Total page visits since since server restart: @(this.VisitorsService.GetTotalPageVisit())</p>
-                        
-                    </div>
-                </div>
             </div>
-            }
+
+            <AuthorizeView Roles="Administrator">
+                <Authorized>
+                    @*@if (this.loggedInUser == "Yad.Mohamad")
+                    {*@
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
+                            <div class="widget widget-content-area br-4">
+                                <div class="widget-one">
+                                    <h6>Admin Info</h6>
+
+                                    <hr />
+
+                                    <p>Total website visits today: @(this.VisitorsService.GetTotalWebsiteVisits() / 2)</p>
+                                    <p>Total page visits today: @(this.VisitorsService.GetTotalPageVisit())</p>
+
+                                </div>
+                            </div>
+                        </div>
+                    @*}*@
+                </Authorized>
+            </AuthorizeView>
 
         </div>
 
@@ -51,13 +58,13 @@
 
 @if (DialogIsOpen)
 {
-   <Dialog Caption=@caption
-           Message="@message"
-           OnClose="@OnDialogClose"
-           Type="Dialog.Category.SaveNot"
-           TakesInput="true"
-           @ref="dialogRef">
-   </Dialog>
+    <Dialog Caption=@caption
+        Message="@message"
+        OnClose="@OnDialogClose"
+        Type="Dialog.Category.SaveNot"
+        TakesInput="true"
+        @ref="dialogRef">
+    </Dialog>
 }
 
 @code {
@@ -76,7 +83,7 @@
     {
         if (isOk)
         {
-            if(this.dialogRef == null || string.IsNullOrEmpty(this.dialogRef.InputText))
+            if (this.dialogRef == null || string.IsNullOrEmpty(this.dialogRef.InputText))
             {
                 return;
             }
@@ -85,7 +92,7 @@
         }
 
         DialogIsOpen = false;
-   }
+    }
 
     private string loggedInUser = string.Empty;
 

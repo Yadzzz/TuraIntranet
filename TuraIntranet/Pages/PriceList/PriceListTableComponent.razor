@@ -1,0 +1,57 @@
+﻿@inject IJSRuntime JS
+
+<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+    <div class="widget-content widget-content-area br-6">
+
+        <table id="zero-config" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Item Category</th>
+                    <th>Prod Group</th>
+                    <th>Item No</th>
+                    <th>Vendor Item No</th>
+                    <th>Description</th>
+                    <th>GTIN</th>
+                    <th>SRP SEK</th>
+                    <th>Sales Price SEK</th>
+                    <th>Discount %</th>
+                    <th>Your price SEK</th>
+                    <th>Fee Sum</th>
+                    <th>ActivityCode</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in this.PriceList)
+                {
+                    <tr>
+                        <td>@row.ItemCategoryDescrip</td>
+                        <td>@row.ProdGroupCodeDescrip</td>
+                        <td>@row.Item</td>
+                        <td>@row.VendorItemNo</td>
+                        <td>@row.Description</td>
+                        <td>@row.Gtin</td>
+                        <td>@row.PriceGroupRek</td>
+                        <td>@row.SalesPrice</td>
+                        <td>@row.LineDiscountPerc</td>
+                        <td>N/A</td>
+                        <td>@row.FeeSum</td>
+                        <td>@row.ActivityCode</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<Data.PriceList.ViewTempPrisListExportSsr>? PriceList { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+}
