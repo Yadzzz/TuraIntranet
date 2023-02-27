@@ -1,47 +1,51 @@
 ﻿@inject IJSRuntime JS
+@inject Services.PriceList.PriceListService PriceListService
 
-<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-    <div class="widget-content widget-content-area br-6">
+@if (this.PriceList != null && this.PriceList.Count > 0)
+{
+    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+        <div class="widget-content widget-content-area br-6">
 
-        <table id="zero-config" class="table table-striped" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Item Category</th>
-                    <th>Prod Group</th>
-                    <th>Item No</th>
-                    <th>Vendor Item No</th>
-                    <th>Description</th>
-                    <th>GTIN</th>
-                    <th>SRP SEK</th>
-                    <th>Sales Price SEK</th>
-                    <th>Discount %</th>
-                    <th>Your price SEK</th>
-                    <th>Fee Sum</th>
-                    <th>ActivityCode</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var row in this.PriceList)
-                {
+            <table id="zero-config" class="table table-striped" style="width:100%">
+                <thead>
                     <tr>
-                        <td>@row.ItemCategoryDescrip</td>
-                        <td>@row.ProdGroupCodeDescrip</td>
-                        <td>@row.Item</td>
-                        <td>@row.VendorItemNo</td>
-                        <td>@row.Description</td>
-                        <td>@row.Gtin</td>
-                        <td>@row.PriceGroupRek</td>
-                        <td>@row.SalesPrice</td>
-                        <td>@row.LineDiscountPerc</td>
-                        <td>N/A</td>
-                        <td>@row.FeeSum</td>
-                        <td>@row.ActivityCode</td>
+                        <th>Item Category</th>
+                        <th>Prod Group</th>
+                        <th>Item No</th>
+                        <th>Vendor Item No</th>
+                        <th>Description</th>
+                        <th>GTIN</th>
+                        <th>SRP @(this.PriceList?.FirstOrDefault()?.CurrencyCode?.ToString())</th>
+                        <th>Sales Price @(this.PriceList?.FirstOrDefault()?.CurrencyCode?.ToString())</th>
+                        <th>Discount %</th>
+                        <th>Your price @(this.PriceList?.FirstOrDefault()?.CurrencyCode?.ToString())</th>
+                        <th>Fee Sum</th>
+                        <th>ActivityCode</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var row in this.PriceList)
+                    {
+                        <tr>
+                            <td>@row.ItemCategoryDescrip</td>
+                            <td>@row.ProdGroupCodeDescrip</td>
+                            <td>@row.Item</td>
+                            <td>@row.VendorItemNo</td>
+                            <td>@(row.Description + " " + row.Description2)</td>
+                            <td>@row.Gtin</td>
+                            <td>@string.Format("{0:n2}", row.PriceGroupRek)</td>
+                            <td>@string.Format("{0:n2}", row.SalesPrice)</td>
+                            <td>@(row.SalesPriceAllowLineDisc == 0 ? "" : string.Format("{0:n2}", row.LineDiscountPerc))</td>
+                            <td>@string.Format("{0:n2}", (row.SalesPriceAllowLineDisc == 0 ? row.SalesPrice : (row.SalesPrice - (row.SalesPrice * (row.LineDiscountPerc / 100)))))</td>
+                            <td>@string.Format("{0:n2}", row.FeeSum)</td>
+                            <td>@(this.PriceListService.GetActivityCodeDescription(row.ActivityCode))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+}
 
 @code {
     [Parameter]

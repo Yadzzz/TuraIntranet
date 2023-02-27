@@ -46,15 +46,15 @@
                         </div>
                     </div>
 
-                    @if (this.priceList != null && this.priceList.Count > 0)
+                    @*@if (this.priceList != null && this.priceList.Count > 0)*@
                     {
-                        <hr />
+                    <hr />
 
-                        <div class="form-group row" style="padding-left:25px;">
-                            <div class="col-xl-2 col-md-4">
-                                <button class="btn btn-dark btn-block mb-4 mr-2">Spara Excel</button>
-                            </div>
+                    <div class="form-group row" style="padding-left:25px;">
+                        <div class="col-xl-2 col-md-4">
+                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.DownloadExcel">Spara Excel</button>
                         </div>
+                    </div>
                     }
                 </div>
             </div>
@@ -64,47 +64,47 @@
                 <PriceListTableComponent @ref="this.priceListTableComponentRef" PriceList="this.priceList" />
 
                 @*<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                    <div class="widget-content widget-content-area br-6">
+                        <div class="widget-content widget-content-area br-6">
 
-                        <table id="zero-config" class="table table-striped" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Item Category</th>
-                                    <th>Prod Group</th>
-                                    <th>Item No</th>
-                                    <th>Vendor Item No</th>
-                                    <th>Description</th>
-                                    <th>GTIN</th>
-                                    <th>SRP SEK</th>
-                                    <th>Sales Price SEK</th>
-                                    <th>Discount %</th>
-                                    <th>Your price SEK</th>
-                                    <th>Fee Sum</th>
-                                    <th>ActivityCode</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var row in this.priceList)
-                                {
+                            <table id="zero-config" class="table table-striped" style="width:100%">
+                                <thead>
                                     <tr>
-                                        <td>@row.ItemCategoryDescrip</td>
-                                        <td>@row.ProdGroupCodeDescrip</td>
-                                        <td>@row.Item</td>
-                                        <td>@row.VendorItemNo</td>
-                                        <td>@row.Description</td>
-                                        <td>@row.Gtin</td>
-                                        <td>@row.PriceGroupRek</td>
-                                        <td>@row.SalesPrice</td>
-                                        <td>@row.LineDiscountPerc</td>
-                                        <td>N/A</td>
-                                        <td>@row.FeeSum</td>
-                                        <td>@row.ActivityCode</td>
+                                        <th>Item Category</th>
+                                        <th>Prod Group</th>
+                                        <th>Item No</th>
+                                        <th>Vendor Item No</th>
+                                        <th>Description</th>
+                                        <th>GTIN</th>
+                                        <th>SRP SEK</th>
+                                        <th>Sales Price SEK</th>
+                                        <th>Discount %</th>
+                                        <th>Your price SEK</th>
+                                        <th>Fee Sum</th>
+                                        <th>ActivityCode</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>*@
+                                </thead>
+                                <tbody>
+                                    @foreach (var row in this.priceList)
+                                    {
+                                        <tr>
+                                            <td>@row.ItemCategoryDescrip</td>
+                                            <td>@row.ProdGroupCodeDescrip</td>
+                                            <td>@row.Item</td>
+                                            <td>@row.VendorItemNo</td>
+                                            <td>@row.Description</td>
+                                            <td>@row.Gtin</td>
+                                            <td>@row.PriceGroupRek</td>
+                                            <td>@row.SalesPrice</td>
+                                            <td>@row.LineDiscountPerc</td>
+                                            <td>N/A</td>
+                                            <td>@row.FeeSum</td>
+                                            <td>@row.ActivityCode</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>*@
             }
 
         </div>
@@ -164,6 +164,31 @@
         else
         {
             await this.NotificationService.AlertError("Kunde inte hämta prislista.");
+        }
+    }
+
+    private async Task DownloadExcel()
+    {
+        if(priceList == null || this.priceList.Count == 0)
+        {
+            Console.WriteLine("NULL OR EMPTY");
+            return;
+        }
+
+        using (MemoryStream stream = this.PriceListService.CreateExcelStream(this.priceList))
+        {
+            try
+            {
+                await JS.InvokeAsync<object>(
+               "saveFileType",
+               "test.xlsx",
+               Convert.ToBase64String(stream.ToArray()));
+            }
+            catch (Exception e)
+            {
+                //User disconnected?
+                Console.WriteLine(e.ToString());
+            }
         }
     }
 }
