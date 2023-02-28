@@ -40,11 +40,11 @@
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="@(this.GetDocumentFieldName())" @bind-value=@this.invoiceNumber>
+                            <input type="text" class="form-control form-control-sm" placeholder="@(this.GetDocumentFieldName())" @bind=@this.invoiceNumber @bind:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@this.customerNumber @bind-value:event="oninput">
+                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@this.customerNumber @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-xl-2 col-md-4">
@@ -282,6 +282,14 @@
 
             default:
                 return "Fakturanummer";
+        }
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await this.Search();
         }
     }
 

@@ -27,11 +27,11 @@
 
                     <div class="form-group row" style="padding-left:25px;">
                         <div class="col-sm-11">
-                            <input type="text" class="form-control form-control-sm" placeholder="Artikelnr" @bind-value=@articleNumberInput>
+                            <input type="text" class="form-control form-control-sm" placeholder="Artikelnr" @bind-value=@articleNumberInput @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-11">
-                            <input type="text" class="form-control form-control-sm" placeholder="EAN/UPC" @bind-value=@eanOrUpcInput>
+                            <input type="text" class="form-control form-control-sm" placeholder="EAN/UPC" @bind-value=@eanOrUpcInput @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-xl-11 col-md-4">
@@ -167,6 +167,14 @@
         this.PageNavService.UpdateActivePage("RmaInformation");
 
         this.activityCodes = await this.RmaService.GetActivityCodes();
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await this.Search();
+        }
     }
 
     private async Task Search()

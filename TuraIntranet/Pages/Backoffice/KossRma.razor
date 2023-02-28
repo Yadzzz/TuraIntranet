@@ -30,7 +30,7 @@
 
                     <div class="form-group row" style="padding-left:25px;">
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Sök" @bind-value=@searchText>
+                            <input type="text" class="form-control form-control-sm" placeholder="Sök" @bind-value=@searchText @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-2">
@@ -278,6 +278,14 @@
             this.isLoading = false;
             this.StateHasChanged();
             //await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            this.Search();
         }
     }
 

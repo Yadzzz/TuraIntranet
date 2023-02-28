@@ -101,7 +101,6 @@ namespace TuraIntranet.Services.PriceList
                     int row = 4;
                     foreach (var data in priceListData)
                     {
-                        Console.WriteLine(row);
                         int collumn = 1;
                         worksheet.Cells[row, collumn++].Value = data.ItemCategoryDescrip;
                         worksheet.Cells[row, collumn++].Value = data.ProdGroupCodeDescrip;

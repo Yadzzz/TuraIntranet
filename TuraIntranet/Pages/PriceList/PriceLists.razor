@@ -27,17 +27,17 @@
                     <div class="form-group row" style="padding-left:25px;">
                         <div class="col-sm-2">
                             <label for="kundnumer">Kundnummer</label>
-                            <input type="text" class="form-control form-control-sm" name="kundnummer" id="kundnummer" placeholder="Kundnummer" @bind-value="this.customerNo">
+                            <input type="text" class="form-control form-control-sm" name="kundnummer" id="kundnummer" placeholder="Kundnummer" @bind="this.customerNo" @bind:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-2">
                             <label for="vendor">Vendor No</label>
-                            <input type="text" class="form-control form-control-sm" name="vendor" id="vendor" placeholder="%%" @bind-value="this.vendorNo">
+                            <input type="text" class="form-control form-control-sm" name="vendor" id="vendor" placeholder="%%" @bind="this.vendorNo" @bind:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-2">
                             <label for="itemCategoryId">Item Category Code</label>
-                            <input type="text" class="form-control form-control-sm" name="itemCategoryId" id="itemCategoryId" placeholder="%%" @bind-value="this.itemCategoryCode">
+                            <input type="text" class="form-control form-control-sm" name="itemCategoryId" id="itemCategoryId" placeholder="%%" @bind="this.itemCategoryCode" @bind:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-xl-2 col-md-4">
@@ -48,13 +48,13 @@
 
                     @if (this.priceList != null && this.priceList.Count > 0)
                     {
-                    <hr />
+                        <hr />
 
-                    <div class="form-group row" style="padding-left:25px;">
-                        <div class="col-xl-2 col-md-4">
-                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.DownloadExcel">Spara Excel</button>
+                        <div class="form-group row" style="padding-left:25px;">
+                            <div class="col-xl-2 col-md-4">
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.DownloadExcel">Spara Excel</button>
+                            </div>
                         </div>
-                    </div>
                     }
                 </div>
             </div>
@@ -62,49 +62,6 @@
             @if (this.priceList != null && this.priceList.Count > 0)
             {
                 <PriceListTableComponent @ref="this.priceListTableComponentRef" PriceList="this.priceList" />
-
-                @*<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                        <div class="widget-content widget-content-area br-6">
-
-                            <table id="zero-config" class="table table-striped" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>Item Category</th>
-                                        <th>Prod Group</th>
-                                        <th>Item No</th>
-                                        <th>Vendor Item No</th>
-                                        <th>Description</th>
-                                        <th>GTIN</th>
-                                        <th>SRP SEK</th>
-                                        <th>Sales Price SEK</th>
-                                        <th>Discount %</th>
-                                        <th>Your price SEK</th>
-                                        <th>Fee Sum</th>
-                                        <th>ActivityCode</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var row in this.priceList)
-                                    {
-                                        <tr>
-                                            <td>@row.ItemCategoryDescrip</td>
-                                            <td>@row.ProdGroupCodeDescrip</td>
-                                            <td>@row.Item</td>
-                                            <td>@row.VendorItemNo</td>
-                                            <td>@row.Description</td>
-                                            <td>@row.Gtin</td>
-                                            <td>@row.PriceGroupRek</td>
-                                            <td>@row.SalesPrice</td>
-                                            <td>@row.LineDiscountPerc</td>
-                                            <td>N/A</td>
-                                            <td>@row.FeeSum</td>
-                                            <td>@row.ActivityCode</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>*@
             }
 
         </div>
@@ -173,9 +130,17 @@
         }
     }
 
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await this.Search();
+        }
+    }
+
     private async Task DownloadExcel()
     {
-        if(priceList == null || this.priceList.Count == 0)
+        if (priceList == null || this.priceList.Count == 0)
         {
             return;
         }
@@ -200,7 +165,6 @@
             catch (Exception e)
             {
                 //User disconnected?
-                Console.WriteLine(e.ToString());
                 await this.NotificationService.AlertError("Kunde inte ladda ner prislista.");
             }
         }

@@ -26,19 +26,19 @@
 
                     <div class="form-group row" style="padding-left:25px;">
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@customerNumber>
+                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@customerNumber @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Företag" @bind-value=@company>
+                            <input type="text" class="form-control form-control-sm" placeholder="Företag" @bind-value=@company @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Postnummer" @bind-value=@postalCode>
+                            <input type="text" class="form-control form-control-sm" placeholder="Postnummer" @bind-value=@postalCode @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Ort" @bind-value=@district>
+                            <input type="text" class="form-control form-control-sm" placeholder="Ort" @bind-value=@district @bind-value:event="oninput" @onkeydown="@Enter">
                         </div>
 
                         <div class="col-xl-2 col-md-4">
@@ -47,44 +47,6 @@
                     </div>
                 </div>
             </div>
-
-            @*<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-
-            <table id="zero-config" class="table table-striped" style="width:100%">
-            <thead>
-            <tr>
-            <th>Namn</th>
-            <th>Adress</th>
-            <th>Postnummer</th>
-            <th>Postort</th>
-            <th>Telefon</th>
-            <th>Kontaktperson</th>
-            <th>Butikskedja</th>
-            <th>Epost</th>
-            </tr>
-            </thead>
-            <tbody>
-            @if (this.customers != null && this.customers.Count > 0)
-            {
-            foreach (var customer in this.customers)
-            {
-            <tr>
-            <td>@customer.Name</td>
-            <td>@customer.Address</td>
-            <td>@customer.PostCode</td>
-            <td>@customer.TerritoryCode</td>
-            <td>@customer.PhoneNo</td>
-            <td>@customer.Contact</td>
-            <td>@customer.ChainName</td>
-            <td>@customer.EMail</td>
-            </tr>
-            }
-            }
-            </tbody>
-            </table>
-            </div>
-            </div>*@
 
             @if (this.customers != null && this.customers.Count > 0)
             {
@@ -115,6 +77,14 @@
             //this.customers = new();
 
             //await JS.InvokeVoidAsync("loadDataTableComponent");
+        }
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await this.SearchCustomer();
         }
     }
 

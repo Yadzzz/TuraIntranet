@@ -39,12 +39,12 @@
 
                             <div class="col-sm-2">
                                 <label>Artikel</label>
-                                <input type="text" class="form-control form-control-sm" placeholder="Artikel" @bind-value=@this.articleIdInput>
+                                <input type="text" class="form-control form-control-sm" placeholder="Artikel" @bind-value=@this.articleIdInput @bind-value:event="oninput" @onkeydown="@Enter">
                             </div>
 
                             <div class="col-sm-2">
                                 <label>Antal</label>
-                                <input type="text" class="form-control form-control-sm" placeholder="Antal" @bind-value=@this.amountInput>
+                                <input type="text" class="form-control form-control-sm" placeholder="Antal" @bind-value=@this.amountInput @bind-value:event="oninput" @onkeydown="@Enter">
                             </div>
 
                             <div class="col-xl-2 col-md-4">
@@ -113,6 +113,14 @@
     }
 
     private void OnChangeCompanyPrefix(ChangeEventArgs e) => this.companyPrefixInput = e?.Value?.ToString() ?? string.Empty;
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await this.Calculate();
+        }
+    }
 
     private async Task Calculate()
     {
