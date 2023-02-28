@@ -7,6 +7,7 @@
 @inject PageNavigationService PageNavService
 @inject VisitorsService VisitorsService
 @inject AuthenticationStateProvider authStateProvider
+@inject ActivityLoggerService ActivityService
 
 <PageTitle>Index</PageTitle>
 
@@ -31,22 +32,57 @@
 
             <AuthorizeView Roles="Administrator">
                 <Authorized>
-                    @*@if (this.loggedInUser == "Yad.Mohamad")
-                    {*@
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
-                            <div class="widget widget-content-area br-4">
-                                <div class="widget-one">
-                                    <h6>Admin Info</h6>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
+                        <div class="widget widget-content-area br-4">
+                            <div class="widget-one">
+                                <center><h6>Admin Info</h6></center>
 
-                                    <hr />
+                                <hr />
 
-                                    <p>Total website visits today: @(this.VisitorsService.GetTotalWebsiteVisits() / 2)</p>
-                                    <p>Total page visits today: @(this.VisitorsService.GetTotalPageVisit())</p>
+                                <div class="row">
+                                    @if (this.loggedInUser == "Yad.Mohamad")
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="col-md-12">
+                                                <h6><b>User Activities</b></h6>
+                                            </div>
 
+                                            <div class="col-md-12">
+                                                <table class="table table-striped" style="width:100%;">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>User</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var activity in this.ActivityService.Activities)
+                                                        {
+                                                            <tr>
+                                                                <td>@activity.Date</td>
+                                                                <td>@activity.User</td>
+                                                                <td>@activity.Action</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="col-md-6">
+                                        <div class="col-md-12">
+                                            <h6><b>Website Activity</b></h6>
+                                            <p>Total website visits today: <b>@(this.VisitorsService.GetTotalWebsiteVisits() / 2)</b></p>
+                                            <p>Total page visits today: <b>@(this.VisitorsService.GetTotalPageVisit())</b></p>
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
-                    @*}*@
+                    </div>
                 </Authorized>
             </AuthorizeView>
 
@@ -59,11 +95,11 @@
 @if (DialogIsOpen)
 {
     <Dialog Caption=@caption
-        Message="@message"
-        OnClose="@OnDialogClose"
-        Type="Dialog.Category.SaveNot"
-        TakesInput="true"
-        @ref="dialogRef">
+            Message="@message"
+            OnClose="@OnDialogClose"
+            Type="Dialog.Category.SaveNot"
+            TakesInput="true"
+            @ref="dialogRef">
     </Dialog>
 }
 

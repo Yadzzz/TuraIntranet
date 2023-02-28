@@ -53,6 +53,7 @@ namespace TuraIntranet
             builder.Services.AddScoped<ShipmentsDeviationChecklistService>();
             builder.Services.AddSingleton<VisitorsService>();
             builder.Services.AddScoped<PriceListService>();
+            builder.Services.AddSingleton<ActivityLoggerService>();
 
             builder.Services.AddHsts(options =>
             {
