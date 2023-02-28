@@ -24,25 +24,27 @@
                     <center><h5>Kunduppgifter</h5></center>
                     <br />
 
-                    <div class="form-group row" style="padding-left:25px;">
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@customerNumber @bind-value:event="oninput" @onkeydown="@Enter">
-                        </div>
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control form-control-sm" placeholder="Kundnummer" @bind-value=@customerNumber @bind-value:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Företag" @bind-value=@company @bind-value:event="oninput" @onkeydown="@Enter">
-                        </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control form-control-sm" placeholder="Företag" @bind-value=@company @bind-value:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Postnummer" @bind-value=@postalCode @bind-value:event="oninput" @onkeydown="@Enter">
-                        </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control form-control-sm" placeholder="Postnummer" @bind-value=@postalCode @bind-value:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control form-control-sm" placeholder="Ort" @bind-value=@district @bind-value:event="oninput" @onkeydown="@Enter">
-                        </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control form-control-sm" placeholder="Ort" @bind-value=@district @bind-value:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-xl-2 col-md-4">
-                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@SearchCustomer>Sök</button>
+                            <div class="col-xl-2 col-md-4">
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@SearchCustomer>Sök</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,7 +92,7 @@
 
     private async Task SearchCustomer()
     {
-        if(this.customers != null && customers.Count > 0)
+        if (this.customers != null && customers.Count > 0)
         {
             this.customers.Clear();
         }
@@ -103,7 +105,7 @@
             {
                 //this.customers.Add(customer);
                 this.customers = new List<Data.Customers.CustomerModel>()
-                {
+        {
                     customer
                 };
 

@@ -24,25 +24,27 @@
                     <center><h5>Prislista</h5></center>
                     <br />
 
-                    <div class="form-group row" style="padding-left:25px;">
-                        <div class="col-sm-2">
-                            <label for="kundnumer">Kundnummer</label>
-                            <input type="text" class="form-control form-control-sm" name="kundnummer" id="kundnummer" placeholder="Kundnummer" @bind="this.customerNo" @bind:event="oninput" @onkeydown="@Enter">
-                        </div>
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <div class="col-sm-2">
+                                <label for="kundnumer">Kundnummer</label>
+                                <input type="text" class="form-control form-control-sm" name="kundnummer" id="kundnummer" placeholder="Kundnummer" @bind="this.customerNo" @bind:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-sm-2">
-                            <label for="vendor">Vendor No</label>
-                            <input type="text" class="form-control form-control-sm" name="vendor" id="vendor" placeholder="%%" @bind="this.vendorNo" @bind:event="oninput" @onkeydown="@Enter">
-                        </div>
+                            <div class="col-sm-2">
+                                <label for="vendor">Vendor No</label>
+                                <input type="text" class="form-control form-control-sm" name="vendor" id="vendor" placeholder="%%" @bind="this.vendorNo" @bind:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-sm-2">
-                            <label for="itemCategoryId">Item Category Code</label>
-                            <input type="text" class="form-control form-control-sm" name="itemCategoryId" id="itemCategoryId" placeholder="%%" @bind="this.itemCategoryCode" @bind:event="oninput" @onkeydown="@Enter">
-                        </div>
+                            <div class="col-sm-2">
+                                <label for="itemCategoryId">Item Category Code</label>
+                                <input type="text" class="form-control form-control-sm" name="itemCategoryId" id="itemCategoryId" placeholder="%%" @bind="this.itemCategoryCode" @bind:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-xl-2 col-md-4">
-                            <label>Hämta Prislista</label>
-                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.Search">Sök</button>
+                            <div class="col-xl-2 col-md-4">
+                                <label>Hämta Prislista</label>
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.Search">Sök</button>
+                            </div>
                         </div>
                     </div>
 

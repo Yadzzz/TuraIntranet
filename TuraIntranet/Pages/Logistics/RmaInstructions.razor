@@ -25,17 +25,19 @@
                     <center><h5>RMA Information</h5></center>
                     <br />
 
-                    <div class="form-group row" style="padding-left:25px;">
-                        <div class="col-sm-11">
-                            <input type="text" class="form-control form-control-sm" placeholder="Artikelnr" @bind-value=@articleNumberInput @bind-value:event="oninput" @onkeydown="@Enter">
-                        </div>
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <div class="col-sm-11">
+                                <input type="text" class="form-control form-control-sm" placeholder="Artikelnr" @bind-value=@articleNumberInput @bind-value:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-sm-11">
-                            <input type="text" class="form-control form-control-sm" placeholder="EAN/UPC" @bind-value=@eanOrUpcInput @bind-value:event="oninput" @onkeydown="@Enter">
-                        </div>
+                            <div class="col-sm-11">
+                                <input type="text" class="form-control form-control-sm" placeholder="EAN/UPC" @bind-value=@eanOrUpcInput @bind-value:event="oninput" @onkeydown="@Enter">
+                            </div>
 
-                        <div class="col-xl-11 col-md-4">
-                            <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
+                            <div class="col-xl-11 col-md-4">
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -50,7 +52,7 @@
 
                         <div class="col-sm-11">
                             @if (this.rmaData.Item.Activity_Code == "4" || this.rmaData.Item.Activity_Code == "5" ||
-                           this.rmaData.Item.Activity_Code == "6" || this.rmaData.Item.Activity_Code == "7")
+                         this.rmaData.Item.Activity_Code == "6" || this.rmaData.Item.Activity_Code == "7")
                             {
                                 <div class="alert alert-light-danger border-0 mb-2" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg> ... </svg></button>
@@ -114,7 +116,7 @@
                 </div>
 
                 @*<div class="col-xl-4 col-lg-12 col-sm-12  layout-spacing">
-            </div>*@
+                    </div>*@
 
                 <div class="col-xl-3">
                     <div class="invoice-content">
@@ -211,7 +213,7 @@
             }
 
             this.rmaInformation = await this.RmaService.GetSpecialRmaInformation(rmaData.Item.No_);
-            if(this.rmaInformation != null && this.rmaInformation.Rmainfo != null)
+            if (this.rmaInformation != null && this.rmaInformation.Rmainfo != null)
             {
                 this.rmaInfoTextInput = this.rmaInformation.Rmainfo;
             }
@@ -227,7 +229,7 @@
 
     private async Task SaveRmaInfo()
     {
-        if(this.rmaInformation == null || this.rmaInformation.Rmainfo == null)
+        if (this.rmaInformation == null || this.rmaInformation.Rmainfo == null)
         {
             this.rmaInformation = new()
             {

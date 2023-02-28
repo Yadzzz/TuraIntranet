@@ -25,33 +25,36 @@
                             <center><h5>IP-Adresser</h5></center>
                             <br />
 
-                            <div class="form-group row" style="padding-left:25px;">
-                                <div class="col-sm-2">
-                                    <select name="nät" class="form-control country_code  form-control-sm" @onchange=@OnChangeNetwork>
-                                        <option value="0">Visa alla nät</option>
-                                        <option value="1">Nässjö</option>
-                                        <option value="2">KBA-SERVER</option>
-                                        <option value="3">KBA-CLIENT</option>
-                                        <option value="4">KBA DMZ</option>
-                                        <option value="5">Elastic</option>
-                                        <option value="6">NÄSSJÖ-CLIENT</option>
-                                        <option value="7">KBA-MGMT</option>
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-sm-2">
+                                        <select name="nät" class="form-control country_code  form-control-sm" @onchange=@OnChangeNetwork>
+                                            <option value="0">Visa alla nät</option>
+                                            <option value="1">Nässjö</option>
+                                            <option value="2">KBA-SERVER</option>
+                                            <option value="3">KBA-CLIENT</option>
+                                            <option value="4">KBA DMZ</option>
+                                            <option value="5">Elastic</option>
+                                            <option value="6">NÄSSJÖ-CLIENT</option>
+                                            <option value="7">KBA-MGMT</option>
 
-                                    </select>
-                                </div>
+                                        </select>
+                                    </div>
 
-                                <div class="col-sm-2">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Tilldelning" @bind-value=@assignedInput @bind-value:event="oninput" @onkeydown="@Enter">
-                                </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Tilldelning" @bind-value=@assignedInput @bind-value:event="oninput" @onkeydown="@Enter">
+                                    </div>
 
-                                <div class="col-sm-2">
-                                    <input type="text" class="form-control form-control-sm" placeholder="IP" @bind-value=@ipInput @bind-value:event="oninput" @onkeydown="@Enter">
-                                </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control form-control-sm" placeholder="IP" @bind-value=@ipInput @bind-value:event="oninput" @onkeydown="@Enter">
+                                    </div>
 
-                                <div class="col-xl-2 col-md-4">
-                                    <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
+                                    <div class="col-xl-2 col-md-4">
+                                        <button class="btn btn-dark btn-block mb-4 mr-2" @onclick=@Search>Sök</button>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
