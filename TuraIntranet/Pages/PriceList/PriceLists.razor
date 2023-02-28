@@ -46,7 +46,7 @@
                         </div>
                     </div>
 
-                    @*@if (this.priceList != null && this.priceList.Count > 0)*@
+                    @if (this.priceList != null && this.priceList.Count > 0)
                     {
                     <hr />
 
@@ -117,6 +117,7 @@
     private string customerNo = string.Empty;
     private string vendorNo = string.Empty;
     private string itemCategoryCode = string.Empty;
+    private bool wildcardVendorSearch = false;
     private List<Data.PriceList.ViewTempPrisListExportSsr>? priceList;
 
     public PriceListTableComponent? priceListTableComponentRef = null;
@@ -141,12 +142,17 @@
             this.priceListTableComponentRef = null;
         }
 
-        if (string.IsNullOrEmpty(this.vendorNo))
+        if (string.IsNullOrEmpty(this.vendorNo) || this.vendorNo.Contains("%"))
         {
             this.vendorNo = "%%";
+            this.wildcardVendorSearch = true;
+        }
+        else
+        {
+            this.wildcardVendorSearch = false;
         }
 
-        if (string.IsNullOrEmpty(this.itemCategoryCode))
+        if (string.IsNullOrEmpty(this.itemCategoryCode) || this.itemCategoryCode.Contains("%"))
         {
             this.itemCategoryCode = "%%";
         }
@@ -171,23 +177,31 @@
     {
         if(priceList == null || this.priceList.Count == 0)
         {
-            Console.WriteLine("NULL OR EMPTY");
             return;
         }
 
-        using (MemoryStream stream = this.PriceListService.CreateExcelStream(this.priceList))
+        var row = this.priceList.Where(x => x.Name != null && x.VendorName != null).FirstOrDefault();
+        string customer = row != null ? row.Customer : "CUSTOMERNO";
+        string customerName = row != null ? row.Name : "CUSTOMER";
+        string vendor = this.wildcardVendorSearch ? "%%" : (row != null ? row.VendorNo : "VENDORNO");
+        string vendorName = this.wildcardVendorSearch ? "%%" : (row != null && row.VendorName != null ? row.VendorName : "VENDOR");
+
+        using (MemoryStream stream = this.PriceListService.CreateExcelStream(customer, customerName, vendor, vendorName, this.priceList))
         {
             try
             {
                 await JS.InvokeAsync<object>(
                "saveFileType",
-               "test.xlsx",
+               (customerName + "-" + vendorName + ".xlsx"),
                Convert.ToBase64String(stream.ToArray()));
+
+                await this.NotificationService.AlertSuccess("Prislista nedladdad.");
             }
             catch (Exception e)
             {
                 //User disconnected?
                 Console.WriteLine(e.ToString());
+                await this.NotificationService.AlertError("Kunde inte ladda ner prislista.");
             }
         }
     }

@@ -42,7 +42,7 @@ namespace TuraIntranet.Services.PriceList
             }
         }
 
-        public MemoryStream CreateExcelStream(List<ViewTempPrisListExportSsr> priceListData)
+        public MemoryStream CreateExcelStream(string customerNo, string customerName, string vendorNo, string vendorName, List<ViewTempPrisListExportSsr> priceListData)
         {
             MemoryStream stream = new MemoryStream();
 
@@ -69,9 +69,8 @@ namespace TuraIntranet.Services.PriceList
                     worksheet.Row(3).Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
 
 
-                    worksheet.Cells[1, 1].Value = "Tura Scandinavia AB Pricelist for customer: 400001 - Scandinavian Photo AB, dated 2023-02-27 - 10:43";
-
-                    worksheet.Cells[2, 1].Value = "Vendor: 1 - Western Digital UK Ltd";
+                    //worksheet.Cells[1, 1].Value = "Tura Scandinavia AB Pricelist for customer: " + customerNo + " - " + customerName + ", dated " + DateTime.Now.ToString("yyyy-MM-dd - HH-mm");
+                    //worksheet.Cells[2, 1].Value = "Vendor: " + vendorNo + " - " + vendorName;
 
                     worksheet.Cells[3, 1].Value = "Item Category";
                     worksheet.Cells[3, 2].Value = "Prod Group";
@@ -141,7 +140,9 @@ namespace TuraIntranet.Services.PriceList
                     //worksheet.Column(4).Width = 30;
                     //worksheet.Column(5).Width = 65;
                     //worksheet.Column(6).Width = 20;
-                    worksheet.Column(1).Width = 25;
+
+                    //worksheet.Column(1).Width = 25;
+                    worksheet.Column(1).AutoFit();
                     worksheet.Column(2).AutoFit();
                     worksheet.Column(3).AutoFit();
                     worksheet.Column(4).AutoFit();
@@ -153,6 +154,23 @@ namespace TuraIntranet.Services.PriceList
                     worksheet.Column(10).AutoFit();
                     worksheet.Column(11).AutoFit();
                     worksheet.Column(12).AutoFit();
+
+                    worksheet.Column(1).Width += 5;
+                    worksheet.Column(2).Width += 5;
+                    worksheet.Column(3).Width += 5;
+                    worksheet.Column(4).Width += 5;
+                    worksheet.Column(5).Width += 5;
+                    worksheet.Column(6).Width += 5;
+                    worksheet.Column(7).Width += 5;
+                    worksheet.Column(8).Width += 5;
+                    worksheet.Column(9).Width += 5;
+                    worksheet.Column(10).Width += 5;
+                    worksheet.Column(11).Width += 5;
+                    worksheet.Column(12).Width += 5;
+
+
+                    worksheet.Cells[1, 1].Value = "Tura Scandinavia AB Pricelist for customer: " + customerNo + " - " + customerName + ", dated " + DateTime.Now.ToString("yyyy-MM-dd - HH-mm");
+                    worksheet.Cells[2, 1].Value = "Vendor: " + vendorNo + " - " + vendorName;
 
                     package.SaveAs(stream);
                 }
