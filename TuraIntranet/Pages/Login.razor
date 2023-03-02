@@ -35,13 +35,13 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label">Användarnamn</label>
-                                        <input type="text" autocomplete="on" name="username" id="username" class="form-control" @bind-value=@loginModel.Username>
+                                        <input type="text" autocomplete="on" name="username" id="username" class="form-control" @bind-value=@loginModel.Username @bind-value:event="oninput" @onkeydown="@Enter">
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-4">
                                         <label class="form-label">Lösenord</label>
-                                        <input type="password" class="form-control" @bind-value=@loginModel.Password>
+                                        <input type="password" class="form-control" @bind-value=@loginModel.Password @bind-value:event="oninput" @onkeydown="@Enter">
                                     </div>
                                 </div>
 

@@ -27,18 +27,18 @@
                     <div class="col-md-12">
                         <div class="form-group row">
                             <div class="col-sm-2">
-                                <label for="kundnumer">Kundnummer</label>
-                                <input type="text" class="form-control form-control-sm" autocomplete="on" name="kundnummer" id="kundnummer" placeholder="Kundnummer" @bind="this.customerNo" @bind:event="oninput" @onkeydown="@Enter">
+                                <label for="kundnumer">Customer No</label>
+                                <input type="text" class="form-control form-control-sm" autocomplete="on" name="kundnummer" id="kundnummer" placeholder="Customer No" @bind="this.customerNo" @bind:event="oninput" @onkeydown="@Enter">
                             </div>
 
                             <div class="col-sm-2">
                                 <label for="vendor">Vendor No</label>
-                                <input type="text" class="form-control form-control-sm" name="vendor" id="vendor" placeholder="%%" @bind="this.vendorNo" @bind:event="oninput" @onkeydown="@Enter">
+                                <input type="text" class="form-control form-control-sm" name="vendor" id="vendor" placeholder="Vendor" @bind="this.vendorNo" @bind:event="oninput" @onkeydown="@Enter">
                             </div>
 
                             <div class="col-sm-2">
                                 <label for="itemCategoryId">Item Category Code</label>
-                                <input type="text" class="form-control form-control-sm" name="itemCategoryId" id="itemCategoryId" placeholder="%%" @bind="this.itemCategoryCode" @bind:event="oninput" @onkeydown="@Enter">
+                                <input type="text" class="form-control form-control-sm" name="itemCategoryId" id="itemCategoryId" placeholder="Item Category Code" @bind="this.itemCategoryCode" @bind:event="oninput" @onkeydown="@Enter">
                             </div>
 
                             <div class="col-xl-2 col-md-4">
@@ -52,9 +52,11 @@
                     {
                         <hr />
 
-                        <div class="form-group row" style="padding-left:25px;">
-                            <div class="col-xl-2 col-md-4">
-                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.DownloadExcel">Spara Excel</button>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="form-group row" style="padding-left:25px;">
+                                <div class="col-xl-2 col-md-4">
+                                    <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.DownloadExcel">Spara Excel</button>
+                                </div>
                             </div>
                         </div>
                     }
@@ -101,9 +103,14 @@
             this.priceListTableComponentRef = null;
         }
 
-        if (string.IsNullOrEmpty(this.vendorNo) || this.vendorNo.Contains("%"))
+        if (string.IsNullOrEmpty(this.customerNo) || string.IsNullOrEmpty(this.vendorNo) || string.IsNullOrEmpty(this.itemCategoryCode))
         {
-            this.vendorNo = "%%";
+            await this.NotificationService.AlertError("Fyll i alla kollumner!");
+            return;
+        }
+
+        if (this.vendorNo == "%%")
+        {
             this.wildcardVendorSearch = true;
         }
         else
@@ -111,10 +118,20 @@
             this.wildcardVendorSearch = false;
         }
 
-        if (string.IsNullOrEmpty(this.itemCategoryCode) || this.itemCategoryCode.Contains("%"))
-        {
-            this.itemCategoryCode = "%%";
-        }
+        //if (string.IsNullOrEmpty(this.vendorNo) || this.vendorNo.Contains("%"))
+        //{
+        //    this.vendorNo = "%%";
+        //    this.wildcardVendorSearch = true;
+        //}
+        //else
+        //{
+        //    this.wildcardVendorSearch = false;
+        //}
+
+        //if (string.IsNullOrEmpty(this.itemCategoryCode) || this.itemCategoryCode.Contains("%"))
+        //{
+        //    this.itemCategoryCode = "%%";
+        //}
 
         this.priceList = await this.PriceListService.GetPriceList(this.customerNo, this.vendorNo, this.itemCategoryCode);
         this.customerNo = string.Empty;

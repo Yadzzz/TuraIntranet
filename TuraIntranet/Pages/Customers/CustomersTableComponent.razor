@@ -6,6 +6,7 @@
         <table id="zero-config" class="table table-striped" style="width:100%">
             <thead>
                 <tr>
+                    <th>Id</th>
                     <th>Namn</th>
                     <th>Adress</th>
                     <th>Postnummer</th>
@@ -22,6 +23,7 @@
                     foreach (var customer in this.Customers)
                     {
                         <tr>
+                            <td>@customer.No</td>
                             <td>@customer.Name</td>
                             <td>@customer.Address</td>
                             <td>@customer.PostCode</td>
