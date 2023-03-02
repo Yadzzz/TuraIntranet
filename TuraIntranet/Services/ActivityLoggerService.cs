@@ -2,6 +2,7 @@
 {
     public class ActivityLoggerService
     {
+        private object _lockObj = new object();
         public List<Activity> Activities { get; set; }
 
         public ActivityLoggerService()
@@ -11,12 +12,15 @@
 
         public void LogActivity(string user, string action)
         {
-            if (this.Activities == null)
+            lock (this._lockObj)
             {
-                this.Activities = new List<Activity>();
-            }
+                if (this.Activities == null)
+                {
+                    this.Activities = new List<Activity>();
+                }
 
-            this.Activities.Add(new Activity(user, action));
+                this.Activities.Add(new Activity(user, action));
+            }
         }
     }
 
