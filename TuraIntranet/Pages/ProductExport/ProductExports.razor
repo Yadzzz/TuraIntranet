@@ -1,0 +1,112 @@
+﻿@page "/productexport"
+
+@inject PageNavigationService PageNavService
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@inject Services.NotificationService NotificationService
+@inject VisitorsService VisitorsService
+@inject Services.ProductExport.ProductExportService ProductExportService
+
+<PageTitle>Product Export</PageTitle>
+
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="plugins/table/datatable/dt-global_style.css">
+
+
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+
+                    <br />
+                    <center><h5>Product Export</h5></center>
+                    <br />
+
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <div class="col-sm-5">
+                                <label for="artikel">Artikel</label>
+                                <input type="text" class="form-control form-control-sm" autocomplete="on" name="artikel" id="artikel" placeholder="Artikel" @bind-value="this.articleIds" @bind-value:event="oninput" @onkeydown="@Enter">
+                            </div>
+
+                            <div class="col-xl-2 col-md-4">
+                                <label>Hämta Data</label>
+                                <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.Search">Sök</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*@if (this.priceList != null && this.priceList.Count > 0)
+                        {
+                            <hr />
+
+                            <div class="col-xl-12 col-md-4">
+                                <div class="form-group row">
+                                    <div class="col-xl-2 col-md-4">
+                                        <button class="btn btn-dark btn-block mb-4 mr-2" @onclick="this.DownloadExcel">Spara Excel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }*@
+                </div>
+            </div>
+
+            @*@if (this.priceList != null && this.priceList.Count > 0)
+                {
+                    <PriceListTableComponent @ref="this.priceListTableComponentRef" PriceList="this.priceList" />
+                }*@
+
+            @if (this.productDatas != null && this.productDatas.Count > 0)
+            {
+                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                    <div class="widget-content widget-content-area br-6">
+                        @foreach (var product in this.productDatas)
+                        {
+                            <div class="col-xl-12">
+                                <br />
+                                <p>Article Id: @product.Variant.Id</p>
+                                <p>Variant Id: @product.Variant.SystemId</p>
+                                <p>Base Product Id: @product.Variant.BaseProductSystemId</p>
+                                <br />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+    <Footer />
+</div>
+
+@code {
+    private string articleIds = string.Empty;
+    private List<TuraIntranet.Data.ProductExport.ProductExportData> productDatas;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.VisitorsService.IncrementPageVisit();
+            this.PageNavService.UpdateActiveSection("");
+            this.PageNavService.UpdateActivePage("ProductExport");
+        }
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await this.Search();
+        }
+    }
+
+    private async Task Search()
+    {
+        this.productDatas = await this.ProductExportService.GetProductData(this.articleIds);
+    }
+}

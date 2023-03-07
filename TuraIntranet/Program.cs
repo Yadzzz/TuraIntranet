@@ -18,6 +18,7 @@ using TuraIntranet.Services.Logistics;
 using TuraIntranet.Services.Network;
 using TuraIntranet.Services.Orders;
 using TuraIntranet.Services.PriceList;
+using TuraIntranet.Services.ProductExport;
 
 namespace TuraIntranet
 {
@@ -54,6 +55,7 @@ namespace TuraIntranet
             builder.Services.AddSingleton<VisitorsService>();
             builder.Services.AddScoped<PriceListService>();
             builder.Services.AddSingleton<ActivityLoggerService>();
+            builder.Services.AddScoped<ProductExportService>();
 
             builder.Services.AddHsts(options =>
             {
