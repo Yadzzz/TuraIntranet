@@ -8,6 +8,7 @@ namespace TuraIntranet.Data.ProductExport
 {
     public class ProductExportData
     {
-        public Variant Variant { get; set; }
+        public VariantRoot? Variant { get; set; }
+        public BaseProductRoot? BaseProduct { get; set; }
     }
 }

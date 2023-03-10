@@ -68,9 +68,7 @@ namespace TuraIntranet.Services.PriceList
                     worksheet.Row(3).Style.Font.Bold = true;
                     worksheet.Row(3).Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
 
-
-                    //worksheet.Cells[1, 1].Value = "Tura Scandinavia AB Pricelist for customer: " + customerNo + " - " + customerName + ", dated " + DateTime.Now.ToString("yyyy-MM-dd - HH-mm");
-                    //worksheet.Cells[2, 1].Value = "Vendor: " + vendorNo + " - " + vendorName;
+                    var firstRow = priceListData.FirstOrDefault();
 
                     worksheet.Cells[3, 1].Value = "Item Category";
                     worksheet.Cells[3, 2].Value = "Prod Group";
@@ -78,25 +76,12 @@ namespace TuraIntranet.Services.PriceList
                     worksheet.Cells[3, 4].Value = "Vendor Item No";
                     worksheet.Cells[3, 5].Value = "Description";
                     worksheet.Cells[3, 6].Value = "GTIN";
-                    worksheet.Cells[3, 7].Value = "SRP SEK";
-                    worksheet.Cells[3, 8].Value = "Sales Price SEK";
+                    worksheet.Cells[3, 7].Value = "SRP " + this.GetCurrencyCode(firstRow?.CurrencyCode);
+                    worksheet.Cells[3, 8].Value = "Sales Price " + this.GetCurrencyCode(firstRow?.CurrencyCode);
                     worksheet.Cells[3, 9].Value = "Discount %";
-                    worksheet.Cells[3, 10].Value = "Your price SEK";
+                    worksheet.Cells[3, 10].Value = "Your price " + this.GetCurrencyCode(firstRow?.CurrencyCode);
                     worksheet.Cells[3, 11].Value = "Fee Sum";
                     worksheet.Cells[3, 12].Value = "ActivityCode";
-
-                    //worksheet.Cells[4, 1].Value = "SANDISK";
-                    //worksheet.Cells[4, 2].Value = "SANDISK MEMORY CARD PHOTO";
-                    //worksheet.Cells[4, 3].Value = "780137";
-                    //worksheet.Cells[4, 4].Value = "SDCFXPS-032G-X46";
-                    //worksheet.Cells[4, 5].Value = "SANDISK Minneskort CF Extreme Pro 32GB 160MB/s UDMA7";
-                    //worksheet.Cells[4, 6].Value = "619659102432";
-                    //worksheet.Cells[4, 7].Value = Math.Round(double.Parse("919"), 2);
-                    //worksheet.Cells[4, 8].Value = Math.Round(double.Parse("320,64"), 2);
-                    //worksheet.Cells[4, 9].Value = "";
-                    //worksheet.Cells[4, 10].Value = Math.Round(double.Parse("320,64"), 2);
-                    //worksheet.Cells[4, 11].Value = "";
-                    //worksheet.Cells[4, 12].Value = "Active";
 
                     int row = 4;
                     foreach (var data in priceListData)
@@ -108,25 +93,12 @@ namespace TuraIntranet.Services.PriceList
                         worksheet.Cells[row, collumn++].Value = data.VendorItemNo;
                         worksheet.Cells[row, collumn++].Value = (data.Description + " " + data.Description2);
                         worksheet.Cells[row, collumn++].Value = data.Gtin;
-                        worksheet.Cells[row, collumn++].Value = data.PriceGroupRek != null ? Math.Round(double.Parse(data.PriceGroupRek.ToString()), 2) : 0.00;
-                        worksheet.Cells[row, collumn++].Value = data.SalesPrice != null ? Math.Round(double.Parse(data.SalesPrice.ToString()), 2) : 0.00;
-                        worksheet.Cells[row, collumn++].Value = data.SalesPriceAllowLineDisc == 0 || data.LineDiscountPerc == null ? "" : Math.Round(double.Parse(data.LineDiscountPerc.ToString()));
-                        worksheet.Cells[row, collumn++].Value = data.SalesPriceAllowLineDisc == 0 || data.LineDiscountPerc == null ? data.SalesPrice : Math.Round(double.Parse((data.SalesPrice - (data.SalesPrice * (data.LineDiscountPerc / 100))).ToString()), 2);
+                        worksheet.Cells[row, collumn++].Value = (data.PriceGroupRek != null ? Math.Round(double.Parse(data.PriceGroupRek.ToString()), 2) : 0.00);
+                        worksheet.Cells[row, collumn++].Value = (data.SalesPrice != null ? Math.Round(double.Parse(data.SalesPrice.ToString()), 2) : 0.00);
+                        worksheet.Cells[row, collumn++].Value = (data.SalesPriceAllowLineDisc == 0 || data.LineDiscountPerc == null ? "" : Math.Round(double.Parse(data.LineDiscountPerc.ToString())));
+                        worksheet.Cells[row, collumn++].Value = (data.SalesPriceAllowLineDisc == 0 || data.LineDiscountPerc == null ? data.SalesPrice : Math.Round(double.Parse((data.SalesPrice - (data.SalesPrice * (data.LineDiscountPerc / 100))).ToString()), 2));
                         worksheet.Cells[row, collumn++].Value = data.FeeSum;
                         worksheet.Cells[row, collumn++].Value = this.GetActivityCodeDescription(data.ActivityCode);
-
-                        //worksheet.Cells[row, collumn++].Value = "SANDISK";
-                        //worksheet.Cells[row, collumn++].Value = "SANDISK MEMORY CARD PHOTO";
-                        //worksheet.Cells[row, collumn++].Value = "780137";
-                        //worksheet.Cells[row, collumn++].Value = "SDCFXPS-032G-X46";
-                        //worksheet.Cells[row, collumn++].Value = "SANDISK Minneskort CF Extreme Pro 32GB 160MB/s UDMA7";
-                        //worksheet.Cells[row, collumn++].Value = "619659102432";
-                        //worksheet.Cells[row, collumn++].Value = Math.Round(double.Parse("919"), 2);
-                        //worksheet.Cells[row, collumn++].Value = Math.Round(double.Parse("320,64"), 2);
-                        //worksheet.Cells[row, collumn++].Value = "";
-                        //worksheet.Cells[row, collumn++].Value = Math.Round(double.Parse("320,64"), 2);
-                        //worksheet.Cells[row, collumn++].Value = "";
-                        //worksheet.Cells[row, collumn++].Value = "Active";
 
                         row++;
                     }
@@ -176,6 +148,11 @@ namespace TuraIntranet.Services.PriceList
             }
 
             return stream;
+        }
+
+        private string GetCurrencyCode(string? currencyCode)
+        {
+            return string.IsNullOrEmpty(currencyCode) ? "SEK" : currencyCode;
         }
     }
 }

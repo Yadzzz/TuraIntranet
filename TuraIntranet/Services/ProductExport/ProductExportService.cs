@@ -42,13 +42,25 @@ namespace TuraIntranet.Services.ProductExport
 
             foreach(var variantId in variantIds)
             {
+                ProductExportData productData = new();
 
-                var variant =  await this.GetVariant(variantId);
+                productData.Variant = await this.GetVariant(variantId);
 
-                if (variant != null)
+                if(productData.Variant == null)
                 {
-                    data.Add(new ProductExportData() { Variant = variant });
+                    //continue;
+                    return null;
                 }
+
+                productData.BaseProduct = await this.GetBaseProduct(productData.Variant.baseProductSystemId);
+
+                if(productData.BaseProduct == null)
+                {
+                    //continue;
+                    return null;
+                }
+
+                data.Add(productData);
             }
 
             return data;
@@ -86,7 +98,7 @@ namespace TuraIntranet.Services.ProductExport
             }
         }
 
-        private async Task<Variant?> GetVariant(string variantId)
+        private async Task<VariantRoot?> GetVariant(string variantId)
         {
             string apiLink = "https://backoffice.turascandinavia.com/Litium/api/admin/products/variants/" + variantId;
 
@@ -100,7 +112,12 @@ namespace TuraIntranet.Services.ProductExport
 
                     //Console.WriteLine(response.Content);
 
-                    var variant = JsonConvert.DeserializeObject<Variant>(response.Content);
+                    if (response == null || response.Content == null)
+                    {
+                        return null;
+                    }
+
+                    var variant = JsonConvert.DeserializeObject<VariantRoot>(response.Content);
 
                     return variant;
                 }
@@ -112,9 +129,35 @@ namespace TuraIntranet.Services.ProductExport
             }
         }
 
-        private void GetBaseProduct(string baseProductId)
+        private async Task<BaseProductRoot?> GetBaseProduct(string baseProductId)
         {
             string apiLink = "https://backoffice.turascandinavia.com/Litium/api/admin/products/baseProducts/" + baseProductId;
+
+            try
+            {
+                using (var client = new RestClient(apiLink))
+                {
+                    var request = new RestRequest();
+                    request.AddHeader("Authorization", "ServiceAccount eWFkdGVzdDpxdzUwMDBxdw==");
+                    RestResponse response = await client.ExecuteAsync(request);
+
+                    Console.WriteLine(response.Content);
+
+                    if(response == null || response.Content == null)
+                    {
+                        return null;
+                    }
+
+                    var baseProduct = JsonConvert.DeserializeObject<BaseProductRoot>(response.Content);
+
+                    return baseProduct;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
         }
     }
 }
